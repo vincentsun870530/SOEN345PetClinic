@@ -7,14 +7,6 @@ pipeline {
       }
     }
     
-    stage('Code Coverage') {
-     steps {
-        sh './jenkins_build.sh'
-        junit '*/build/test-results/*.xml'
-        step( [ $class: 'JacocoPublisher' ] )
-     }
-}
-   
      stage ('Analysis') {
             steps {
                 sh 'mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd'
