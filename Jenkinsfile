@@ -9,7 +9,7 @@ pipeline {
     
      stage ('Analysis') {
             steps {
-                sh 'mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd'
+                sh 'mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd jacoco:jacoco'
             }
            
         }
@@ -22,6 +22,7 @@ pipeline {
             recordIssues enabledForFailure: true, tool: checkStyle()
             recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
             recordIssues enabledForFailure: true, tool: pmd(pattern: '**/target/pmd.xml')
+          recordIssues enabledForFailure: true, tool: pmd(pattern: '**/target/jacoco.xml')
         }
     }
   
