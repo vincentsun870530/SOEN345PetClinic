@@ -6,6 +6,14 @@ pipeline {
         sh 'mvn clean install package'
       }
     }
+    
+    stage('Code Coverage') {
+     steps {
+        sh './jenkins_build.sh'
+        junit '*/build/test-results/*.xml'
+        step( [ $class: 'JacocoPublisher' ] )
+     }
+}
    
      stage ('Analysis') {
             steps {
