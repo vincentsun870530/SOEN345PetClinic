@@ -1,23 +1,26 @@
 pipeline {
-  agent 'any'
+  agent any
   stages {
     stage('BUILD') {
       steps {
         sh 'mvn clean install package'
       }
     }
-    
-     stage ('Analysis') {
-            steps {
+    stage('TEST') {
+      steps {
+        sh 'mvn clean test'
+      }
+    }
+
+    stage ('Analysis') {
+        steps {
                 sh 'mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd'
-            }
-           
-        }
+            }     
+        }  
   }
   post {
         always {
             junit testResults: '**/target/surefire-reports/TEST-*.xml'
-
             recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
             recordIssues enabledForFailure: true, tool: checkStyle()
             recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
