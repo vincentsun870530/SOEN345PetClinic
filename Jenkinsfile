@@ -1,12 +1,12 @@
 pipeline {
   agent any
   stages {
-    stage('BUILD') {
+    stage('Build') {
       steps {
         sh 'mvn clean install package'
       }
     }
-    stage('TEST') {
+    stage('Test') {
       steps {
         sh 'mvn clean test'
       }
@@ -14,10 +14,6 @@ pipeline {
     stage('Analysis') {
       steps {
         sh 'mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd'
-      }
-    }
-    stage('') {
-      steps {
         jacoco(buildOverBuild: true, changeBuildStatus: true)
       }
     }
