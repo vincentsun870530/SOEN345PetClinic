@@ -40,20 +40,27 @@ class OwnerController {
 
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
     private final OwnerRepository owners;
+    private Owner owner;
 
 
     public OwnerController(OwnerRepository clinicService) {
         this.owners = clinicService;
     }
 
+
     @InitBinder
     public void setAllowedFields(WebDataBinder dataBinder) {
         dataBinder.setDisallowedFields("id");
     }
 
-    @GetMapping("/owners/new")
+
     public String initCreationForm(Map<String, Object> model) {
-        Owner owner = new Owner();
+        return this.initCreationForm(model,new Owner());
+    }
+    // dependency injection
+    @GetMapping("/owners/new")
+    public String initCreationForm(Map<String, Object> model , Owner owner) {
+        this.owner = owner;
         model.put("owner", owner);
         return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
     }
@@ -68,9 +75,15 @@ class OwnerController {
         }
     }
 
-    @GetMapping("/owners/find")
+
     public String initFindForm(Map<String, Object> model) {
-        model.put("owner", new Owner());
+       return this.initFindForm(model, new Owner());
+    }
+
+    // dependency injection
+    @GetMapping("/owners/find")
+    public String initFindForm(Map<String, Object> model , Owner owner) {
+        model.put("owner", owner);
         return "owners/findOwners";
     }
 
@@ -123,9 +136,14 @@ class OwnerController {
      * @param ownerId the ID of the owner to display
      * @return a ModelMap with the model attributes for the view
      */
+
     @GetMapping("/owners/{ownerId}")
     public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
-        ModelAndView mav = new ModelAndView("owners/ownerDetails");
+        return this.showOwner(ownerId,new ModelAndView("owners/ownerDetails"));
+    }
+
+    public ModelAndView showOwner(@PathVariable("ownerId") int ownerId , ModelAndView modelAndView) {
+        ModelAndView mav = modelAndView;
         mav.addObject(this.owners.findById(ownerId));
         return mav;
     }
