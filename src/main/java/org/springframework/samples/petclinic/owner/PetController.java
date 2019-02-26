@@ -37,6 +37,7 @@ class PetController {
     private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
     private final PetRepository pets;
     private final OwnerRepository owners;
+    private Pet pet;
 
     public PetController(PetRepository pets, OwnerRepository owners) {
         this.pets = pets;
@@ -63,9 +64,14 @@ class PetController {
         dataBinder.setValidator(new PetValidator());
     }
 
-    @GetMapping("/pets/new")
+    //@GetMapping("/pets/new")
     public String initCreationForm(Owner owner, ModelMap model) {
-        Pet pet = new Pet();
+        return this.initCreationForm(owner,model,new Pet());
+    }
+
+    @GetMapping("/pets/new")
+    public String initCreationForm(Owner owner, ModelMap model, Pet pet) {
+        this.pet = pet;
         owner.addPet(pet);
         model.put("pet", pet);
         return VIEWS_PETS_CREATE_OR_UPDATE_FORM;

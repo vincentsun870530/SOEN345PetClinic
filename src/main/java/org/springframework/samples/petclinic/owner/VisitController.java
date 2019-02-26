@@ -37,6 +37,7 @@ class VisitController {
 
     private final VisitRepository visits;
     private final PetRepository pets;
+    Visit visit;
 
 
     public VisitController(VisitRepository visits, PetRepository pets) {
@@ -59,11 +60,16 @@ class VisitController {
      * @param petId
      * @return Pet
      */
-    @ModelAttribute("visit")
+    //@ModelAttribute("visit")
     public Visit loadPetWithVisit(@PathVariable("petId") int petId, Map<String, Object> model) {
+        return this.loadPetWithVisit(petId,model,new Visit());
+    }
+
+    @ModelAttribute("visit")
+    public Visit loadPetWithVisit(@PathVariable("petId") int petId, Map<String, Object> model,Visit visit) {
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
-        Visit visit = new Visit();
+        this.visit = visit;
         pet.addVisit(visit);
         return visit;
     }
