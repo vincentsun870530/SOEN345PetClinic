@@ -18,15 +18,5 @@ pipeline {
       }
     }
   }
-  post {
-    always {
-      junit '**/target/surefire-reports/TEST-*.xml'
-      recordIssues(enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()])
-      recordIssues(enabledForFailure: true, tool: checkStyle())
-      // recordIssues(enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml'))
-      // recordIssues(enabledForFailure: true, tool: pmd(pattern: '**/target/pmd.xml'))
-
-    }
-
   }
 }
