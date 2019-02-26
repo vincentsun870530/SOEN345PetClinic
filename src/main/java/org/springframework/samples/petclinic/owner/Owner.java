@@ -87,7 +87,7 @@ public class Owner extends Person {
 
     protected Set<Pet> getPetsInternal() {
         if (this.pets == null) {
-            this.pets = new HashSet<>();
+            setPetsInternal(new HashSet<>());
         }
         return this.pets;
     }
