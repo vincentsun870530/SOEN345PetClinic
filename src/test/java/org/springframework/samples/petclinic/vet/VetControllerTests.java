@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.*;
+import static org.mockito.Mockito.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,14 +38,19 @@ public class VetControllerTests {
     @Before
     public void setup() {
         Vet james = new Vet();
+        //Vet james = mock(Vet.class);
         james.setFirstName("James");
         james.setLastName("Carter");
         james.setId(1);
+
         Vet helen = new Vet();
+        //Vet helen = mock(Vet.class);
         helen.setFirstName("Helen");
         helen.setLastName("Leary");
         helen.setId(2);
+
         Specialty radiology = new Specialty();
+        //Specialty radiology = mock(Specialty.class);
         radiology.setId(1);
         radiology.setName("radiology");
         helen.addSpecialty(radiology);

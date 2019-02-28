@@ -67,6 +67,7 @@ public class Vet extends Person {
         PropertyComparator.sort(sortedSpecs,
                 new MutableSortDefinition("name", true, true));
         return Collections.unmodifiableList(sortedSpecs);
+        //the object returned by unmodifiableList can't directly be changed 
     }
 
 
