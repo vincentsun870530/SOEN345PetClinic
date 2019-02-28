@@ -38,19 +38,16 @@ public class VetControllerTests {
     @Before
     public void setup() {
         Vet james = new Vet();
-        //Vet james = mock(Vet.class);
         james.setFirstName("James");
         james.setLastName("Carter");
         james.setId(1);
 
         Vet helen = new Vet();
-        //Vet helen = mock(Vet.class);
         helen.setFirstName("Helen");
         helen.setLastName("Leary");
         helen.setId(2);
 
         Specialty radiology = new Specialty();
-        //Specialty radiology = mock(Specialty.class);
         radiology.setId(1);
         radiology.setName("radiology");
         helen.addSpecialty(radiology);
