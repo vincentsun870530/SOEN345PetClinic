@@ -231,6 +231,28 @@ public class OwnerControllerTests {
     }
 
     @Test
+    public void testProcessFindFormNoOwnersFound_mockito() throws Exception {
+    	Owner owner = mock(Owner.class);
+    	BindingResult result = mock(BindingResult.class);
+    	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
+    	OwnerRepository owners= mock(OwnerRepository.class);;
+    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
+    	OwnerController ownerController = new OwnerController(owners);
+    	String str1 = ownerController.processFindForm(owner, result, model);
+    	String str2 =  "owners/findOwners";
+    	
+    	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
+    	when(results.isEmpty()).thenReturn(true);
+    	when(results.size()).thenReturn(0);
+    	
+    	//verify(results, times(1)).isEmpty();
+    	//verify(results,times(1)).size();
+    	verify(result, times(1)).rejectValue("lastName", "notFound", "not found");
+    	
+    	assertEquals(str1, str2);
+    }
+    
+    @Test
     public void testInitUpdateOwnerForm() throws Exception {
         mockMvc.perform(get("/owners/{ownerId}/edit", TEST_OWNER_ID))
             .andExpect(status().isOk())
@@ -242,7 +264,7 @@ public class OwnerControllerTests {
             .andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
-
+    
     @Test
     public void testProcessUpdateOwnerFormSuccess() throws Exception {
         mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
