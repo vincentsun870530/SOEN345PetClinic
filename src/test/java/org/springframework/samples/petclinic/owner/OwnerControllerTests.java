@@ -27,6 +27,7 @@ import org.springframework.samples.petclinic.owner.OwnerController;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -126,13 +127,10 @@ public class OwnerControllerTests {
     	OwnerRepository owners= mock(OwnerRepository.class);
     	BindingResult result = mock(BindingResult.class);
     	OwnerController ownerController = new OwnerController(owners);
-    	String str1 = ownerController.processCreationForm(owner, result);
-    	String str2 = "redirect:/owners/" + owner.getId();
     	when(result.hasErrors()).thenReturn(true);
+    	String str1 = ownerController.processCreationForm(owner, result);
+    	String str2 = "owners/createOrUpdateOwnerForm";
     	verify(result, times(1)).hasErrors();
-    	//assertEquals passes (while it shouldn't) only when 
-    	//str2 is changed to "redirect:/owners/" + george.getId()
-    	// str2 should be "owners/createOrUpdateOwnerForm"
     	assertEquals(str1, str2);
     	
     }
@@ -171,19 +169,18 @@ public class OwnerControllerTests {
     	OwnerRepository owners= mock(OwnerRepository.class);;
     	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
     	OwnerController ownerController = new OwnerController(owners);
-    	String str1 = ownerController.processFindForm(owner, result, model);
-    	String str2 =  "owners/findOwners";
     	
     	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
     	when(results.isEmpty()).thenReturn(false);
     	when(results.size()).thenReturn(1);
+    	//NullPointerException
+    	String str1 = ownerController.processFindForm(owner, result, model);
+    	String str2 =  "redirect:/owners/" + owner.getId();
     	
     	//verify(results, times(1)).isEmpty();
     	//verify(results,times(1)).size();
     	//verify(results, times(1)).iterator().next();
     	
-    	//assertEquals passes only when str2 is changed from " "redirect:/owners/" + owner.getId()" to "owners/findOwners"
-    	//the issue seems to be in results
     	assertEquals(str1, str2);
     }
     
@@ -195,12 +192,11 @@ public class OwnerControllerTests {
     	OwnerRepository owners= mock(OwnerRepository.class);;
     	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
     	OwnerController ownerController = new OwnerController(owners);
-    	String str1 = ownerController.processFindForm(owner, result, model);
-    	String str2 = "owners/findOwners";
-    	
     	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
     	when(results.isEmpty()).thenReturn(false);
     	when(results.size()).thenReturn(2);
+    	String str1 = ownerController.processFindForm(owner, result, model);
+    	String str2 = "owners/ownersList";
     	
     	//verify(results,times(1)).size();
     	//verify(model,times(1)).put("selections", results);
@@ -266,6 +262,21 @@ public class OwnerControllerTests {
     }
     
     @Test
+    public void testInitUpdateOwnerForm_mockito() throws Exception {
+    	int ownerId = 1;
+    	Model model = mock(Model.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	String str1 = ownerController.initUpdateOwnerForm(ownerId, model);
+    	String str2 =  "owners/createOrUpdateOwnerForm";
+    	
+    	// used the mock created via @mockBean
+    	when(this.owners.findById(ownerId)).thenReturn(george);
+    	verify(model).addAttribute(george);
+    	
+    	assertEquals(str1, str2);
+    }
+    
+    @Test
     public void testProcessUpdateOwnerFormSuccess() throws Exception {
         mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
             .param("firstName", "Joe")
@@ -278,6 +289,18 @@ public class OwnerControllerTests {
             .andExpect(view().name("redirect:/owners/{ownerId}"));
     }
 
+    @Test
+    public void testProcessUpdateOwnerFormSuccess_mockito() throws Exception {
+    	int ownerId = 1;
+    	Owner owner = mock(Owner.class);
+    	BindingResult result = mock(BindingResult.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	String str1 = ownerController.processUpdateOwnerForm(owner, result, ownerId);
+    	String str2 =  "redirect:/owners/{ownerId}";
+    	verify(owner).setId(ownerId);
+    	assertEquals(str1, str2);
+    }
+    
     @Test
     public void testProcessUpdateOwnerFormHasErrors() throws Exception {
         mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
