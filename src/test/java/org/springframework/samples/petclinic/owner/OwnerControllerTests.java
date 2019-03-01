@@ -2,13 +2,18 @@ package org.springframework.samples.petclinic.owner;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.Collection;
+import java.util.Map;
 
 import org.assertj.core.util.Lists;
 import org.junit.Before;
@@ -22,6 +27,8 @@ import org.springframework.samples.petclinic.owner.OwnerController;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -40,7 +47,6 @@ public class OwnerControllerTests {
 
     @MockBean
     private OwnerRepository owners;
-
     private Owner george;
 
     @Before
@@ -62,7 +68,20 @@ public class OwnerControllerTests {
             .andExpect(model().attributeExists("owner"))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
-
+    
+    @Test
+    public void testInitCreationForm_mockito()throws Exception {
+    	Owner owner = mock(Owner.class);
+    	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
+    	OwnerRepository owners= mock(OwnerRepository.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	ownerController.initCreationForm(model,owner);
+    	verify(model).put("owner", owner);
+    	String str1 = ownerController.initCreationForm(model, owner);
+    	String str2 = "owners/createOrUpdateOwnerForm";
+    	assertEquals(str1, str2);
+    }
+    
     @Test
     public void testProcessCreationFormSuccess() throws Exception {
         mockMvc.perform(post("/owners/new")
@@ -73,6 +92,19 @@ public class OwnerControllerTests {
             .param("telephone", "01316761638")
         )
             .andExpect(status().is3xxRedirection());
+    }
+    
+    @Test
+    public void testProcessCreationFormSuccess_mockito() throws Exception {
+    	Owner owner = mock(Owner.class);
+    	OwnerRepository owners= mock(OwnerRepository.class);
+    	BindingResult result = mock(BindingResult.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	String str1 = ownerController.processCreationForm(owner, result);
+    	String str2 = "redirect:/owners/" + owner.getId();
+    	when(result.hasErrors()).thenReturn(false);
+    	verify(result, times(1)).hasErrors();
+    	assertEquals(str1, str2);
     }
 
     @Test
@@ -90,6 +122,20 @@ public class OwnerControllerTests {
     }
 
     @Test
+    public void testProcessCreationFormHasErrors_mockito() throws Exception {
+    	Owner owner = mock(Owner.class);
+    	OwnerRepository owners= mock(OwnerRepository.class);
+    	BindingResult result = mock(BindingResult.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	when(result.hasErrors()).thenReturn(true);
+    	String str1 = ownerController.processCreationForm(owner, result);
+    	String str2 = "owners/createOrUpdateOwnerForm";
+    	verify(result, times(1)).hasErrors();
+    	assertEquals(str1, str2);
+    	
+    }
+    
+    @Test
     public void testInitFindForm() throws Exception {
         mockMvc.perform(get("/owners/find"))
             .andExpect(status().isOk())
@@ -98,13 +144,68 @@ public class OwnerControllerTests {
     }
 
     @Test
+    public void testInitFindForm_mockito() throws Exception {
+    	Owner owner = mock(Owner.class);
+    	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
+    	OwnerRepository owners= mock(OwnerRepository.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	String str1 = ownerController.initFindForm(model, owner);
+    	String str2 = "owners/findOwners";
+    	verify(model, times(1)).put("owner", owner);
+    	assertEquals(str1, str2);
+    }
+    @Test
     public void testProcessFindFormSuccess() throws Exception {
         given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
         mockMvc.perform(get("/owners"))
             .andExpect(status().isOk())
             .andExpect(view().name("owners/ownersList"));
     }
-
+    @Test
+    public void testProcessFindFormSuccessOneOwner_mockito() throws Exception {
+    	//NullPointerException, test fails
+    	Owner owner = mock(Owner.class);
+    	BindingResult result = mock(BindingResult.class);
+    	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
+    	OwnerRepository owners= mock(OwnerRepository.class);;
+    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
+    	OwnerController ownerController = new OwnerController(owners);
+    	
+    	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
+    	when(results.isEmpty()).thenReturn(false);
+    	when(results.size()).thenReturn(1);
+  
+    	String str1 = ownerController.processFindForm(owner, result, model);
+    	String str2 =  "redirect:/owners/" + owner.getId();
+    	
+    	//verify(results, times(1)).isEmpty();
+    	//verify(results,times(1)).size();
+    	//verify(results, times(1)).iterator().next();
+    	
+    	assertEquals(str1, str2);
+    }
+    
+    @Test
+    public void testProcessFindFormSuccessMultipleOwners_mockito() throws Exception {
+    	Owner owner = mock(Owner.class);
+    	BindingResult result = mock(BindingResult.class);
+    	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
+    	OwnerRepository owners= mock(OwnerRepository.class);;
+    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
+    	OwnerController ownerController = new OwnerController(owners);
+    	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
+    	when(results.isEmpty()).thenReturn(false);
+    	when(results.size()).thenReturn(2);
+    	String str1 = ownerController.processFindForm(owner, result, model);
+    	String str2 = "owners/ownersList";
+    	
+    	//verify(results,times(1)).size();
+    	//verify(model,times(1)).put("selections", results);
+    	
+    	//assertEquals passes only when str2 is changed from "owners/ownersList" to "owners/findOwners"
+    	//the issue seems to be in results
+    	assertEquals(str1, str2);
+    }
     @Test
     public void testProcessFindFormByLastName() throws Exception {
         given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
@@ -127,6 +228,28 @@ public class OwnerControllerTests {
     }
 
     @Test
+    public void testProcessFindFormNoOwnersFound_mockito() throws Exception {
+    	Owner owner = mock(Owner.class);
+    	BindingResult result = mock(BindingResult.class);
+    	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
+    	OwnerRepository owners= mock(OwnerRepository.class);;
+    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
+    	OwnerController ownerController = new OwnerController(owners);
+    	String str1 = ownerController.processFindForm(owner, result, model);
+    	String str2 =  "owners/findOwners";
+    	
+    	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
+    	when(results.isEmpty()).thenReturn(true);
+    	when(results.size()).thenReturn(0);
+    	
+    	//verify(results, times(1)).isEmpty();
+    	//verify(results,times(1)).size();
+    	verify(result, times(1)).rejectValue("lastName", "notFound", "not found");
+    	
+    	assertEquals(str1, str2);
+    }
+    
+    @Test
     public void testInitUpdateOwnerForm() throws Exception {
         mockMvc.perform(get("/owners/{ownerId}/edit", TEST_OWNER_ID))
             .andExpect(status().isOk())
@@ -138,7 +261,23 @@ public class OwnerControllerTests {
             .andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
-
+    
+    @Test
+    public void testInitUpdateOwnerForm_mockito() throws Exception {
+    	int ownerId = 1;
+    	// used the Owner mock from @mockbean
+    	Model model = mock(Model.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	String str1 = ownerController.initUpdateOwnerForm(ownerId, model);
+    	String str2 =  "owners/createOrUpdateOwnerForm";
+    	
+    	// used the mock created via @mockBean
+    	when(this.owners.findById(ownerId)).thenReturn(george);
+    	verify(model).addAttribute(george);
+    	
+    	assertEquals(str1, str2);
+    }
+    
     @Test
     public void testProcessUpdateOwnerFormSuccess() throws Exception {
         mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
@@ -151,7 +290,22 @@ public class OwnerControllerTests {
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/owners/{ownerId}"));
     }
-
+    
+    @Test
+    public void testProcessUpdateOwnerFormSuccess_mockito() throws Exception {
+    	int ownerId = 1;
+    	Owner owner = mock(Owner.class);
+    	BindingResult result = mock(BindingResult.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	when(result.hasErrors()).thenReturn(false);
+    	
+    	String str1 = ownerController.processUpdateOwnerForm(owner, result, ownerId);
+    	String str2 =  "redirect:/owners/{ownerId}";
+    	
+    	verify(owner).setId(ownerId);
+    	assertEquals(str1, str2);
+    }
+    
     @Test
     public void testProcessUpdateOwnerFormHasErrors() throws Exception {
         mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
@@ -165,7 +319,21 @@ public class OwnerControllerTests {
             .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
             .andExpect(view().name("owners/createOrUpdateOwnerForm"));
     }
-
+    
+    public void testProcessUpdateOwnerFormHasErrors_mockito() throws Exception {
+    	int ownerId=1;
+    	Owner owner = mock(Owner.class);
+    	BindingResult result = mock(BindingResult.class);
+    	OwnerController ownerController = new OwnerController(owners);
+    	when(result.hasErrors()).thenReturn(true);
+    	
+    	String str1 = ownerController.processUpdateOwnerForm(owner, result, ownerId);
+    	String str2 =  "owners/createOrUpdateOwnerForm";
+    	
+    	verify(result, times(1)).hasErrors();
+    	assertEquals(str1, str2);
+    }
+    
     @Test
     public void testShowOwner() throws Exception {
         ModelAndView modelAndView = mock(ModelAndView.class);
