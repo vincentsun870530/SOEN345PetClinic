@@ -51,10 +51,11 @@ public class Vet extends Person {
 
     protected Set<Specialty> getSpecialtiesInternal() {
         if (this.specialties == null) {
-            this.specialties = new HashSet<>();
+            setSpecialtiesInternal(new HashSet<>());
         }
         return this.specialties;
     }
+
 
     protected void setSpecialtiesInternal(Set<Specialty> specialties) {
         this.specialties = specialties;
@@ -66,7 +67,9 @@ public class Vet extends Person {
         PropertyComparator.sort(sortedSpecs,
                 new MutableSortDefinition("name", true, true));
         return Collections.unmodifiableList(sortedSpecs);
+        //the object returned by unmodifiableList can't directly be changed 
     }
+
 
     public int getNrOfSpecialties() {
         return getSpecialtiesInternal().size();

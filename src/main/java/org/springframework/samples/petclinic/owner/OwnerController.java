@@ -15,6 +15,9 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,20 +43,34 @@ class OwnerController {
 
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
     private final OwnerRepository owners;
+    private Owner owner;
+    private Collection<Owner> results;
 
-
-    public OwnerController(OwnerRepository clinicService) {
-        this.owners = clinicService;
+    @Autowired
+   public OwnerController(OwnerRepository clinicService) {
+       this.owners = clinicService;
     }
+
+    public OwnerController(OwnerRepository clinicService,Owner owner, Collection<Owner> results) {
+        this.owners = clinicService;
+        this.owner = owner;
+        this.results = results;
+    }
+
 
     @InitBinder
     public void setAllowedFields(WebDataBinder dataBinder) {
         dataBinder.setDisallowedFields("id");
     }
 
-    @GetMapping("/owners/new")
+
     public String initCreationForm(Map<String, Object> model) {
-        Owner owner = new Owner();
+        return this.initCreationForm(model,new Owner());
+    }
+    // dependency injection
+    @GetMapping("/owners/new")
+    public String initCreationForm(Map<String, Object> model , Owner owner) {
+        this.owner = owner;
         model.put("owner", owner);
         return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
     }
@@ -68,22 +85,30 @@ class OwnerController {
         }
     }
 
-    @GetMapping("/owners/find")
+
     public String initFindForm(Map<String, Object> model) {
-        model.put("owner", new Owner());
+       return this.initFindForm(model, new Owner());
+    }
+
+    // dependency injection
+    @GetMapping("/owners/find")
+    public String initFindForm(Map<String, Object> model , Owner owner) {
+        model.put("owner", owner);
         return "owners/findOwners";
     }
 
     @GetMapping("/owners")
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
-
+        System.out.println("inside");
         // allow parameterless GET request for /owners to return all records
         if (owner.getLastName() == null) {
             owner.setLastName(""); // empty string signifies broadest possible search
         }
 
         // find owners by last name
-        Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        //this.results = this.owners.findByLastName(owner.getLastName());
+        setResults(owner);
+        System.out.println(results.toString());
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");
@@ -97,6 +122,10 @@ class OwnerController {
             model.put("selections", results);
             return "owners/ownersList";
         }
+    }
+
+    public void setResults(Owner owner){
+        this.results = this.owners.findByLastName(owner.getLastName());
     }
 
     @GetMapping("/owners/{ownerId}/edit")
@@ -123,9 +152,14 @@ class OwnerController {
      * @param ownerId the ID of the owner to display
      * @return a ModelMap with the model attributes for the view
      */
+
     @GetMapping("/owners/{ownerId}")
     public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
-        ModelAndView mav = new ModelAndView("owners/ownerDetails");
+        return this.showOwner(ownerId,new ModelAndView("owners/ownerDetails"));
+    }
+
+    public ModelAndView showOwner(@PathVariable("ownerId") int ownerId , ModelAndView modelAndView) {
+        ModelAndView mav = modelAndView;
         mav.addObject(this.owners.findById(ownerId));
         return mav;
     }

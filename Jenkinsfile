@@ -14,7 +14,7 @@ pipeline {
     stage('Analysis') {
       steps {
         sh 'mvn --batch-mode -V -U -e checkstyle:checkstyle pmd:pmd pmd:cpd'
-        jacoco(buildOverBuild: true, changeBuildStatus: true)
+        jacoco()
       }
     }
   }
