@@ -28,6 +28,7 @@ public class CacheConfigurationTests {
 	@Test
 	public void testPetclinicCacheConfigurationCustomizer() {
 		
+		// TODO
 		/**
 		 * 
 		 * Wrote the code below but if failed the test
@@ -57,6 +58,7 @@ public class CacheConfigurationTests {
 	@Test
 	public void testCacheConfiguration() {
 		
+		//TODO
 		/**
 		 * Wrote the code below but the test couldn't pass
 		 * 
