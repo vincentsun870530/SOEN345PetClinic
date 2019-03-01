@@ -22,6 +22,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Collection;
+import java.util.Map;
+import static org.junit.Assert.assertTrue;
 /**
  * Test class for the {@link VetController}
  */
@@ -48,6 +51,10 @@ public class VetControllerTests {
         helen.setId(2);
 
         Specialty radiology = new Specialty();
+        //Specialty radiology = mock(Specialty.class);
+        //when(radiology.getId()).thenReturn(1);
+        //when(radiology.getName()).thenReturn("radiology");
+
         radiology.setId(1);
         radiology.setName("radiology");
         helen.addSpecialty(radiology);
@@ -68,6 +75,34 @@ public class VetControllerTests {
             .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
         actions.andExpect(content().contentType("application/json;charset=UTF-8"))
             .andExpect(jsonPath("$.vetList[0].id").value(1));
+    }
+    @Test
+    public void test_mockito_ShowVetList() throws Exception{
+        Vets vets = mock(Vets.class);
+        Map<String, Object>  mock_model = mock(Map.class);
+        VetRepository vetRepository = mock(VetRepository.class);
+        VetController vetController = new VetController(vetRepository);
+
+        String str = vetController.showVetList(mock_model,vets);
+
+        verify(vets).getVetList();
+        verify(mock_model).put("vets", vets);
+
+        assertTrue(str == "vets/vetList");
+    }
+
+    @Test
+    public void test_mockito_showResourcesVetList() throws Exception{
+        Vets vets = mock(Vets.class);
+        VetRepository vetRepository = mock(VetRepository.class);
+
+        VetController vetController = new VetController(vetRepository);
+
+        vetController.showResourcesVetList(vets);
+        //verify(vetRepository).findAll();
+        verify(vets).getVetList();
+
+
     }
 
 }

@@ -55,8 +55,9 @@ public class VetTests {
         assertThat(other.getLastName()).isEqualTo(vet.getLastName());
         assertThat(other.getId()).isEqualTo(vet.getId());
     }
+
     @Test
-    public void addSpecialtiesTest(){
+    public void addSpecialtiesTest() {
         //Vet vet = new Vet();
 
         Specialty specialty = mock(Specialty.class);
@@ -65,8 +66,9 @@ public class VetTests {
 
         assertEquals(vet.getNrOfSpecialties(), 1);
     }
+
     @Test
-    public void getSpecialtiesTest(){
+    public void getSpecialtiesTest() {
         //Vet vet = new Vet();
         Specialty specialty1 = mock(Specialty.class);
         when(specialty1.getName()).thenReturn("a");
@@ -74,16 +76,13 @@ public class VetTests {
         when(specialty2.getName()).thenReturn("b");
         vet.addSpecialty(specialty1);
         vet.addSpecialty(specialty2);
-        //Real list
-        /*
-        List<Specialty> sortedSpecs =new ArrayList<>();
-        sortedSpecs.add(0, specialty1);
-        sortedSpecs.add(1, specialty2);*/
-        List<Specialty> sortedSpecs =mock(ArrayList.class);
+
+        List<Specialty> sortedSpecs = mock(ArrayList.class);
         when(sortedSpecs.get(0)).thenReturn(specialty1);
         when(sortedSpecs.get(1)).thenReturn(specialty2);
-        assertEquals(vet.getSpecialties().get(0),sortedSpecs.get(0));
-        assertEquals(vet.getSpecialties().get(1),sortedSpecs.get(1));
+        assertEquals(vet.getSpecialties().get(0), sortedSpecs.get(0));
+        assertEquals(vet.getSpecialties().get(1), sortedSpecs.get(1));
+
         Specialty specialty3 = mock(Specialty.class);
         when(specialty3.getName()).thenReturn("a");
         Specialty specialty4 = mock(Specialty.class);
@@ -91,16 +90,11 @@ public class VetTests {
         vet.addSpecialty(specialty3);
         vet.addSpecialty(specialty4);
 
-       //Real list
-       /* List<Specialty> unSortedSpecs =mock(List.class);
-        sortedSpecs.add(0, specialty4);
-        sortedSpecs.add(1, specialty3);*/
-
-        List<Specialty> unSortedSpecs =mock(List.class);
+        List<Specialty> unSortedSpecs = mock(List.class);
         when(sortedSpecs.get(0)).thenReturn(specialty4);
         when(sortedSpecs.get(1)).thenReturn(specialty3);
-        assertNotEquals(vet.getSpecialties().get(0),unSortedSpecs.get(0));
-        assertNotEquals(vet.getSpecialties().get(1),unSortedSpecs.get(1));
+        assertNotEquals(vet.getSpecialties().get(0), unSortedSpecs.get(0));
+        assertNotEquals(vet.getSpecialties().get(1), unSortedSpecs.get(1));
     }
 
 }
