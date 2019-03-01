@@ -15,6 +15,9 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,10 +44,17 @@ class OwnerController {
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
     private final OwnerRepository owners;
     private Owner owner;
+    private Collection<Owner> results;
 
+    @Autowired
+   public OwnerController(OwnerRepository clinicService) {
+       this.owners = clinicService;
+    }
 
-    public OwnerController(OwnerRepository clinicService) {
+    public OwnerController(OwnerRepository clinicService,Owner owner, Collection<Owner> results) {
         this.owners = clinicService;
+        this.owner = owner;
+        this.results = results;
     }
 
 
@@ -89,14 +99,16 @@ class OwnerController {
 
     @GetMapping("/owners")
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
-
+        System.out.println("inside");
         // allow parameterless GET request for /owners to return all records
         if (owner.getLastName() == null) {
             owner.setLastName(""); // empty string signifies broadest possible search
         }
 
         // find owners by last name
-        Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        //this.results = this.owners.findByLastName(owner.getLastName());
+        setResults(owner);
+        System.out.println(results.toString());
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");
@@ -110,6 +122,10 @@ class OwnerController {
             model.put("selections", results);
             return "owners/ownersList";
         }
+    }
+
+    public void setResults(Owner owner){
+        this.results = this.owners.findByLastName(owner.getLastName());
     }
 
     @GetMapping("/owners/{ownerId}/edit")

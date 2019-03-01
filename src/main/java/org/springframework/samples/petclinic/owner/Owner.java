@@ -31,8 +31,10 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.petclinic.model.Person;
+import org.springframework.stereotype.Component;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -44,6 +46,7 @@ import org.springframework.samples.petclinic.model.Person;
  */
 @Entity
 @Table(name = "owners")
+@Component
 public class Owner extends Person {
     @Column(name = "address")
     @NotEmpty
