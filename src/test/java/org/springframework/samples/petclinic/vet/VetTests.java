@@ -85,7 +85,7 @@ public class VetTests {
 }
 /*
 Analysis for vet package:
-1. Vets class has two method. One is for getVetList, and another is for setVetList. Since getter and setter are no need to be tested, this class doesn’t have any tests. 
+1. Vets class has two method. One is for getVetList, and another is for setVetList. Since getter and setter are no need to be tested, this class doesn’t have any tests.
 2.  Specialty class is extended from NamedEntity class, which has getName(), setName(), and toString() methods.
 3. VetController class has showVetList() and ShowresourceList(). showVetList() is for Object-Xml mapping, and ShowresourceList() is for JSon/Object mapping. There are already tests for this controller class, which use mockMvc to test the controller logic without connecting to the real web server.
 4. VetRepository is an interface, since we only test concrete classes, there is no test for this class.

@@ -48,6 +48,10 @@ public class VetControllerTests {
         helen.setId(2);
 
         Specialty radiology = new Specialty();
+        //Specialty radiology = mock(Specialty.class);
+        //when(radiology.getId()).thenReturn(1);
+        //when(radiology.getName()).thenReturn("radiology");
+
         radiology.setId(1);
         radiology.setName("radiology");
         helen.addSpecialty(radiology);
