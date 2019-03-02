@@ -11,6 +11,7 @@ import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,6 +26,12 @@ import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.owner.PetTypeFormatter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 
 /**
  * Test class for the {@link PetController}
@@ -61,13 +68,30 @@ public class PetControllerTests {
         given(this.pets.findById(TEST_PET_ID)).willReturn(new Pet());
 
     }
-
+    
     @Test
     public void testInitCreationForm() throws Exception {
         mockMvc.perform(get("/owners/{ownerId}/pets/new", TEST_OWNER_ID))
             .andExpect(status().isOk())
             .andExpect(view().name("pets/createOrUpdatePetForm"))
             .andExpect(model().attributeExists("pet"));
+    }
+    
+    @Test
+    public void test_mockito_InitCreationForm() throws Exception{
+    	Owner owner = mock(Owner.class);
+    	ModelMap model = mock(ModelMap.class);
+    	Pet pet = mock(Pet.class);
+    	PetRepository pr = mock(PetRepository.class);
+    	OwnerRepository or = mock(OwnerRepository.class);
+    	PetController petController = new PetController(pr, or);
+    	
+    	String str = petController.initCreationForm(owner, model, pet);
+    	
+    	verify(owner).addPet(pet);
+    	verify(model).put("pet", pet);
+    	
+    	assertTrue(str == "pets/createOrUpdatePetForm");
     }
 
     @Test
@@ -93,6 +117,58 @@ public class PetControllerTests {
             .andExpect(model().attributeHasFieldErrorCode("pet", "type", "required"))
             .andExpect(status().isOk())
             .andExpect(view().name("pets/createOrUpdatePetForm"));
+    }
+    
+    @Test
+    public void test_mockito_ProcessCreationFormSuccess() throws Exception{
+    	Owner owner = mock(Owner.class);
+    	ModelMap model = mock(ModelMap.class);
+    	Pet pet = mock(Pet.class);
+    	BindingResult result = mock(BindingResult.class);
+    	PetRepository pr = mock(PetRepository.class);
+    	OwnerRepository or = mock(OwnerRepository.class);
+    	PetController petController = new PetController(pr, or);
+    	
+    	when(result.hasErrors()).thenReturn(false);
+    	String str = petController.processCreationForm(owner, pet, result, model);
+    	
+    	verify(pet,atLeast(1)).getName();
+    	verify(pet,atMost(2)).getName();
+    	verify(owner,atMost(1)).getPet(pet.getName(), true);
+    	verify(result,times(0)).rejectValue("name", "duplicate", "already exists");
+    	verify(owner).addPet(pet);
+    	verify(result).hasErrors();
+    	//verify(model,times(0)).put("pet", pet);
+    	verifyZeroInteractions(model);
+    	assertTrue(str == "redirect:/owners/{ownerId}");
+    	
+    }
+    
+    @Test
+    public void test_mockito_ProcessCreationFormHasErrors() throws Exception{
+    	Owner owner = mock(Owner.class);
+    	ModelMap model = mock(ModelMap.class);
+    	Pet pet = mock(Pet.class);
+    	BindingResult result = mock(BindingResult.class);
+    	PetRepository pr = mock(PetRepository.class);
+    	OwnerRepository or = mock(OwnerRepository.class);
+    	PetController petController = new PetController(pr, or);
+    	
+    	when(pet.getName()).thenReturn("Kitty");
+    	when(pet.isNew()).thenReturn(true);
+    	when(owner.getPet("Kitty", true)).thenReturn(pet);
+    	when(result.hasErrors()).thenReturn(true);
+    	String str = petController.processCreationForm(owner, pet, result, model);
+    	
+    	verify(pet,times(2)).getName();
+    	verify(pet,times(1)).isNew();
+    	verify(owner,times(1)).getPet(pet.getName(), true);
+    	verify(result,times(1)).rejectValue("name", "duplicate", "already exists");
+    	verify(owner).addPet(pet);
+    	verify(result).hasErrors();
+    	verify(model).put("pet", pet);
+    	
+    	assertTrue(str == "pets/createOrUpdatePetForm");
     }
 
     @Test
