@@ -4,6 +4,7 @@ public class ForkliftConsistencyChecker implements InConsistencyChecker {
 
     public int consistencyChecker() {
         //TODO work on the method
+        //
         return 0;
     }
     public double calculateConsistencyChecker(int inconsistency) {
@@ -17,5 +18,4 @@ public class ForkliftConsistencyChecker implements InConsistencyChecker {
         //TODO print information about the inconsistent row
         System.out.println("The row is inconsistent");
     }
-
 }
