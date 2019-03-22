@@ -3,3 +3,4 @@
 /.setting/
 .classpath
 .project
+petclinic.sqlite3
