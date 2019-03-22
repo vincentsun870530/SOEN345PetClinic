@@ -1,11 +1,12 @@
 package org.springframework.samples.petclinic.sqlite;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -20,14 +21,31 @@ public class DbConfig {
     @Autowired
     private Environment env;
 
-    @Bean
+    @Primary
+    @Bean(name = "mysql")
+    @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
+        return DataSourceBuilder.create().build();
+    }
+
+    @Bean(name = "mysqlJdbcTemplate")
+    public JdbcTemplate jdbcTemplate(@Qualifier("mysql") DataSource dsMySQL) {
+        return new JdbcTemplate(dsMySQL);
+    }
+
+    @Bean(name = "sqlite")
+    public DataSource sqlitedataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(env.getProperty("driverClassName"));
         dataSource.setUrl(env.getProperty("url"));
         dataSource.setUsername(env.getProperty("user"));
         dataSource.setPassword(env.getProperty("password"));
         return dataSource;
+    }
+
+    @Bean(name = "sqliteJdbcTemplate")
+    public JdbcTemplate sqlitejdbcTemplate(@Qualifier("sqlite") DataSource dsMySQL) {
+        return new JdbcTemplate(dsMySQL);
     }
 
     final Properties additionalProperties() {
