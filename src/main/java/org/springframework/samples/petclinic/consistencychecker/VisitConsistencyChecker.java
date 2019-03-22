@@ -3,36 +3,36 @@ package org.springframework.samples.petclinic.consistencychecker;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.samples.petclinic.owner.Pet;
+import org.springframework.samples.petclinic.visit.Visit;
 
-public class PetConsistencyChecker implements InConsistencyChecker {
+public class VisitConsistencyChecker implements InConsistencyChecker {
 
-    private List<Pet> oldPetsData;
-    private List<Pet> newPetsData;
+    private List<Visit> oldVisitsData;
+    private List<Visit> newVisitsData;
     
-    public void setOldData(List<Pet> oldTableData) {
-        this.oldPetsData = oldTableData;
+    public void setOldData(List<Visit> oldTableData) {
+        this.oldVisitsData = oldTableData;
     }
 
-    public void setNewData(List<Pet> newTableData) {
-        this.newPetsData = newTableData;
+    public void setNewData(List<Visit> newTableData) {
+        this.newVisitsData = newTableData;
     }
 
     public int consistencyChecker() {
-        Pet oldPet;
-        Pet newPet;
+        Visit oldVisit;
+        Visit newVisit;
         int atID;
         int inconsistency = 0;
-        for(int index=0; index < oldPetsData.size(); index++) {
-            oldPet = oldPetsData.get(index);
-            newPet = newPetsData.get(index);
+        for(int index=0; index < oldVisitsData.size(); index++) {
+            oldVisit = oldVisitsData.get(index);
+            newVisit = newVisitsData.get(index);
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Owner,  columns
-            if(oldPet.toString() != newPet.toString()) {
-                atID = newPet.getId();
-                checkNewAndOldData(atID, oldPet.getName(), newPet.getName());
-                checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate());
-                checkIDNewAndOldData(atID, oldPet.getType().getId(), newPet.getOwner().getId());
+            if(oldVisit.toString() != newVisit.toString()) {
+                atID = newVisit.getId();
+                checkNewAndOldData(atID, oldVisit.getDescription(), newVisit.getDescription());
+                checkDateNewAndOldData(atID, oldVisit.getDate(), newVisit.getDate());
+                checkIDNewAndOldData(atID, oldVisit.getPetId(), newVisit.getPetId());
                 inconsistency++;
             }   
         }
@@ -40,7 +40,7 @@ public class PetConsistencyChecker implements InConsistencyChecker {
     }
 
     public double calculateConsistencyChecker(int inconsistency) {
-        int sizeOfOwners = oldPetsData.size();
+        int sizeOfOwners = oldVisitsData.size();
         double consistency = (1 - (inconsistency/sizeOfOwners))*100;
         return Double.parseDouble(String.format("%.2f", consistency));
     }
