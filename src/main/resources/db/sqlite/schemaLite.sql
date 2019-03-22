@@ -1,16 +1,16 @@
 CREATE TABLE IF NOT EXISTS vets (
-  id INT(4) PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   first_name VARCHAR(30),
   last_name VARCHAR(30)
 );
 
 CREATE TABLE IF NOT EXISTS specialties (
-  id INT(4) NOT NULL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(80)
 );
 
 CREATE TABLE IF NOT EXISTS vet_specialties (
-  vet_id INT(4) NOT NULL,
+  vet_id INTEGER NOT NULL,
   specialty_id INT(4) NOT NULL,
   FOREIGN KEY (vet_id) REFERENCES vets(id),
   FOREIGN KEY (specialty_id) REFERENCES specialties(id),
@@ -18,12 +18,12 @@ CREATE TABLE IF NOT EXISTS vet_specialties (
 );
 
 CREATE TABLE IF NOT EXISTS types (
-  id INT(4) NOT NULL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(80)
 );
 
 CREATE TABLE IF NOT EXISTS owners (
-  id INT(4) NOT NULL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   first_name VARCHAR(30),
   last_name VARCHAR(30),
   address VARCHAR(255),
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS owners (
 );
 
 CREATE TABLE IF NOT EXISTS pets (
-  id INT(4) NOT NULL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name VARCHAR(30),
   birth_date DATE,
   type_id INT(4) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS pets (
 );
 
 CREATE TABLE IF NOT EXISTS visits (
-  id INT(4) NOT NULL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   pet_id INT(4) NOT NULL,
   visit_date DATE,
   description VARCHAR(255),
