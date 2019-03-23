@@ -11,9 +11,6 @@ public class SQLiteHelper {
     public final static String URL = "jdbc:sqlite:src/main/resources/db/sqlite/petclinic.sqlite3";
 
     public static void getDataFromTable(String data, String table) {
-        // SQLite connection string
-        String url = URL;
-
         // SQL statement
         String sql = "SELECT " + data + " FROM " + table +";";
 
@@ -31,10 +28,10 @@ public class SQLiteHelper {
     public static void selectAllFromTable(String table){
         String sql = "SELECT * FROM " + table;
 
-        try (Connection conn = DriverManager.getConnection(SQLiteHelper.URL);
+        try (Connection conn = DriverManager.getConnection(URL);
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
-            
+
             switch(table) {
                 case "owners":
                     SQLiteResultSet.getOwners(rs);
