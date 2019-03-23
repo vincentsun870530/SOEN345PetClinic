@@ -10,18 +10,18 @@ import java.sql.*;
 public class SQLiteHelper {
     public final static String URL = "jdbc:sqlite:src/main/resources/db/sqlite/petclinic.sqlite3";
 
-    public static void getDataFromTable(String data) {
+    public static void getDataFromTable(String data, String table) {
         // SQLite connection string
         String url = URL;
 
         // SQL statement
-        String sql = "SELECT " + data + " FROM owners;";
+        String sql = "SELECT " + data + " FROM " + table +";";
 
         try (Connection conn = DriverManager.getConnection(URL);
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
 
-            System.out.println(rs.getString("first_name"));
+            System.out.println(rs.getString(1));
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -34,7 +34,7 @@ public class SQLiteHelper {
         try (Connection conn = DriverManager.getConnection(SQLiteHelper.URL);
              Statement stmt  = conn.createStatement();
              ResultSet rs    = stmt.executeQuery(sql)){
-
+            
             switch(table) {
                 case "owners":
                     SQLiteResultSet.getOwners(rs);
@@ -69,12 +69,13 @@ public class SQLiteHelper {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        selectAllFromTable("owners");
-        selectAllFromTable("pets");
-        selectAllFromTable("specialties");
-        selectAllFromTable("types");
-        selectAllFromTable("vet_specialties");
-        selectAllFromTable("vets");
-        selectAllFromTable("visits");
+//        selectAllFromTable("owners");
+//        selectAllFromTable("pets");
+//        selectAllFromTable("specialties");
+//        selectAllFromTable("types");
+//        selectAllFromTable("vet_specialties");
+//        selectAllFromTable("vets");
+//        selectAllFromTable("visits");
+        getDataFromTable("first_name", "owners");
     }
 }
