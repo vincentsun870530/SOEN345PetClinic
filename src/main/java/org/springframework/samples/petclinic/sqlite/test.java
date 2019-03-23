@@ -3,7 +3,8 @@ package org.springframework.samples.petclinic.sqlite;
 public class test {
     public static void main(String[] args) {
 
-        SQLiteResultSet.getOwners(new SQLiteDBConnector().selectAll("owners"));
+        //SQLiteResultSet.getPets(new SQLiteDBConnector().selectAll("pets"));
+        SQLiteOwnerHelper.getInstance().insert("1","2","#","4","5");
 
     }
 }

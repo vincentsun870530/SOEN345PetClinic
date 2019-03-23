@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -81,6 +82,8 @@ class OwnerController {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
             this.owners.save(owner);
+            //Shadow write
+            SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(),owner.getLastName(),owner.getAddress(),owner.getCity(),owner.getTelephone());
             return "redirect:/owners/" + owner.getId();
         }
     }
