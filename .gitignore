@@ -4,4 +4,5 @@
 .classpath
 .project
 petclinic.sqlite3
+spring-petclinic.iml
 dump.sql
