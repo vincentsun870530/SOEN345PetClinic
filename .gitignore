@@ -4,3 +4,4 @@
 .classpath
 .project
 petclinic.sqlite3
+dump.sql
