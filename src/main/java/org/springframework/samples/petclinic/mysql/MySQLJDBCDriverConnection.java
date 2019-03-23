@@ -31,14 +31,30 @@ public class MySQLJDBCDriverConnection {
             resultSet = statement.executeQuery(query);
 
             // FOR TESTING PURPOSE, TO BE REMOVED
-            int count = 1;
-            while(resultSet.next()) {
-                System.out.println(count + "." + resultSet.getString("name"));
-            }
+            // int count = 1;
+            // while(resultSet.next()) {
+            //     System.out.println(count + "." + resultSet.getString("name"));
+            // }
             //////////////////////////////////////
 
         } catch (SQLException exception) {
             System.out.println("MySQLJDBCDriverConnection/selectAll:"+exception);
+        }
+        return resultSet;
+    }
+
+    //select one item 
+    public ResultSet selectById(String tableName, int id){
+        String query = "SELECT * FROM " + tableName + " WHERE id = " + id;
+        ResultSet resultSet = null;
+        try  {
+            Connection connection = connect();
+            Statement stmt = connection.createStatement();
+            
+            resultSet = stmt.executeQuery(query);
+           
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return resultSet;
     }

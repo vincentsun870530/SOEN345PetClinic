@@ -1,7 +1,11 @@
 package org.springframework.samples.petclinic.sqlite;
 
 import java.sql.*;
+import java.sql.Connection;
 import java.util.List;
+
+import javax.sql.DataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.samples.petclinic.owner.*;
 
 /**
@@ -11,31 +15,40 @@ import org.springframework.samples.petclinic.owner.*;
 
 public class SQLiteDBConnector {
     public final static String URL = "jdbc:sqlite:src/main/resources/db/sqlite/petclinic.sqlite3";
+    private DataSource dataSource = null;
+    JdbcTemplate jdbcTemplateObj = null;
     /**
      * Connect to a sample database
      */
-    private Connection connect() {
+    public Connection connect() {
         // SQLite connection string
         String url = URL;
+        String user = "sa";
+        String password = "sa";
         Connection conn = null;
         try {
-            conn = DriverManager.getConnection(url);
+            conn = DriverManager.getConnection(url, user, password);
+            System.out.println("Connect to SQLite");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return conn;
     }
 
-    //region create table
-    public static void createOwnerTable() {
-        // SQLite connection string
-        String url = URL;
+    public void setDataSource(DataSource dataSource){
+        this.dataSource = dataSource;
+        this.jdbcTemplateObj = new JdbcTemplate(dataSource);
+    }
 
+    //region create table
+    public void createOwnerTable() {
+       
         // SQL statement
         String sql = "SELECT * FROM owners;";
 
-        try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             stmt.execute(sql);
 
         } catch (SQLException e) {
@@ -43,15 +56,13 @@ public class SQLiteDBConnector {
         }
     }
 
-    public static void createPetTable() {
-        // SQLite connection string
-        String url = URL;
-
+    public void createPetTable() {
+       
         // SQL statement
         String sql = "SELECT * FROM pets;";
-
-        try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             stmt.execute(sql);
 
         } catch (SQLException e) {
@@ -59,15 +70,13 @@ public class SQLiteDBConnector {
         }
     }
 
-    public static void createVetTable() {
-        // SQLite connection string
-        String url = URL;
-
+    public void createVetTable() {
         // SQL statement
         String sql = "SELECT * FROM vets;";
 
-        try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             stmt.execute(sql);
 
         } catch (SQLException e) {
@@ -75,15 +84,13 @@ public class SQLiteDBConnector {
         }
     }
 
-    public static void createVisitTable() {
-        // SQLite connection string
-        String url = URL;
-
+    public void createVisitTable() {
         // SQL statement
         String sql = "SELECT * FROM visits;";
 
-        try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             stmt.execute(sql);
 
         } catch (SQLException e) {
@@ -91,15 +98,13 @@ public class SQLiteDBConnector {
         }
     }
 
-    public static void createSpecialityTable() {
-        // SQLite connection string
-        String url = URL;
-
+    public void createSpecialityTable() {
         // SQL statement
         String sql = "SELECT * FROM specialties;";
 
-        try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             stmt.execute(sql);
 
         } catch (SQLException e) {
@@ -107,15 +112,12 @@ public class SQLiteDBConnector {
         }
     }
 
-    public static void createVetSpecialityTable() {
-        // SQLite connection string
-        String url = URL;
-
+    public void createVetSpecialityTable() {
         // SQL statement
         String sql = "SELECT * FROM vet_specialties;";
-
-        try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             stmt.execute(sql);
 
         } catch (SQLException e) {
@@ -123,15 +125,12 @@ public class SQLiteDBConnector {
         }
     }
 
-    public static void createTypeTable() {
-        // SQLite connection string
-        String url = URL;
-
+    public void createTypeTable() {
         // SQL statement
         String sql = "SELECT * FROM types;";
-
-        try (Connection conn = DriverManager.getConnection(url);
-            Statement stmt = conn.createStatement()) {
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             stmt.execute(sql);
 
         } catch (SQLException e) {
@@ -141,11 +140,12 @@ public class SQLiteDBConnector {
     //endregion
 
     //selectAll
-    public static ResultSet selectAll(String tableName){
+    public ResultSet selectAll(String tableName){
         String sql = "SELECT * FROM " + tableName;
         ResultSet rs = null;
-        try (Connection conn = DriverManager.getConnection(URL);
-        Statement stmt  = conn.createStatement()){
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             
             rs = stmt.executeQuery(sql);
            
@@ -155,11 +155,12 @@ public class SQLiteDBConnector {
         return rs;
     }
     //select one item 
-    public static ResultSet selectById(String tableName, int id){
+    public ResultSet selectById(String tableName, int id){
         String sql = "SELECT * FROM " + tableName + " WHERE id = " + id;
         ResultSet rs = null;
-        try (Connection conn = DriverManager.getConnection(URL);
-        Statement stmt  = conn.createStatement()){
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
             
             rs = stmt.executeQuery(sql);
            
@@ -169,12 +170,23 @@ public class SQLiteDBConnector {
         return rs;
     }
 
-/**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        selectAll("owners");
-    }
+    //update one item
+    public void updateById(String itemName, String colName, String colValue, int id){
+        if(dataSource != null)
+        {
 
+            String sql = "UPDATE " + itemName + " SET  " + colName 
+                    + " = " + colValue + " WHERE id = " + id;
+            
+            jdbcTemplateObj.update(sql);
+
+            System.out.println("Updated "+itemName+" on "+colName+" with ID = " + id );
+            
+        }else{
+            System.out.println("Update Failed: DateResource is not set");
+        }
+        
+        return;
+    }
 
 }
