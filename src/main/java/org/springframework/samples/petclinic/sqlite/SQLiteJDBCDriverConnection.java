@@ -8,7 +8,7 @@ import java.sql.*;
  */
 
 public class SQLiteJDBCDriverConnection {
-    public final static String URL = "jdbc:sqlite:./petclinic.sqlite3";
+    public final static String URL = "jdbc:sqlite:src/main/resources/db/sqlite/petclinic.sqlite3";
     /**
      * Connect to a sample database
      */
