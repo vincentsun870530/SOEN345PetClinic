@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.samples.petclinic.sqlite.SQLitePetHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -36,6 +37,8 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/owners/{ownerId}")
 class PetController {
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
 
     private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
     private final PetRepository pets;
@@ -86,7 +89,8 @@ class PetController {
             result.rejectValue("name", "duplicate", "already exists");
         }
         owner.addPet(pet);
-        SQLitePetHelper.getInstance().insert(pet.getName(),pet.getBirthDate().toString(),pet.getType().getId(),owner.getId());
+        if (activeProfile == "mysql")
+            SQLitePetHelper.getInstance().insert(pet.getName(),pet.getBirthDate().toString(),pet.getType().getId(),owner.getId());
         if (result.hasErrors()) {
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
