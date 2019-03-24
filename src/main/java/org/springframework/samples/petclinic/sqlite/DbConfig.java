@@ -21,31 +21,14 @@ public class DbConfig {
     @Autowired
     private Environment env;
 
-    @Primary
-    @Bean(name = "mysql")
-    @ConfigurationProperties(prefix = "spring.datasource")
+    @Bean
     public DataSource dataSource() {
-        return DataSourceBuilder.create().build();
-    }
-
-    @Bean(name = "mysqlJdbcTemplate")
-    public JdbcTemplate jdbcTemplate(@Qualifier("mysql") DataSource dsMySQL) {
-        return new JdbcTemplate(dsMySQL);
-    }
-
-    @Bean(name = "sqlite")
-    public DataSource sqlitedataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(env.getProperty("driverClassName"));
         dataSource.setUrl(env.getProperty("url"));
         dataSource.setUsername(env.getProperty("user"));
         dataSource.setPassword(env.getProperty("password"));
         return dataSource;
-    }
-
-    @Bean(name = "sqliteJdbcTemplate")
-    public JdbcTemplate sqlitejdbcTemplate(@Qualifier("sqlite") DataSource dsMySQL) {
-        return new JdbcTemplate(dsMySQL);
     }
 
     final Properties additionalProperties() {
