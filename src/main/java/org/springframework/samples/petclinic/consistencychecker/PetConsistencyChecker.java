@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.consistencychecker;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.owner.Pet;
 
 public class PetConsistencyChecker implements InConsistencyChecker {
@@ -30,9 +31,9 @@ public class PetConsistencyChecker implements InConsistencyChecker {
             //for Owner,  columns
             if(oldPet.toString() != newPet.toString()) {
                 atID = newPet.getId();
-                checkNewAndOldData(atID, oldPet.getName(), newPet.getName());
-                checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate());
-                checkIDNewAndOldData(atID, oldPet.getType().getId(), newPet.getOwner().getId());
+                checkNewAndOldData(atID, oldPet.getName(), newPet.getName(), "name");
+                checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
+                checkIDNewAndOldData(atID, oldPet.getType().getId(), newPet.getOwner().getId(), "owner_id");
                 inconsistency++;
             }   
         }
@@ -45,12 +46,11 @@ public class PetConsistencyChecker implements InConsistencyChecker {
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
-    private void checkNewAndOldData(int id, String oldData, String newData) {
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName) {
         if(oldData != newData) {
             printViolationMessage(id, oldData, newData);
 
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
+            MySQLJDBCDriverConnection.updateRow(id, "pets", columnName, oldData);
 
         }
     }

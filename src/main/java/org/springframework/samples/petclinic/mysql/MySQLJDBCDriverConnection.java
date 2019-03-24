@@ -2,13 +2,14 @@ package org.springframework.samples.petclinic.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class MySQLJDBCDriverConnection {
 
-    public Connection connect() {
+    public static Connection connect() {
         String url = "jdbc:mysql://127.0.0.1:3306/petclinic";
         String user = "root";
         String password = "petclinic";
@@ -22,6 +23,7 @@ public class MySQLJDBCDriverConnection {
         return connection;
     }
 
+    // Return all data
     public ResultSet selectAll(String tableName) {
         String query = "SELECT * FROM " + tableName;
         ResultSet resultSet = null;
@@ -57,5 +59,16 @@ public class MySQLJDBCDriverConnection {
             System.out.println(e.getMessage());
         }
         return resultSet;
+    }
+
+    public static void updateRow(int id, String tableName, String columnName, String data) {
+        String query = "UPDATE " + tableName + " SET " + columnName + "=" + data + " WHERE id=" + id;
+            try {
+                Connection connection = connect();
+                PreparedStatement pStatement = connection.prepareStatement(query);
+                pStatement.executeUpdate();
+            } catch (SQLException exception) {
+                System.out.println("MySQLJDBCDriverConnection/updateRowFor" + tableName + ":" + exception);
+            }
     }
 }
