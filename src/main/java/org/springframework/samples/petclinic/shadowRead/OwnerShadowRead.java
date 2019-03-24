@@ -5,12 +5,15 @@ import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.samples.petclinic.shadowRead.UpdateOwner;
+
 
 public class OwnerShadowRead {
 		
 		private int readInconsistencies = 0;
-		
+		private int inconsistencies = 0;
 		SQLiteDBConnector sqLiteDbConnector = new SQLiteDBConnector();
+		 UpdateOwner updateOwner = new UpdateOwner();
 		
 		@Async
 		public void shadowRead(OwnerRepository repo, int id) throws SQLException{
@@ -35,7 +38,7 @@ public class OwnerShadowRead {
 			int city_col = result.findColumn("city");
 			int telephone_col = result.findColumn("telephone");
 			
-			//Obtain the value of the row proper to the specified id
+			//Obtain the value of the row proper to the specified id nin the SqLite db
 			if(result != null) {
 				firstName = (String) result.getObject(first_name_col);
 				lastName = (String) result.getObject(last_name_col);
@@ -48,22 +51,27 @@ public class OwnerShadowRead {
 			//when the rows are different increment readConsistencies and print the inconsistency
 			if(!(owner.getFirstName().equals(firstName))){
 				ReadInconsistency(owner.getFirstName(), firstName);
+				updateOwner.updateFirstName(owner);
 			}
 
 			if(!(owner.getLastName().equals(lastName))){
 				ReadInconsistency(owner.getLastName(), lastName);
+				updateOwner.updateLastName(owner);
 			}
 
 			if(!(owner.getAddress().equals(address))){
 				ReadInconsistency(owner.getAddress(), address);
+				updateOwner.updateAddress(owner);
 			}
 
 			if(!(owner.getCity().equals(city))){
 				ReadInconsistency(owner.getCity(), city);
+				updateOwner.updateCity(owner);
 			}
 
 			if(!(owner.getTelephone().equals(telephone))){
 				ReadInconsistency(owner.getTelephone(), telephone);
+				updateOwner.updateTelephone(owner);
 			}
 		}
 
@@ -76,5 +84,10 @@ public class OwnerShadowRead {
 		public int getReadInconsistencies() {
 			return readInconsistencies;
 		}
+		public int getInconsistencies() {
+			
+			return inconsistencies;
+		}
+
 	}
 
