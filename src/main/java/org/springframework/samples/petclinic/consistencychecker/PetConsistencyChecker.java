@@ -50,22 +50,22 @@ public class PetConsistencyChecker implements InConsistencyChecker {
         if(oldData != newData) {
             printViolationMessage(id, oldData, newData);
 
-            MySQLJDBCDriverConnection.updateRow(id, "pets", columnName, oldData);
+            //MySQLJDBCDriverConnection.updateRow(id, "pets", columnName, oldData);
 
         }
     }
 
-    private void checkDateNewAndOldData(int id, LocalDate oldDate, LocalDate newDate) {
+    private void checkDateNewAndOldData(int id, LocalDate oldDate, LocalDate newDate, String columnName) {
         if(oldDate.isEqual(newDate) == false) {
             printViolationMessage(id, oldDate.toString(), newDate.toString());
 
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
+
+           // MySQLJDBCDriverConnection.updateRow();
 
         }
     }
 
-    private void checkIDNewAndOldData(int id, int oldId, int newId) {
+    private void checkIDNewAndOldData(int id, int oldId, int newId, String columnName) {
         if((oldId == newId) == false) {
             printViolationMessage(id, Integer.toString(oldId), Integer.toString(newId));
 
