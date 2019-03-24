@@ -59,8 +59,6 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
         if(oldData != newData) {
             printViolationMessage(id, oldData, newData);
             new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
-            //MySQLJDBCDriverConnection.updateRow(id, "owners", columnName, oldData);
-
         }
     }
 
@@ -69,11 +67,5 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
                             " does not match: New(" + newData + 
                             " is not equal to Old(" + oldData);
     }
-
-    // public static void main(String[] args) {
-    //     OwnerConsistencyChecker occ = new OwnerConsistencyChecker();
-    //     occ.consistencyChecker();
-    // }
-
 
 }

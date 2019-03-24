@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.consistencychecker;
 
 import java.util.List;
 
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.vet.Vet;
 
 public class VetConsistencyChecker implements InConsistencyChecker {
@@ -29,8 +30,8 @@ public class VetConsistencyChecker implements InConsistencyChecker {
             //for Vet, 3 columns
             if(oldVet.toString() != newVet.toString()) {
                 atID = newVet.getId();
-                checkNewAndOldData(atID, oldVet.getFirstName(), newVet.getFirstName());
-                checkNewAndOldData(atID, oldVet.getLastName(), newVet.getLastName());
+                checkNewAndOldData(atID, oldVet.getFirstName(), newVet.getFirstName(),"first_name");
+                checkNewAndOldData(atID, oldVet.getLastName(), newVet.getLastName(),"last_name");
                 inconsistency++;
             }   
         }
@@ -43,13 +44,14 @@ public class VetConsistencyChecker implements InConsistencyChecker {
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
-    private void checkNewAndOldData(int id, String oldData, String newData) {
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName){
+        checkNewAndOldData(id,oldData,newData,columnName,"vets");
+    }
+
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
         if(oldData != newData) {
             printViolationMessage(id, oldData, newData);
-
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
-
+            new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
         }
     }
 

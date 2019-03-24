@@ -54,8 +54,6 @@ public class PetConsistencyChecker implements InConsistencyChecker {
         if(oldData != newData) {
             printViolationMessage(id, oldData, newData);
             new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
-            //MySQLJDBCDriverConnection.updateRow(id, "pets", columnName, oldData);
-
         }
     }
 
@@ -68,21 +66,20 @@ public class PetConsistencyChecker implements InConsistencyChecker {
             printViolationMessage(id, oldDate.toString(), newDate.toString());
 
             new SQLiteDBConnector().updateById(tableName,columnName, oldDate.toString(), id);
-           // MySQLJDBCDriverConnection.updateRow();
 
         }
     }
 
     //TODO how can u check ID, it is a primary key
-    private void checkIDNewAndOldData(int id, int oldId, int newId, String columnName) {
-        if((oldId == newId) == false) {
-            printViolationMessage(id, Integer.toString(oldId), Integer.toString(newId));
-
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
-
-        }
-    }
+//    private void checkIDNewAndOldData(int id, int oldId, int newId, String columnName) {
+//        if((oldId == newId) == false) {
+//            printViolationMessage(id, Integer.toString(oldId), Integer.toString(newId));
+//
+//            // TODO update the new database
+//            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
+//
+//        }
+//    }
 
     public void printViolationMessage(int id, String oldData, String newData) {
         System.out.println("The row " + id + " on the new database," +
