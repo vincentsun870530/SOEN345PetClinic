@@ -43,7 +43,13 @@ public class SQLiteOwnerHelper {
         return numRowsInserted;
     }
 
-    public static void close(Statement statement) {
+    //update
+
+    //delete
+
+
+
+    private void close(Statement statement) {
         try {
             if (statement != null) {
                 statement.close();
@@ -52,5 +58,4 @@ public class SQLiteOwnerHelper {
             e.printStackTrace();
         }
     }
-
 }

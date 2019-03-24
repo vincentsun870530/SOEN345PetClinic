@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.samples.petclinic.sqlite.SQLitePetHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 /**
@@ -83,6 +86,7 @@ class PetController {
             result.rejectValue("name", "duplicate", "already exists");
         }
         owner.addPet(pet);
+        SQLitePetHelper.getInstance().insert(pet.getName(),pet.getBirthDate().toString(),pet.getType().getId(),owner.getId());
         if (result.hasErrors()) {
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
