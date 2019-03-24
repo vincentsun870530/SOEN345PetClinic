@@ -17,6 +17,8 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -104,6 +106,14 @@ class OwnerController {
         if (owner.getLastName() == null) {
             owner.setLastName(""); // empty string signifies broadest possible search
         }
+
+
+        // FOR TESTING PURPOSE, TO BE REMOVED
+        // MySQLJDBCDriverConnection my = new MySQLJDBCDriverConnection();
+        // System.out.println("TEST:" + my.selectAll("pets"));
+        // SQLiteDBConnector my = new SQLiteDBConnector();
+        // System.out.println("TEST:" + my.selectAll("pets"));
+        //////////////////////////////////////////
 
         // find owners by last name
         //this.results = this.owners.findByLastName(owner.getLastName());
