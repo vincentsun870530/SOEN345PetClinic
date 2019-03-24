@@ -31,6 +31,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
+
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -96,7 +98,9 @@ class PetController {
         }
         owner.addPet(pet);
         if (activeProfile.equals("mysql")) {
-            SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
+            if (isEnableShadowWrite) {
+                SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
+            }
         }
         if (result.hasErrors()) {
             model.put("pet", pet);

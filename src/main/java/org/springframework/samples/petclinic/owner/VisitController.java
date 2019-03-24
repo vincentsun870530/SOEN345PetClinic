@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import javax.validation.Valid;
 import java.util.Map;
 
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
+
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -95,7 +97,9 @@ class VisitController {
             return "pets/createOrUpdateVisitForm";
         } else {
             this.visits.save(visit);
-            SQLiteVisitHelper.getInstance().insert(visit.getPetId(),visit.getDate().toString(),visit.getDescription());
+            if (isEnableShadowWrite) {
+                SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
+            }
             return "redirect:/owners/{ownerId}";
         }
     }

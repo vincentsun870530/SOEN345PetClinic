@@ -34,6 +34,8 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Map;
 
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
+
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -88,7 +90,9 @@ class OwnerController {
         } else {
             this.owners.save(owner);
             //Shadow write
-            SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(),owner.getLastName(),owner.getAddress(),owner.getCity(),owner.getTelephone());
+            if (isEnableShadowWrite) {
+                SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
+            }
             return "redirect:/owners/" + owner.getId();
         }
     }
