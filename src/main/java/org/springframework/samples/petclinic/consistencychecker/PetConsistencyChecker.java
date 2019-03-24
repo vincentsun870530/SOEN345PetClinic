@@ -2,7 +2,7 @@ package org.springframework.samples.petclinic.consistencychecker;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.owner.Pet;
 
@@ -31,9 +31,9 @@ public class PetConsistencyChecker implements InConsistencyChecker {
             //for Owner,  columns
             if(oldPet.toString() != newPet.toString()) {
                 atID = newPet.getId();
-                checkNewAndOldData(atID, oldPet.getName(), newPet.getName(), "name");
+                checkNewAndOldData(atID, oldPet.getName(), newPet.getName(),"name");
                 checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
-                checkIDNewAndOldData(atID, oldPet.getType().getId(), newPet.getOwner().getId(), "owner_id");
+                checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
                 inconsistency++;
             }   
         }
@@ -46,25 +46,34 @@ public class PetConsistencyChecker implements InConsistencyChecker {
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
-    private void checkNewAndOldData(int id, String oldData, String newData, String columnName) {
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName){
+        checkNewAndOldData(id,oldData,newData,columnName,"pets");
+    }
+
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
         if(oldData != newData) {
             printViolationMessage(id, oldData, newData);
-
+            new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
             //MySQLJDBCDriverConnection.updateRow(id, "pets", columnName, oldData);
 
         }
     }
 
     private void checkDateNewAndOldData(int id, LocalDate oldDate, LocalDate newDate, String columnName) {
+        checkDateNewAndOldData(id,oldDate,newDate,columnName,"pets");
+    }
+
+    private void checkDateNewAndOldData(int id, LocalDate oldDate, LocalDate newDate, String columnName, String tableName) {
         if(oldDate.isEqual(newDate) == false) {
             printViolationMessage(id, oldDate.toString(), newDate.toString());
 
-
+            new SQLiteDBConnector().updateById(tableName,columnName, oldDate.toString(), id);
            // MySQLJDBCDriverConnection.updateRow();
 
         }
     }
 
+    //TODO how can u check ID, it is a primary key
     private void checkIDNewAndOldData(int id, int oldId, int newId, String columnName) {
         if((oldId == newId) == false) {
             printViolationMessage(id, Integer.toString(oldId), Integer.toString(newId));

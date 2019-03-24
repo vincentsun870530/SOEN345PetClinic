@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.owner.Owner;
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 
 public class OwnerConsistencyChecker implements InConsistencyChecker {
 
@@ -50,20 +51,15 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
-    private void checkNewAndOldData(int id, String oldData, String newData, String columnName) {
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName){
+        checkNewAndOldData(id,oldData,newData,columnName,"owners");
+    }
+
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
         if(oldData != newData) {
             printViolationMessage(id, oldData, newData);
-
-            // Connection connection = MySQLJDBCDriverConnection.connect();
-            // String query = "UPDATE owners SET " + columnName + "=" + oldData + " WHERE id=" + id;
-            // try {
-            //     PreparedStatement pStatement = connection.prepareStatement(query);
-            //     pStatement.executeUpdate();
-            // } catch (SQLException exception) {
-            //     System.out.println("OwnerConsistencyChecker/checkVewAndOldData:" + exception);
-            // }
-
-            MySQLJDBCDriverConnection.updateRow(id, "owners", columnName, oldData);
+            new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
+            //MySQLJDBCDriverConnection.updateRow(id, "owners", columnName, oldData);
 
         }
     }
