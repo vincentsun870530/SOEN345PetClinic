@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -71,10 +72,14 @@ class PetController {
 
     @GetMapping("/pets/new")
     public String initCreationForm(Owner owner, ModelMap model, Pet pet) {
-        this.pet = pet;
-        owner.addPet(pet);
-        model.put("pet", pet);
-        return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+
+        if (FeatureToggles.isEnablePetAdd) {
+            this.pet = pet;
+            owner.addPet(pet);
+            model.put("pet", pet);
+            return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+        }
+        return null;
     }
 
     @PostMapping("/pets/new")
@@ -94,9 +99,13 @@ class PetController {
 
     @GetMapping("/pets/{petId}/edit")
     public String initUpdateForm(@PathVariable("petId") int petId, ModelMap model) {
-        Pet pet = this.pets.findById(petId);
-        model.put("pet", pet);
-        return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+
+        if (FeatureToggles.isEnablePetEdit) {
+            Pet pet = this.pets.findById(petId);
+            model.put("pet", pet);
+            return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+        }
+        return null;
     }
 
     @PostMapping("/pets/{petId}/edit")
