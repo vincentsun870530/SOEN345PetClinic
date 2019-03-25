@@ -1,14 +1,9 @@
 package org.springframework.samples.petclinic.consistencychecker;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 
-import static javafx.scene.input.KeyCode.T;
+import java.util.List;
 
 public class TypeConsistencyChecker implements InConsistencyChecker{
     private static List<PetType> oldPetTypeData;
