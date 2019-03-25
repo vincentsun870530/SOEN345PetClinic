@@ -5,6 +5,7 @@ import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+import org.springframework.samples.petclinic.vet.Specialty;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +18,7 @@ public class ConsistencyChecker {
     public static void main(String[] args) {
         ownerConsCheck();
         petConsCheck();
+        specialtyConsCheck();
     }
 
     public static void ownerConsCheck() {
@@ -142,5 +144,48 @@ public class ConsistencyChecker {
         }
 
         new PetConsistencyChecker().consistencyChecker();
+    }
+
+    public static void specialtyConsCheck() {
+        ResultSet rsNew = new SQLiteDBConnector().selectAll("specialties");
+        List<Specialty> specialtiesListNew = new ArrayList<Specialty>();
+        Specialty specialtyNew;
+        try {
+            while (rsNew.next()) {
+                int id = rsNew.getInt("id");
+                String name = rsNew.getString("name");
+
+                specialtyNew = new Specialty();
+
+                specialtyNew.setId(id);
+                specialtyNew.setName(name);
+
+                specialtiesListNew.add(specialtyNew);
+            }
+            SpecialityConsistencyChecker.setNewData(specialtiesListNew);
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
+        List<Specialty> specialtiesListOld = new ArrayList<Specialty>();
+        Specialty specialtyOld;
+        try {
+            while (rsNew.next()) {
+                int id = rsNew.getInt("id");
+                String name = rsNew.getString("name");
+                specialtyOld = new Specialty();
+
+                specialtyOld.setId(id);
+                specialtyOld.setName(name);
+
+                specialtiesListOld.add(specialtyOld);
+            }
+            SpecialityConsistencyChecker.setOldData(specialtiesListNew);
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+
+        new SpecialityConsistencyChecker().consistencyChecker();
     }
 }

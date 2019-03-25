@@ -6,11 +6,11 @@ import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import java.util.List;
 
 public class SpecialityConsistencyChecker implements InConsistencyChecker{
-    private List<Specialty> oldSpecialityData;
-    private List<Specialty> newSpecialtyData;
+    private static List<Specialty> oldSpecialityData;
+    private static List<Specialty> newSpecialtyData;
 
-    public void setOldData(List<Specialty> oldSpecialityData){this.oldSpecialityData = oldSpecialityData;}
-    public void setNewData(List<Specialty>  newSpecialtyData){this.newSpecialtyData = newSpecialtyData;}
+    public static void setOldData(List<Specialty> data){oldSpecialityData = data;}
+    public static void setNewData(List<Specialty>  data){newSpecialtyData = data;}
 
     public int consistencyChecker(){
         Specialty oldSpeciality;
