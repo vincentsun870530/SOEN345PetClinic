@@ -9,7 +9,6 @@ public class FeatureToggles {
     public static boolean isEnablePetAdd = true;
     public static boolean isEnablePetEdit = true;
     public static boolean isEnablePetVisit = true;
-
     public static boolean isEnableVetPage = true;
 
 }

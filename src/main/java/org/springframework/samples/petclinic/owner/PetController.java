@@ -96,6 +96,7 @@ class PetController {
         }
         owner.addPet(pet);
         if (activeProfile.equals("mysql")) {
+            //shadow write
             SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
         }
         if (result.hasErrors()) {

@@ -4,7 +4,7 @@ import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 
 public class UpdateOwner {
 	
-	SQLiteDBConnector sqLiteDbConnector = new SQLiteDBConnector();
+	SQLiteDBConnector sqLiteDbConnector = SQLiteDBConnector.getInstance();
 	
     @SuppressWarnings("unused") void updateFirstName(Owner owner){
 		sqLiteDbConnector. updateById("Owner", "first_name", owner.getFirstName(), owner.getId());
