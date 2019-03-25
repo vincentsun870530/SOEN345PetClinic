@@ -286,6 +286,6 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        new TypeConsistencyChecker().consistencyChecker();
+        new VetConsistencyChecker().consistencyChecker();
     }
 }
