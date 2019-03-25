@@ -118,7 +118,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("pets");
         List<Pet> petsListOld = new ArrayList<Pet>();
         Pet petOld;
         try {
@@ -172,7 +172,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("specialties");
         List<Specialty> specialtiesListOld = new ArrayList<Specialty>();
         Specialty specialtyOld;
         try {
@@ -215,7 +215,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("types");
         List<PetType> typeListOld = new ArrayList<PetType>();
         PetType typeOld;
         try {

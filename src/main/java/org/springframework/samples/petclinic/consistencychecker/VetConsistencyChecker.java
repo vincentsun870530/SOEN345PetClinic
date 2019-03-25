@@ -28,12 +28,12 @@ public class VetConsistencyChecker implements InConsistencyChecker {
             newVet = newVetsData.get(index);
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Vet, 3 columns
-            if(oldVet.toString() != newVet.toString()) {
+            if(!oldVet.toString().equals(newVet.toString())) {
                 atID = newVet.getId();
                 checkNewAndOldData(atID, oldVet.getFirstName(), newVet.getFirstName(),"first_name");
                 checkNewAndOldData(atID, oldVet.getLastName(), newVet.getLastName(),"last_name");
                 inconsistency++;
-            }   
+            }
         }
         return inconsistency;
     }
