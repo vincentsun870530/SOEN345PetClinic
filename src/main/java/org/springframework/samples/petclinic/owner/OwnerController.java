@@ -17,6 +17,8 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +33,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Map;
+
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
 /**
  * @author Juergen Hoeller
@@ -70,9 +74,13 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/new")
     public String initCreationForm(Map<String, Object> model , Owner owner) {
-        this.owner = owner;
-        model.put("owner", owner);
-        return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+
+        if(FeatureToggles.isEnableOwnerCreate) {
+            this.owner = owner;
+            model.put("owner", owner);
+            return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+        }
+        return null;
     }
 
     @PostMapping("/owners/new")
@@ -81,6 +89,10 @@ class OwnerController {
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
         } else {
             this.owners.save(owner);
+            //Shadow write
+            if (isEnableShadowWrite) {
+                SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
+            }
             return "redirect:/owners/" + owner.getId();
         }
     }
@@ -93,35 +105,43 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
-        model.put("owner", owner);
-        return "owners/findOwners";
+
+        if (FeatureToggles.isEnableOwnerPage) {
+            model.put("owner", owner);
+            return "owners/findOwners";
+        }
+        return null;
     }
 
     @GetMapping("/owners")
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
-        System.out.println("inside");
-        // allow parameterless GET request for /owners to return all records
-        if (owner.getLastName() == null) {
-            owner.setLastName(""); // empty string signifies broadest possible search
-        }
 
-        // find owners by last name
-        //this.results = this.owners.findByLastName(owner.getLastName());
-        setResults(owner);
-        System.out.println(results.toString());
-        if (results.isEmpty()) {
-            // no owners found
-            result.rejectValue("lastName", "notFound", "not found");
-            return "owners/findOwners";
-        } else if (results.size() == 1) {
-            // 1 owner found
-            owner = results.iterator().next();
-            return "redirect:/owners/" + owner.getId();
-        } else {
-            // multiple owners found
-            model.put("selections", results);
-            return "owners/ownersList";
+        if (FeatureToggles.isEnableOwnerFind) {
+            System.out.println("inside");
+            // allow parameterless GET request for /owners to return all records
+            if (owner.getLastName() == null) {
+                owner.setLastName(""); // empty string signifies broadest possible search
+            }
+
+            // find owners by last name
+            //this.results = this.owners.findByLastName(owner.getLastName());
+            setResults(owner);
+            System.out.println(results.toString());
+            if (results.isEmpty()) {
+                // no owners found
+                result.rejectValue("lastName", "notFound", "not found");
+                return "owners/findOwners";
+            } else if (results.size() == 1) {
+                // 1 owner found
+                owner = results.iterator().next();
+                return "redirect:/owners/" + owner.getId();
+            } else {
+                // multiple owners found
+                model.put("selections", results);
+                return "owners/ownersList";
+            }
         }
+        return null;
     }
 
     public void setResults(Owner owner){
@@ -130,9 +150,13 @@ class OwnerController {
 
     @GetMapping("/owners/{ownerId}/edit")
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-        Owner owner = this.owners.findById(ownerId);
-        model.addAttribute(owner);
-        return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+
+        if (FeatureToggles.isEnableOwnerEdit) {
+            Owner owner = this.owners.findById(ownerId);
+            model.addAttribute(owner);
+            return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+        }
+        return null;
     }
 
     @PostMapping("/owners/{ownerId}/edit")

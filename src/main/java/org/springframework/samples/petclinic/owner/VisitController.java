@@ -15,15 +15,21 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.samples.petclinic.sqlite.SQLiteVisitHelper;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import javax.validation.Valid;
 import java.util.Map;
+
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
 /**
  * @author Juergen Hoeller
@@ -77,7 +83,11 @@ class VisitController {
     // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
     @GetMapping("/owners/*/pets/{petId}/visits/new")
     public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
-        return "pets/createOrUpdateVisitForm";
+
+        if (FeatureToggles.isEnablePetVisit) {
+            return "pets/createOrUpdateVisitForm";
+        }
+        return null;
     }
 
     // Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is called
@@ -87,6 +97,9 @@ class VisitController {
             return "pets/createOrUpdateVisitForm";
         } else {
             this.visits.save(visit);
+            if (isEnableShadowWrite) {
+                SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
+            }
             return "redirect:/owners/{ownerId}";
         }
     }
