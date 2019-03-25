@@ -26,11 +26,18 @@ public class VetConsistencyChecker implements InConsistencyChecker {
         for(int index=0; index < oldVetsData.size(); index++) {
             oldVet = oldVetsData.get(index);
             newVet = newVetsData.get(index);
+            atID = oldVet.getId();
+            if (inconsistency!= 0) {
+                System.out.println("OLD:" + oldVet);
+                System.out.println("NEW:" + newVet);
+            }
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Vet, 3 columns
-            if(!oldVet.toString().equals(newVet.toString())) {
-                atID = newVet.getId();
+            if (!oldVet.getFirstName().equals(newVet.getFirstName())) {
                 checkNewAndOldData(atID, oldVet.getFirstName(), newVet.getFirstName(),"first_name");
+                inconsistency++;
+            }
+            if (!oldVet.getLastName().equals(newVet.getLastName())) {
                 checkNewAndOldData(atID, oldVet.getLastName(), newVet.getLastName(),"last_name");
                 inconsistency++;
             }
