@@ -62,62 +62,38 @@ public class SQLiteDBConnector {
         // SQL statement
         String sql = "SELECT * FROM owners;";
 
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        executeQuery(sql);
     }
 
     public void createPetTable() {
        
         // SQL statement
         String sql = "SELECT * FROM pets;";
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        executeQuery(sql);
     }
 
     public void createVetTable() {
         // SQL statement
         String sql = "SELECT * FROM vets;";
 
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        executeQuery(sql);
     }
 
     public void createVisitTable() {
         // SQL statement
         String sql = "SELECT * FROM visits;";
 
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        executeQuery(sql);
     }
 
     public void createSpecialityTable() {
         // SQL statement
         String sql = "SELECT * FROM specialties;";
 
+        executeQuery(sql);
+    }
+
+    private void executeQuery(String sql) {
         try  {
             Connection conn = connect();
             Statement stmt = conn.createStatement();
@@ -131,27 +107,13 @@ public class SQLiteDBConnector {
     public void createVetSpecialityTable() {
         // SQL statement
         String sql = "SELECT * FROM vet_specialties;";
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        executeQuery(sql);
     }
 
     public void createTypeTable() {
         // SQL statement
         String sql = "SELECT * FROM types;";
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        executeQuery(sql);
     }
     //endregion
 
@@ -159,32 +121,14 @@ public class SQLiteDBConnector {
     public ResultSet selectAll(String tableName){
         String sql = "SELECT * FROM " + tableName;
         ResultSet rs = null;
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            
-            rs = stmt.executeQuery(sql);
-           
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return rs;
+        return getResultSet(sql, rs);
     }
 
     //selectAll
     public ResultSet selectAll(String tableName, String column1){
         String sql = "SELECT * FROM " + tableName + " ORDER BY " + column1 + " ASC;";
         ResultSet rs = null;
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-
-            rs = stmt.executeQuery(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return rs;
+        return getResultSet(sql, rs);
     }
 
 
@@ -192,28 +136,23 @@ public class SQLiteDBConnector {
     public ResultSet selectAllASC(String tableName, String column1){
         String sql = "SELECT * FROM " + tableName + " ORDER BY " + column1 + " ASC;";
         ResultSet rs = null;
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-
-            rs = stmt.executeQuery(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return rs;
+        return getResultSet(sql, rs);
     }
     
     //select one item 
     public ResultSet selectById(String tableName, int id){
         String sql = "SELECT * FROM " + tableName + " WHERE id = " + id;
         ResultSet rs = null;
+        return getResultSet(sql, rs);
+    }
+
+    private ResultSet getResultSet(String sql, ResultSet rs) {
         try  {
             Connection conn = connect();
             Statement stmt = conn.createStatement();
-            
+
             rs = stmt.executeQuery(sql);
-           
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
