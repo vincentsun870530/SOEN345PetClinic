@@ -23,7 +23,7 @@ public class SQLiteResultSet {
             while (rs.next()) {
                 System.out.println(rs.getInt("id") + "\t" +
                         rs.getString("name") + "\t" +
-                        rs.getDate("birth_date") + "\t" +
+                        rs.getString("birth_date") + "\t" +
                         rs.getInt("type_id") + "\t" +
                         rs.getInt("owner_id"));
             }
@@ -75,7 +75,7 @@ public class SQLiteResultSet {
             while (rs.next()) {
                 System.out.println(rs.getInt("id") + "\t" +
                         rs.getInt("pet_id") + "\t" +
-                        rs.getDate("visit_date") + "\t" +
+                        rs.getString("visit_date") + "\t" +
                         rs.getString("description"));
             }
         }  catch (Exception e) {
