@@ -1,10 +1,10 @@
 package org.springframework.samples.petclinic.consistencychecker;
 
+import org.springframework.samples.petclinic.owner.Pet;
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
-import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
-import org.springframework.samples.petclinic.owner.Pet;
 
 public class PetConsistencyChecker implements InConsistencyChecker {
 

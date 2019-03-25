@@ -1,16 +1,9 @@
 package org.springframework.samples.petclinic.consistencychecker;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+
+import java.util.List;
 
 public class OwnerConsistencyChecker implements InConsistencyChecker {
 

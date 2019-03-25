@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ConsistencyChecker {
@@ -84,7 +86,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        new OwnerConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + new OwnerConsistencyChecker().consistencyChecker());
         //END OF CONSISTENCY CHECKER FOR OWNER
     }
 
@@ -151,7 +153,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        new PetConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + new PetConsistencyChecker().consistencyChecker());
     }
 
     public static void specialtyConsCheck() {
@@ -194,7 +196,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        new SpecialityConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + new SpecialityConsistencyChecker().consistencyChecker());
     }
 
     public static void typeConsCheck() {
@@ -238,7 +240,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        new TypeConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + new TypeConsistencyChecker().consistencyChecker());
     }
 
     public static void vetConsCheck() {
@@ -286,6 +288,6 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        new VetConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + new VetConsistencyChecker().consistencyChecker());
     }
 }
