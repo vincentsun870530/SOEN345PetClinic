@@ -161,18 +161,20 @@ public class SQLiteDBConnector {
 
     //update one item
     public void updateById(String tableName, String colName, String colValue, int id){
-        if(dataSource != null)
-        {
+        String sql = "UPDATE " + tableName + " SET " + colName
+                + " = \'" + colValue + "\' WHERE id = " + id;
+        Statement stmt =null;
+        try  {
 
-            String sql = "UPDATE " + tableName + " SET  " + colName
-                    + " = " + colValue + " WHERE id = " + id;
-            
-            jdbcTemplateObj.update(sql);
+            Connection conn = connect();
+            stmt = conn.createStatement();
+
+            stmt.executeUpdate(sql);
 
             System.out.println("Updated "+tableName+" on "+colName+" with ID = " + id );
-            
-        }else{
-            System.out.println("Update Failed: DateResource is not set");
+
+        } catch (SQLException e) {
+            System.out.println(" Update Failed: " + e.getMessage());
         }
         
         return;
