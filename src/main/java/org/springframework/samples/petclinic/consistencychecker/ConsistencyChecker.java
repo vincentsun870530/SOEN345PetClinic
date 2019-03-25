@@ -74,6 +74,7 @@ public class ConsistencyChecker {
                 String telephone = rsOld.getString("telephone");
 
                 ownerOld = new Owner();
+                ownerOld.setId(id);
                 ownerOld.setFirstName(firstName);
                 ownerOld.setLastName(lastName);
                 ownerOld.setAddress(address);
