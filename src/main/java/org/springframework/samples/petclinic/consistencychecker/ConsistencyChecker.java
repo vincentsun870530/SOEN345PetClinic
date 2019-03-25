@@ -16,9 +16,14 @@ import java.util.List;
 public class ConsistencyChecker {
 
     public static void main(String[] args) {
+        System.out.println("Owner Consistency Check");
         ownerConsCheck();
+        System.out.println("\nPet Consistency Check");
         petConsCheck();
+        System.out.println("\nSpecialty Consistency Check");
         specialtyConsCheck();
+        System.out.println("\nType Consistency Check");
+        typeConsCheck();
     }
 
     public static void ownerConsCheck() {
@@ -187,5 +192,49 @@ public class ConsistencyChecker {
         }
 
         new SpecialityConsistencyChecker().consistencyChecker();
+    }
+
+    public static void typeConsCheck() {
+        ResultSet rsNew = new SQLiteDBConnector().selectAll("types");
+        List<PetType> typeListNew = new ArrayList<PetType>();
+        PetType typeNew;
+        try {
+            while (rsNew.next()) {
+                int id = rsNew.getInt("id");
+                String name = rsNew.getString("name");
+
+                typeNew = new PetType();
+
+                typeNew.setId(id);
+                typeNew.setName(name);
+
+                typeListNew.add(typeNew);
+            }
+            TypeConsistencyChecker.setNewData(typeListNew);
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
+        List<PetType> typeListOld = new ArrayList<PetType>();
+        PetType typeOld;
+        try {
+            while (rsNew.next()) {
+                int id = rsNew.getInt("id");
+                String name = rsNew.getString("name");
+
+                typeOld = new PetType();
+
+                typeOld.setId(id);
+                typeOld.setName(name);
+
+                typeListOld.add(typeOld);
+            }
+            TypeConsistencyChecker.setOldData(typeListOld);
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+
+        new TypeConsistencyChecker().consistencyChecker();
     }
 }
