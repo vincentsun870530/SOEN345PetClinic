@@ -88,6 +88,7 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
                 String telephone = rsNew.getString("telephone");
 
                 ownerNew = new Owner();
+                ownerNew.setId(id);
                 ownerNew.setFirstName(firstName);
                 ownerNew.setLastName(lastName);
                 ownerNew.setAddress(address);
