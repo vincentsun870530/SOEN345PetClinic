@@ -32,16 +32,25 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
             System.out.println("TEST:NEWOWNER:" + newOwnersData.get(index));
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Owner, 5 columns
-            
-            if(oldOwner.toString() != newOwner.toString()) {
-                atID = newOwner.getId();
-                checkNewAndOldData(atID, oldOwner.getFirstName(), newOwner.getFirstName(), "first_name");
-                checkNewAndOldData(atID, oldOwner.getLastName(), newOwner.getLastName(), "last_name");
-                checkNewAndOldData(atID, oldOwner.getAddress(), newOwner.getAddress(), "address");
-                checkNewAndOldData(atID, oldOwner.getCity(), newOwner.getCity(), "city");
-                checkNewAndOldData(atID, oldOwner.getTelephone(), newOwner.getTelephone(), "telephone");
+            if (oldOwner.getId() != newOwner.getId()) {
+                System.out.println("\t" + oldOwner.getId() + "!=" + newOwner.getId());
                 inconsistency++;
-            }   
+            } else if (!oldOwner.getFirstName().equals(newOwner.getFirstName())) {
+                System.out.println("\t" + oldOwner.getFirstName() + "!=" + newOwner.getFirstName());
+                inconsistency++;
+            } else if (!oldOwner.getLastName().equals(newOwner.getLastName())) {
+                System.out.println("\t" + oldOwner.getLastName() + "!=" + newOwner.getLastName());
+                inconsistency++;
+            } else if (!oldOwner.getAddress().equals(newOwner.getAddress())) {
+                System.out.println("\t" + oldOwner.getAddress() + "!=" + newOwner.getAddress());
+                inconsistency++;
+            } else if (!oldOwner.getCity().equals(newOwner.getCity())) {
+                System.out.println("\t" + oldOwner.getCity() + "!=" + newOwner.getCity());
+                inconsistency++;
+            } else if (!oldOwner.getTelephone().equals(newOwner.getTelephone())) {
+                System.out.println("\t" + oldOwner.getTelephone() + "!=" + newOwner.getTelephone());
+                inconsistency++;
+            }
         }
         return inconsistency;
     }
