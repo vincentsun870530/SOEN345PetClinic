@@ -43,7 +43,7 @@ public class TypeConsistencyChecker implements InConsistencyChecker{
     }
 
     private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
-        if(oldData != newData) {
+        if(!(oldData.equals(newData))) {
             printViolationMessage(id, oldData, newData);
             new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
         }
