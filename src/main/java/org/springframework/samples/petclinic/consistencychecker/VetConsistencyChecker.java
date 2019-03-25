@@ -7,15 +7,15 @@ import org.springframework.samples.petclinic.vet.Vet;
 
 public class VetConsistencyChecker implements InConsistencyChecker {
 
-    private List<Vet> oldVetsData;
-    private List<Vet> newVetsData;
+    private static List<Vet> oldVetsData;
+    private static List<Vet> newVetsData;
     
-    public void setOldData(List<Vet> oldTableData) {
-        this.oldVetsData = oldTableData;
+    public static void setOldData(List<Vet> data) {
+        oldVetsData = data;
     }
 
-    public void setNewData(List<Vet> newTableData) {
-        this.newVetsData = newTableData;
+    public static void setNewData(List<Vet> data) {
+        newVetsData = data;
     }
 
     public int consistencyChecker() {

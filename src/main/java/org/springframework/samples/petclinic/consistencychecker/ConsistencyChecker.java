@@ -6,6 +6,7 @@ import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.vet.Specialty;
+import org.springframework.samples.petclinic.vet.Vet;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,6 +25,8 @@ public class ConsistencyChecker {
         specialtyConsCheck();
         System.out.println("\nType Consistency Check");
         typeConsCheck();
+        System.out.println("\nVet Consistency Check");
+        vetConsCheck();
     }
 
     public static void ownerConsCheck() {
@@ -122,12 +125,12 @@ public class ConsistencyChecker {
         List<Pet> petsListOld = new ArrayList<Pet>();
         Pet petOld;
         try {
-            while (rsNew.next()) {
-                int id = rsNew.getInt("id");
-                String name = rsNew.getString("name");
-                String birth_date = rsNew.getString("birth_date");
-                int type_id = rsNew.getInt("type_id");
-                int owner_id = rsNew.getInt("owner_id");
+            while (rsOld.next()) {
+                int id = rsOld.getInt("id");
+                String name = rsOld.getString("name");
+                String birth_date = rsOld.getString("birth_date");
+                int type_id = rsOld.getInt("type_id");
+                int owner_id = rsOld.getInt("owner_id");
 
                 petOld = new Pet();
                 owner = new Owner();
@@ -176,9 +179,9 @@ public class ConsistencyChecker {
         List<Specialty> specialtiesListOld = new ArrayList<Specialty>();
         Specialty specialtyOld;
         try {
-            while (rsNew.next()) {
-                int id = rsNew.getInt("id");
-                String name = rsNew.getString("name");
+            while (rsOld.next()) {
+                int id = rsOld.getInt("id");
+                String name = rsOld.getString("name");
                 specialtyOld = new Specialty();
 
                 specialtyOld.setId(id);
@@ -219,9 +222,9 @@ public class ConsistencyChecker {
         List<PetType> typeListOld = new ArrayList<PetType>();
         PetType typeOld;
         try {
-            while (rsNew.next()) {
-                int id = rsNew.getInt("id");
-                String name = rsNew.getString("name");
+            while (rsOld.next()) {
+                int id = rsOld.getInt("id");
+                String name = rsOld.getString("name");
 
                 typeOld = new PetType();
 
@@ -231,6 +234,54 @@ public class ConsistencyChecker {
                 typeListOld.add(typeOld);
             }
             TypeConsistencyChecker.setOldData(typeListOld);
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+
+        new TypeConsistencyChecker().consistencyChecker();
+    }
+
+    public static void vetConsCheck() {
+        ResultSet rsNew = new SQLiteDBConnector().selectAll("vets");
+        List<Vet> vetListNew = new ArrayList<Vet>();
+        Vet vetNew;
+        try {
+            while (rsNew.next()) {
+                int id = rsNew.getInt("id");
+                String first_name = rsNew.getString("first_name");
+                String last_name = rsNew.getString("last_name");
+
+                vetNew = new Vet();
+
+                vetNew.setId(id);
+                vetNew.setFirstName(first_name);
+                vetNew.setLastName(last_name);
+
+                vetListNew.add(vetNew);
+            }
+            VetConsistencyChecker.setNewData(vetListNew);
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("vets");
+        List<Vet> vetListOld = new ArrayList<Vet>();
+        Vet vetOld;
+        try {
+            while (rsOld.next()) {
+                int id = rsOld.getInt("id");
+                String first_name = rsOld.getString("first_name");
+                String last_name = rsOld.getString("last_name");
+
+                vetOld = new Vet();
+
+                vetOld.setId(id);
+                vetOld.setFirstName(first_name);
+                vetOld.setLastName(last_name);
+
+                vetListOld.add(vetOld);
+            }
+            VetConsistencyChecker.setOldData(vetListOld);
         } catch (SQLException exception) {
             System.out.println(exception);
         }
