@@ -28,8 +28,8 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
         for(int index=0; index < oldOwnersData.size(); index++) {
             oldOwner = oldOwnersData.get(index);
             newOwner = newOwnersData.get(index);
-            System.out.println("TEST:OLDOWNER:" + oldOwnersData.get(index));
-            System.out.println("TEST:NEWOWNER:" + newOwnersData.get(index));
+            System.out.println("OLD:" + oldOwnersData.get(index));
+            System.out.println("NEW:" + newOwnersData.get(index));
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Owner, 5 columns
             if (oldOwner.getId() != newOwner.getId()) {

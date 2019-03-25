@@ -27,6 +27,8 @@ public class PetConsistencyChecker implements InConsistencyChecker {
         for(int index=0; index < oldPetsData.size(); index++) {
             oldPet = oldPetsData.get(index);
             newPet = newPetsData.get(index);
+            System.out.println("OLD:" + oldPetsData.get(index));
+            System.out.println("NEW:" + newPetsData.get(index));
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Owner,  columns
             if(oldPet.toString() != newPet.toString()) {
