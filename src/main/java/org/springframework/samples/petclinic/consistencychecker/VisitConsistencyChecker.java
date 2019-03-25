@@ -8,15 +8,17 @@ import org.springframework.samples.petclinic.visit.Visit;
 
 public class VisitConsistencyChecker implements InConsistencyChecker {
 
-    private List<Visit> oldVisitsData;
-    private List<Visit> newVisitsData;
+    private static List<Visit> oldVisitsData;
+    private static List<Visit> newVisitsData;
     
-    public void setOldData(List<Visit> oldTableData) {
-        this.oldVisitsData = oldTableData;
+    public static void setOldData(List<Visit> oldTableData) {
+        // this.oldVisitsData = oldTableData;
+        oldVisitsData = oldTableData;
     }
 
-    public void setNewData(List<Visit> newTableData) {
-        this.newVisitsData = newTableData;
+    public static void setNewData(List<Visit> newTableData) {
+        // this.newVisitsData = newTableData;
+        newVisitsData = newTableData;
     }
 
     public int consistencyChecker() {

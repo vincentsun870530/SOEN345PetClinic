@@ -7,6 +7,7 @@ import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.vet.Specialty;
 import org.springframework.samples.petclinic.vet.Vet;
+import org.springframework.samples.petclinic.visit.Visit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -289,5 +290,59 @@ public class ConsistencyChecker {
         }
 
         System.out.println("Number(s) of inconsistencies: " + new VetConsistencyChecker().consistencyChecker());
+    }
+
+    
+
+    public static void visitConsCheck() {
+        ResultSet rsNew = new SQLiteDBConnector().selectAll("visits");
+        List<Visit> visitListNew = new ArrayList<Visit>();
+        Visit visitNew;
+        try {
+            while (rsNew.next()) {
+
+                int id = rsNew.getInt("id");
+                int petId = rsNew.getInt("pet_id");
+                String visitDate = rsNew.getString("visit_date");
+                String description = rsNew.getString("description");
+
+                visitNew = new Visit();
+                visitNew.setId(id);
+                visitNew.setPetId(petId);
+                visitNew.setDate(LocalDate.parse(visitDate));
+                visitNew.setDescription(description);
+
+                visitListNew.add(visitNew);
+            }
+            new VisitConsistencyChecker().setNewData(visitListNew);
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("visits");
+        List<Visit> visitListOld = new ArrayList<Visit>();
+        Visit visitOld;
+        try {
+            while (rsNew.next()) {
+
+                int id = rsOld.getInt("id");
+                int petId = rsOld.getInt("pet_id");
+                String visitDate = rsOld.getString("visit_date");
+                String description = rsOld.getString("description");
+
+                visitOld = new Visit();
+                visitOld.setId(id);
+                visitOld.setPetId(petId);
+                visitOld.setDate(LocalDate.parse(visitDate));
+                visitOld.setDescription(description);
+
+                visitListOld.add(visitOld);
+            }
+            new VisitConsistencyChecker().setOldData(visitListOld);
+        } catch (SQLException exception) {
+            System.out.println(exception);
+        }
+
+        new TypeConsistencyChecker().consistencyChecker();
     }
 }
