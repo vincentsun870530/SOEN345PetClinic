@@ -20,8 +20,10 @@ public class SpecialityConsistencyChecker implements InConsistencyChecker{
         for(int index=0; index < oldSpecialityData.size(); index++) {
             oldSpeciality = oldSpecialityData.get(index);
             newSpecialty = newSpecialtyData.get(index);
-            System.out.println("OLD:" + oldSpecialityData.get(index));
-            System.out.println("NEW:" + newSpecialtyData.get(index));
+            if (inconsistency!= 0) {
+                System.out.println("OLD:" + oldSpecialityData.get(index));
+                System.out.println("NEW:" + newSpecialtyData.get(index));
+            }
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for PetType,  columns 2
             if(oldSpeciality.toString() != newSpecialty.toString()) {

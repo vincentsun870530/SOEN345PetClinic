@@ -28,27 +28,30 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
         for(int index=0; index < oldOwnersData.size(); index++) {
             oldOwner = oldOwnersData.get(index);
             newOwner = newOwnersData.get(index);
-            System.out.println("OLD:" + oldOwnersData.get(index));
-            System.out.println("NEW:" + newOwnersData.get(index));
+            atID = newOwner.getId();
+            if (inconsistency!= 0) {
+                System.out.println("OLD:" + oldOwnersData.get(index));
+                System.out.println("NEW:" + newOwnersData.get(index));
+            }
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Owner, 5 columns
             if (oldOwner.getId() != newOwner.getId()) {
                 System.out.println("\t" + oldOwner.getId() + "!=" + newOwner.getId());
                 inconsistency++;
             } else if (!oldOwner.getFirstName().equals(newOwner.getFirstName())) {
-                System.out.println("\t" + oldOwner.getFirstName() + "!=" + newOwner.getFirstName());
+                checkNewAndOldData(atID, oldOwner.getFirstName(), newOwner.getFirstName(), "first_name");
                 inconsistency++;
             } else if (!oldOwner.getLastName().equals(newOwner.getLastName())) {
-                System.out.println("\t" + oldOwner.getLastName() + "!=" + newOwner.getLastName());
+                checkNewAndOldData(atID, oldOwner.getLastName(), newOwner.getLastName(), "last_name");
                 inconsistency++;
             } else if (!oldOwner.getAddress().equals(newOwner.getAddress())) {
-                System.out.println("\t" + oldOwner.getAddress() + "!=" + newOwner.getAddress());
+                checkNewAndOldData(atID, oldOwner.getAddress(), newOwner.getAddress(), "address");
                 inconsistency++;
             } else if (!oldOwner.getCity().equals(newOwner.getCity())) {
-                System.out.println("\t" + oldOwner.getCity() + "!=" + newOwner.getCity());
+                checkNewAndOldData(atID, oldOwner.getCity(), newOwner.getCity(), "city");
                 inconsistency++;
             } else if (!oldOwner.getTelephone().equals(newOwner.getTelephone())) {
-                System.out.println("\t" + oldOwner.getTelephone() + "!=" + newOwner.getTelephone());
+                checkNewAndOldData(atID, oldOwner.getTelephone(), newOwner.getTelephone(), "telephone");
                 inconsistency++;
             }
         }

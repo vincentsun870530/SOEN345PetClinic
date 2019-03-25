@@ -21,6 +21,10 @@ public class TypeConsistencyChecker implements InConsistencyChecker{
         for(int index=0; index < oldPetTypeData.size(); index++) {
             oldPetType = oldPetTypeData.get(index);
             newPetType = newPetTypeData.get(index);
+            if (inconsistency!= 0) {
+                System.out.println("OLD:" + oldPetTypeData.get(index));
+                System.out.println("NEW:" + newPetTypeData.get(index));
+            }
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for PetType,  columns 2
             if(!oldPetType.toString().equals(newPetType.toString())) {
