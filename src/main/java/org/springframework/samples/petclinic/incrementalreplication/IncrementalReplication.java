@@ -38,7 +38,7 @@ public class IncrementalReplication {
 
         //TODO ADD SQLITE CONNECTION 
         Connection connectionMySQL = MySQLJDBCDriverConnection.connect();
-        Connection connectionSQLite = new SQLiteDBConnector().connect();
+        Connection connectionSQLite = SQLiteDBConnector.getInstance().connect();
 
 
         if(updateArray != null) {
@@ -54,7 +54,7 @@ public class IncrementalReplication {
 
                     int id = Integer.parseInt(idString);
 
-                    new SQLiteDBConnector().updateById(tableName, columnName, value, id);
+                    SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
 
                     checkConsistency(id, tableName, columnName, value);
 
@@ -70,7 +70,7 @@ public class IncrementalReplication {
                 splittedData = data.split(",");
 
                 String tableName = splittedData[0];
-                new SQLiteDBConnector().insertData(tableName, splittedData);
+                SQLiteDBConnector.getInstance().insertData(tableName, splittedData);
 
             }
         }
@@ -78,11 +78,11 @@ public class IncrementalReplication {
 
     private static void checkConsistency(int id, String tableName, String columnName, String value) {
         String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
-        String newDatabase = (new SQLiteDBConnector().selectById(tableName, id)).toString();
+        String newDatabase = (SQLiteDBConnector.getInstance().selectById(tableName, id)).toString();
 
         if(oldDatabase != newDatabase) {
             printViolationMessage(id);
-            new SQLiteDBConnector().updateById(tableName, columnName, value, id);
+            SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
         }
     }
 
