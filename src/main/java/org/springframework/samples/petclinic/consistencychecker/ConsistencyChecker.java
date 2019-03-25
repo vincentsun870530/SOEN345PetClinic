@@ -36,7 +36,7 @@ public class ConsistencyChecker {
 
     public static void ownerConsCheck() {
         // START OF CONSISTENCY CHECKER FOR OWNER
-        ResultSet rsNew = new SQLiteDBConnector().selectAll("owners");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("owners");
         List<Owner> ownersListNew = new ArrayList<Owner>();
         Owner ownerNew;
         try {
@@ -95,7 +95,7 @@ public class ConsistencyChecker {
     }
 
     public static void petConsCheck() {
-        ResultSet rsNew = new SQLiteDBConnector().selectAll("pets");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("pets");
         List<Pet> petsListNew = new ArrayList<Pet>();
         Pet petNew;
         Owner owner;
@@ -161,7 +161,7 @@ public class ConsistencyChecker {
     }
 
     public static void specialtyConsCheck() {
-        ResultSet rsNew = new SQLiteDBConnector().selectAll("specialties");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("specialties");
         List<Specialty> specialtiesListNew = new ArrayList<Specialty>();
         Specialty specialtyNew;
         try {
@@ -204,7 +204,7 @@ public class ConsistencyChecker {
     }
 
     public static void typeConsCheck() {
-        ResultSet rsNew = new SQLiteDBConnector().selectAll("types");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("types");
         List<PetType> typeListNew = new ArrayList<PetType>();
         PetType typeNew;
         try {
@@ -248,7 +248,7 @@ public class ConsistencyChecker {
     }
 
     public static void vetConsCheck() {
-        ResultSet rsNew = new SQLiteDBConnector().selectAll("vets");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("vets");
         List<Vet> vetListNew = new ArrayList<Vet>();
         Vet vetNew;
         try {
@@ -298,7 +298,7 @@ public class ConsistencyChecker {
     
 
     public static void visitConsCheck() {
-        ResultSet rsNew = new SQLiteDBConnector().selectAll("visits");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("visits");
         List<Visit> visitListNew = new ArrayList<Visit>();
         Visit visitNew;
         try {

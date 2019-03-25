@@ -53,7 +53,7 @@ public class PetConsistencyChecker implements InConsistencyChecker {
     private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
         if(!(oldData.equals(newData))) {
             printViolationMessage(id, oldData, newData);
-            new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldData, id);
         }
     }
 
@@ -65,7 +65,7 @@ public class PetConsistencyChecker implements InConsistencyChecker {
         if(oldDate.isEqual(newDate) == false) {
             printViolationMessage(id, oldDate.toString(), newDate.toString());
 
-            new SQLiteDBConnector().updateById(tableName,columnName, oldDate.toString(), id);
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldDate.toString(), id);
 
         }
     }
