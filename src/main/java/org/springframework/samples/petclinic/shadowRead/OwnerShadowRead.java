@@ -12,7 +12,7 @@ public class OwnerShadowRead {
 		
 		private int readInconsistencies = 0;
 		private int inconsistencies = 0;
-		SQLiteDBConnector sqLiteDbConnector = new SQLiteDBConnector();
+		SQLiteDBConnector sqLiteDbConnector = SQLiteDBConnector.getInstance();
 		 UpdateOwner updateOwner = new UpdateOwner();
 		
 		@Async
