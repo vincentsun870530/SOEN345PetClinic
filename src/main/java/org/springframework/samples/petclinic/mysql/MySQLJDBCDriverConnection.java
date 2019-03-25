@@ -24,7 +24,7 @@ public class MySQLJDBCDriverConnection {
     }
 
     // Return all data
-    public ResultSet selectAll(String tableName) {
+    public static ResultSet selectAll(String tableName) {
         String query = "SELECT * FROM " + tableName;
         ResultSet resultSet = null;
         try {
@@ -46,7 +46,7 @@ public class MySQLJDBCDriverConnection {
     }
 
     //select one item 
-    public ResultSet selectById(String tableName, int id){
+    public static ResultSet selectById(String tableName, int id){
         String query = "SELECT * FROM " + tableName + " WHERE id = " + id;
         ResultSet resultSet = null;
         try  {
@@ -61,14 +61,14 @@ public class MySQLJDBCDriverConnection {
         return resultSet;
     }
 
-    public static void updateRow(int id, String tableName, String columnName, String data) {
-        String query = "UPDATE " + tableName + " SET " + columnName + "=" + data + " WHERE id=" + id;
-            try {
-                Connection connection = connect();
-                PreparedStatement pStatement = connection.prepareStatement(query);
-                pStatement.executeUpdate();
-            } catch (SQLException exception) {
-                System.out.println("MySQLJDBCDriverConnection/updateRowFor" + tableName + ":" + exception);
-            }
-    }
+    // public static void updateRow(int id, String tableName, String columnName, String data) {
+    //     String query = "UPDATE " + tableName + " SET " + columnName + "=" + data + " WHERE id=" + id;
+    //         try {
+    //             Connection connection = connect();
+    //             PreparedStatement pStatement = connection.prepareStatement(query);
+    //             pStatement.executeUpdate();
+    //         } catch (SQLException exception) {
+    //             System.out.println("MySQLJDBCDriverConnection/updateRowFor" + tableName + ":" + exception);
+    //         }
+    // }
 }

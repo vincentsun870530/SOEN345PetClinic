@@ -154,6 +154,7 @@ public class SQLiteDBConnector {
         }
         return rs;
     }
+    
     //select one item 
     public ResultSet selectById(String tableName, int id){
         String sql = "SELECT * FROM " + tableName + " WHERE id = " + id;
@@ -187,6 +188,28 @@ public class SQLiteDBConnector {
         }
         
         return;
+    }
+
+    public void insertData(String tableName, String dataArray[]) {
+        String query = "";
+        switch(tableName) {
+            case "owners": 
+                query = "INSERT into owners (first_name, last_name, address, city, telephone) VALUES (?, ?, ?, ?, ?)";
+                jdbcTemplateObj.update(query, dataArray[0], dataArray[1], dataArray[2], dataArray[3], dataArray[4]);
+                break;
+            case "pets": 
+                query = "INSERT into pets (name, birth_date, type_id, owner_id) VALUES (?, ?, ?, ?)";
+                jdbcTemplateObj.update(query, dataArray[0], dataArray[1], dataArray[2], dataArray[3]);
+                break;
+            case "vets": 
+                query = "INSERT into vets (first_name, last_name) VALUES (?, ?)";
+                jdbcTemplateObj.update(query, dataArray[0], dataArray[1]);
+                break;
+            case "visits": 
+                query = "INSERT into visits (pet_id, visit_date, description) VALUES (?, ?, ?)";
+                jdbcTemplateObj.update(query, dataArray[0], dataArray[1], dataArray[2]);
+                break;
+        }
     }
 
 }

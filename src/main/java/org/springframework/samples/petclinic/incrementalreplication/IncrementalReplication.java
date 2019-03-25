@@ -1,6 +1,10 @@
 package org.springframework.samples.petclinic.incrementalreplication;
 
+import java.sql.Connection;
 import java.util.ArrayList;
+
+import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 
 public class IncrementalReplication {
 
@@ -12,7 +16,7 @@ public class IncrementalReplication {
      *  If ArrayList of String: put whole object in one string, separate by commas
      */
     private static ArrayList<String> createArray; 
-
+    
     public static void addToUpdateList(String data) {
         if(updateArray == null) {
             updateArray = new ArrayList<String>();
@@ -33,6 +37,8 @@ public class IncrementalReplication {
 
 
         //TODO ADD SQLITE CONNECTION 
+        Connection connectionMySQL = MySQLJDBCDriverConnection.connect();
+        Connection connectionSQLite = new SQLiteDBConnector().connect();
 
 
         if(updateArray != null) {
@@ -41,11 +47,16 @@ public class IncrementalReplication {
                     splittedData = data.split(",");
 
                     // Could use the array value directly to the query
-                    String id = splittedData[0];
+                    String idString = splittedData[0];
                     String tableName = splittedData[1];
+                    String columnName = splittedData[2];
+                    String value = splittedData[3];
 
-                    //TODO ADD QUERY TO NEW DATABASE (UPDATE COMMAND)
-                    //TODO COMPARE OLD DATA WITH NEW DATA
+                    int id = Integer.parseInt(idString);
+
+                    new SQLiteDBConnector().updateById(tableName, columnName, value, id);
+
+                    checkConsistency(id, tableName, columnName, value);
 
             }
         }
@@ -58,11 +69,28 @@ public class IncrementalReplication {
                 data = createArray.get(index);
                 splittedData = data.split(",");
 
-                //TODO ADD QUERY TO NEW DATABASE (CREATE COMMAND)
-
+                String tableName = splittedData[0];
+                new SQLiteDBConnector().insertData(tableName, splittedData);
 
             }
         }
+    }
+
+    private static void checkConsistency(int id, String tableName, String columnName, String value) {
+        String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
+        String newDatabase = (new SQLiteDBConnector().selectById(tableName, id)).toString();
+
+        if(oldDatabase != newDatabase) {
+            printViolationMessage(id);
+            new SQLiteDBConnector().updateById(tableName, columnName, value, id);
+        }
+    }
+
+    public static void printViolationMessage(int id){ //, String oldData, String newData) {
+        // System.out.println("The row " + id + " on the new database," +
+        //                     " does not match: New(" + newData + 
+        //                     " is not equal to Old(" + oldData);
+        System.out.println("The row " + id + " is inconsistent with the old database");
     }
 
     /**
