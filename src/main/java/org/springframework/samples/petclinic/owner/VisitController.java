@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.shadowRead.VisitShadowRead;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
@@ -85,6 +87,14 @@ class VisitController {
     public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
 
         if (FeatureToggles.isEnablePetVisit) {
+            VisitShadowRead visitShadowReader = new VisitShadowRead();
+            List<Visit> visitList = this.visits.findByPetId(petId);
+            //System.out.println(visitList .get(0).getPetId());
+
+            for(Visit visit :  visitList) {
+                System.out.println(visit.getPetId() + "from controller");
+                visitShadowReader.checkVisit(visit);
+            }
             return "pets/createOrUpdateVisitForm";
         }
         return null;
