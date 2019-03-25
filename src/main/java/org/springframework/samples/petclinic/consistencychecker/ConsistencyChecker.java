@@ -43,7 +43,7 @@ public class ConsistencyChecker {
     }
 
     private static void ownerRSet(ResultSet rs, List<Owner> ownersList) throws SQLException {
-        Owner ownerOld;
+        Owner owner;
         while (rs.next()) {
             int id = rs.getInt("id");
             String firstName = rs.getString("first_name");
@@ -52,15 +52,15 @@ public class ConsistencyChecker {
             String city = rs.getString("city");
             String telephone = rs.getString("telephone");
 
-            ownerOld = new Owner();
-            ownerOld.setId(id);
-            ownerOld.setFirstName(firstName);
-            ownerOld.setLastName(lastName);
-            ownerOld.setAddress(address);
-            ownerOld.setCity(city);
-            ownerOld.setTelephone(telephone);
+            owner = new Owner();
+            owner.setId(id);
+            owner.setFirstName(firstName);
+            owner.setLastName(lastName);
+            owner.setAddress(address);
+            owner.setCity(city);
+            owner.setTelephone(telephone);
 
-            ownersList.add(ownerOld);
+            ownersList.add(owner);
         }
     }
 
@@ -91,7 +91,7 @@ public class ConsistencyChecker {
     }
 
     private static void petRSet(ResultSet rs, List<Pet> petsList) throws SQLException {
-        Pet petOld;
+        Pet pet;
         Owner owner;
         PetType petType;
         while (rs.next()) {
@@ -101,19 +101,19 @@ public class ConsistencyChecker {
             int type_id = rs.getInt("type_id");
             int owner_id = rs.getInt("owner_id");
 
-            petOld = new Pet();
+            pet = new Pet();
             owner = new Owner();
             owner.setId(owner_id);
             petType = new PetType();
             petType.setId(type_id);
 
-            petOld.setId(id);
-            petOld.setName(name);
-            petOld.setBirthDate(LocalDate.parse(birth_date));
-            petOld.setType(petType);
-            petOld.setOwner(owner);
+            pet.setId(id);
+            pet.setName(name);
+            pet.setBirthDate(LocalDate.parse(birth_date));
+            pet.setType(petType);
+            pet.setOwner(owner);
 
-            petsList.add(petOld);
+            petsList.add(pet);
         }
     }
 
@@ -142,16 +142,16 @@ public class ConsistencyChecker {
     }
 
     private static void specialtyRSet(ResultSet rs, List<Specialty> specialtiesList) throws SQLException {
-        Specialty specialtyOld;
+        Specialty specialty;
         while (rs.next()) {
             int id = rs.getInt("id");
             String name = rs.getString("name");
-            specialtyOld = new Specialty();
+            specialty = new Specialty();
 
-            specialtyOld.setId(id);
-            specialtyOld.setName(name);
+            specialty.setId(id);
+            specialty.setName(name);
 
-            specialtiesList.add(specialtyOld);
+            specialtiesList.add(specialty);
         }
     }
 
@@ -180,17 +180,17 @@ public class ConsistencyChecker {
     }
 
     private static void typeRSet(ResultSet rs, List<PetType> typeList) throws SQLException {
-        PetType typeOld;
+        PetType type;
         while (rs.next()) {
             int id = rs.getInt("id");
             String name = rs.getString("name");
 
-            typeOld = new PetType();
+            type = new PetType();
 
-            typeOld.setId(id);
-            typeOld.setName(name);
+            type.setId(id);
+            type.setName(name);
 
-            typeList.add(typeOld);
+            typeList.add(type);
         }
     }
 
@@ -219,19 +219,19 @@ public class ConsistencyChecker {
     }
 
     private static void vetRSet(ResultSet rs, List<Vet> vetList) throws SQLException {
-        Vet vetOld;
+        Vet vet;
         while (rs.next()) {
             int id = rs.getInt("id");
             String first_name = rs.getString("first_name");
             String last_name = rs.getString("last_name");
 
-            vetOld = new Vet();
+            vet = new Vet();
 
-            vetOld.setId(id);
-            vetOld.setFirstName(first_name);
-            vetOld.setLastName(last_name);
+            vet.setId(id);
+            vet.setFirstName(first_name);
+            vet.setLastName(last_name);
 
-            vetList.add(vetOld);
+            vetList.add(vet);
         }
     }
 
@@ -261,7 +261,7 @@ public class ConsistencyChecker {
     }
 
     private static void visitRSet(ResultSet rs, List<Visit> visitList) throws SQLException {
-        Visit visitOld;
+        Visit visit;
         while (rs.next()) {
 
             int id = rs.getInt("id");
@@ -269,13 +269,13 @@ public class ConsistencyChecker {
             String visitDate = rs.getString("visit_date");
             String description = rs.getString("description");
 
-            visitOld = new Visit();
-            visitOld.setId(id);
-            visitOld.setPetId(petId);
-            visitOld.setDate(LocalDate.parse(visitDate));
-            visitOld.setDescription(description);
+            visit = new Visit();
+            visit.setId(id);
+            visit.setPetId(petId);
+            visit.setDate(LocalDate.parse(visitDate));
+            visit.setDescription(description);
 
-            visitList.add(visitOld);
+            visitList.add(visit);
         }
     }
 }
