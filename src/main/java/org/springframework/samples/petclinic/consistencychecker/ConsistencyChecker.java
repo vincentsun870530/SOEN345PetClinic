@@ -30,6 +30,8 @@ public class ConsistencyChecker {
         typeConsCheck();
         System.out.println("\nVet Consistency Check");
         vetConsCheck();
+        System.out.println("\nVisit Consistency Check");
+        visitConsCheck();
     }
 
     public static void ownerConsCheck() {
@@ -343,6 +345,6 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        new TypeConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + new VisitConsistencyChecker().consistencyChecker());
     }
 }
