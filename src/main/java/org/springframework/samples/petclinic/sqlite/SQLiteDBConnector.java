@@ -2,6 +2,8 @@ package org.springframework.samples.petclinic.sqlite;
 
 import java.sql.*;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -19,6 +21,7 @@ public class SQLiteDBConnector {
     private JdbcTemplate jdbcTemplateObj=null;
 
     private static SQLiteDBConnector sqLiteDBConnector = null;
+    //private ResultSet resultSet;
 
     private SQLiteDBConnector()
     {
@@ -56,115 +59,19 @@ public class SQLiteDBConnector {
         this.jdbcTemplateObj = new JdbcTemplate(dataSource);
     }
 
-    //region create table
-    public void createOwnerTable() {
-       
-        // SQL statement
-        String sql = "SELECT * FROM owners;";
-
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void createPetTable() {
-       
-        // SQL statement
-        String sql = "SELECT * FROM pets;";
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void createVetTable() {
-        // SQL statement
-        String sql = "SELECT * FROM vets;";
-
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void createVisitTable() {
-        // SQL statement
-        String sql = "SELECT * FROM visits;";
-
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void createSpecialityTable() {
-        // SQL statement
-        String sql = "SELECT * FROM specialties;";
-
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void createVetSpecialityTable() {
-        // SQL statement
-        String sql = "SELECT * FROM vet_specialties;";
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void createTypeTable() {
-        // SQL statement
-        String sql = "SELECT * FROM types;";
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    //endregion
-
     //selectAll
     public ResultSet selectAll(String tableName){
         String sql = "SELECT * FROM " + tableName;
         ResultSet rs = null;
+        Connection conn = connect();
         try  {
-            Connection conn = connect();
+            if(conn.isClosed())
+            System.out.println("conn closed: " + sql);
             Statement stmt = conn.createStatement();
             
             rs = stmt.executeQuery(sql);
-           
+
+           //resultSet = rs;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -175,12 +82,15 @@ public class SQLiteDBConnector {
     public ResultSet selectById(String tableName, int id){
         String sql = "SELECT * FROM " + tableName + " WHERE id = " + id;
         ResultSet rs = null;
+        Connection conn = connect();
         try  {
-            Connection conn = connect();
+            if(conn.isClosed())
+                System.out.println("conn closed: " + sql);
             Statement stmt = conn.createStatement();
             
             rs = stmt.executeQuery(sql);
-           
+
+            //resultSet = rs;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -189,23 +99,28 @@ public class SQLiteDBConnector {
 
     //update one item
     public void updateById(String tableName, String colName, String colValue, int id){
-        String sql = "UPDATE " + tableName + " SET " + colName
-                + " = \'" + colValue + "\' WHERE id = " + id;
-        Statement stmt =null;
+        //String sql = "UPDATE " + tableName + " SET " + colName + " = \'" + colValue + "\' WHERE id = " + id;
+        Connection conn = connect();
+        String sql = "UPDATE " + tableName + " SET " + colName + " = ? WHERE id = ?";
+        PreparedStatement  stmt =null;
+
         try  {
-
-            Connection conn = connect();
-            stmt = conn.createStatement();
-
-            stmt.executeUpdate(sql);
-
+            if(conn.isClosed())
+                System.out.println("conn closed: " + sql);
+            stmt = conn.prepareStatement(sql);
+            //stmt.setString(1,tableName);
+            //stmt.setString(1,colName);
+            stmt.setString(1,colValue);
+            stmt.setInt(2,id);
+            stmt.executeUpdate();
+            //conn.close();
             System.out.println("Updated "+tableName+" on "+colName+" with ID = " + id );
 
         } catch (SQLException e) {
             System.out.println(" Update Failed: " + e.getMessage());
         }
         
-        return;
+        //return;
     }
 
     public void insertData(String tableName, String dataArray[]) {
@@ -228,6 +143,38 @@ public class SQLiteDBConnector {
                 jdbcTemplateObj.update(query, dataArray[0], dataArray[1], dataArray[2]);
                 break;
         }
+    }
+
+
+    public List<HashMap> getItemSet(ResultSet rs){
+        ResultSetMetaData rsmd;
+        List<HashMap> pack = null;
+        try {
+            rsmd = rs.getMetaData();
+            int arraySize = rsmd.getColumnCount();
+            System.out.println("Size " + arraySize);
+            ArrayList<String> rowh = new ArrayList();
+            for(int i=1;i<arraySize+1;i++){
+                rowh.add(rsmd.getColumnName(i).toString());
+                System.out.print(rowh.get(i-1) +"  |  ");
+            }
+            //pack.add(rowh);
+            System.out.println("");
+            while(rs.next()){
+                HashMap row = new HashMap();
+                for(int i=1;i<arraySize+1;i++) {
+                    //System.out.print(rs.getString(i) + " | ");
+                    row.put(rowh.get(i-1) ,rs.getString(i));
+                    //System.out.print(row.get(rowh.get(i-1)) + " | ");
+                }
+                System.out.println("");
+                pack.add(row);
+            }
+
+        }catch (SQLException e){
+            System.out.println(" Converting Failed: " + e.getMessage());
+        }
+        return pack;
     }
 
 }
