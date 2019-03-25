@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -94,6 +95,7 @@ class OwnerController {
             //Shadow write
             if (isEnableShadowWrite) {
                 SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
+                IncrementalReplication.addToCreateList("owners, " + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
             }
             return "redirect:/owners/" + owner.getId();
         }
@@ -169,6 +171,7 @@ class OwnerController {
         } else {
             owner.setId(ownerId);
             this.owners.save(owner);
+            IncrementalReplication.addToUpdateList("owners, " + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
             return "redirect:/owners/{ownerId}";
         }
     }

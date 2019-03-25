@@ -47,16 +47,19 @@ public class IncrementalReplication {
                     splittedData = data.split(",");
 
                     // Could use the array value directly to the query
-                    String idString = splittedData[0];
-                    String tableName = splittedData[1];
-                    String columnName = splittedData[2];
-                    String value = splittedData[3];
+                    // String idString = splittedData[0];
+                    // String tableName = splittedData[1];
+                    // String columnName = splittedData[2];
+                    // String value = splittedData[3];
 
-                    int id = Integer.parseInt(idString);
+                    // int id = Integer.parseInt(idString);
 
-                    SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
+                    // SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
 
-                    checkConsistency(id, tableName, columnName, value);
+                    // checkConsistency(id, tableName, columnName, value);
+
+                    SQLiteDBConnector.getInstance().updateRow(splittedData);
+                    checkConsistency(Integer.parseInt(splittedData[1]), splittedData[0], splittedData);
 
             }
         }
@@ -68,29 +71,45 @@ public class IncrementalReplication {
             for(int index=0; index<createArray.size(); index++) {
                 data = createArray.get(index);
                 splittedData = data.split(",");
-
                 String tableName = splittedData[0];
-                SQLiteDBConnector.getInstance().insertData(tableName, splittedData);
+
+                // String tableName = splittedData[0];
+                int id = SQLiteDBConnector.getInstance().insertData(splittedData);
+                if(id != 0) {
+                    checkConsistency(id, tableName, splittedData);
+                } else {
+                    System.out.println("Error in incrementalReplication(): ID(" + id + ") not found in table(" + tableName + ")");
+                }
 
             }
         }
     }
 
-    private static void checkConsistency(int id, String tableName, String columnName, String value) {
+    // private static void checkConsistency(int id, String tableName, String columnName, String value) {
+    //     String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
+    //     String newDatabase = (SQLiteDBConnector.getInstance().selectById(tableName, id)).toString();
+
+    //     if(oldDatabase != newDatabase) {
+    //         printViolationMessage(id, tableName);
+    //         SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
+    //     }
+    // }
+
+    private static void checkConsistency(int id, String tableName, String array[]) {
         String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
         String newDatabase = (SQLiteDBConnector.getInstance().selectById(tableName, id)).toString();
 
         if(oldDatabase != newDatabase) {
-            printViolationMessage(id);
-            SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
+            printViolationMessage(id, tableName);
+            SQLiteDBConnector.getInstance().updateRow(array);
         }
     }
 
-    public static void printViolationMessage(int id){ //, String oldData, String newData) {
+    public static void printViolationMessage(int id, String tableName){ //, String oldData, String newData) {
         // System.out.println("The row " + id + " on the new database," +
         //                     " does not match: New(" + newData + 
         //                     " is not equal to Old(" + oldData);
-        System.out.println("The row " + id + " is inconsistent with the old database");
+        System.out.println("The row " + id + " in the table " + tableName + "is inconsistent with the old database");
     }
 
     /**
