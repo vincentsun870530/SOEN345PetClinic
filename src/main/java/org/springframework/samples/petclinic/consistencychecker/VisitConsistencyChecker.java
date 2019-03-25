@@ -29,15 +29,30 @@ public class VisitConsistencyChecker implements InConsistencyChecker {
         for(int index=0; index < oldVisitsData.size(); index++) {
             oldVisit = oldVisitsData.get(index);
             newVisit = newVisitsData.get(index);
-            //need the number of columns (use hardcoded number or dynamically check the number of columns)
-            //for Owner,  columns
-            if(oldVisit.toString() != newVisit.toString()) {
+            if (newVisit.getId() == oldVisit.getId()) {
                 atID = newVisit.getId();
-                checkNewAndOldData(atID, oldVisit.getDescription(), newVisit.getDescription(),"description");
-                checkDateNewAndOldData(atID, oldVisit.getDate(), newVisit.getDate(),"visit_date");
-                checkNewAndOldData(atID, oldVisit.getPetId().toString(), newVisit.getPetId().toString(),"pet_id");
+                if (inconsistency != 0) {
+                    System.out.println("OLD:" + oldVisit);
+                    System.out.println("NEW:" + newVisit);
+                }
+                //need the number of columns (use hardcoded number or dynamically check the number of columns)
+                //for Owner,  columns
+                if (!oldVisit.getDescription().equals(newVisit.getDescription())) {
+                    checkNewAndOldData(atID, oldVisit.getDescription(), newVisit.getDescription(), "description");
+                    inconsistency++;
+                }
+                if (!oldVisit.getDate().equals(newVisit.getDate())) {
+                    checkDateNewAndOldData(atID, oldVisit.getDate(), newVisit.getDate(), "visit_date");
+                    inconsistency++;
+                }
+                if (!oldVisit.getPetId().equals(newVisit.getPetId())) {
+                    checkNewAndOldData(atID, oldVisit.getPetId().toString(), newVisit.getPetId().toString(), "pet_id");
+                    inconsistency++;
+                }
+            } else {
+                System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldVisit.getId() + " != " + newVisit.getId());
                 inconsistency++;
-            }   
+            }
         }
         return inconsistency;
     }
