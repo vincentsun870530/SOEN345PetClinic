@@ -16,7 +16,23 @@ import org.springframework.samples.petclinic.owner.*;
 public class SQLiteDBConnector {
     public final static String URL = "jdbc:sqlite:src/main/resources/db/sqlite/petclinic.sqlite3";
     private DataSource dataSource = null;
-    JdbcTemplate jdbcTemplateObj = null;
+    private JdbcTemplate jdbcTemplateObj=null;
+
+    private static SQLiteDBConnector sqLiteDBConnector = null;
+
+    private SQLiteDBConnector()
+    {
+       // for singleton
+    }
+
+    public static SQLiteDBConnector getInstance()
+    {
+        if (sqLiteDBConnector == null)
+            sqLiteDBConnector = new SQLiteDBConnector();
+
+        return sqLiteDBConnector;
+    }
+
     /**
      * Connect to a sample database
      */
