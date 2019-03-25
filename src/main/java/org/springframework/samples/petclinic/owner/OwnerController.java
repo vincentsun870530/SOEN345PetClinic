@@ -17,6 +17,8 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.stereotype.Component;
@@ -140,6 +142,7 @@ class OwnerController {
                 model.put("selections", results);
                 return "owners/ownersList";
             }
+
         }
         return null;
     }

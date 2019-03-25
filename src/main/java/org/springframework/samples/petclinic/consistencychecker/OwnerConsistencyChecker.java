@@ -1,20 +1,23 @@
 package org.springframework.samples.petclinic.consistencychecker;
 
-import java.util.List;
-
 import org.springframework.samples.petclinic.owner.Owner;
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+
+import java.util.List;
 
 public class OwnerConsistencyChecker implements InConsistencyChecker {
 
-    private List<Owner> oldOwnersData;
-    private List<Owner> newOwnersData;
+    private static List<Owner> oldOwnersData;
+    private static List<Owner> newOwnersData;
     
-    public void setOldData(List<Owner> oldTableData) {
-        this.oldOwnersData = oldTableData;
+    public static void setOldData(List<Owner> oldTableData) {
+        // this.oldOwnersData = oldTableData;
+        oldOwnersData = oldTableData;
     }
 
-    public void setNewData(List<Owner> newTableData) {
-        this.newOwnersData = newTableData;
+    public static void setNewData(List<Owner> newTableData) {
+        // this.newOwnersData = newTableData;
+        newOwnersData = newTableData;
     }
 
     public int consistencyChecker() {
@@ -25,15 +28,18 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
         for(int index=0; index < oldOwnersData.size(); index++) {
             oldOwner = oldOwnersData.get(index);
             newOwner = newOwnersData.get(index);
+            System.out.println("TEST:OLDOWNER:" + oldOwnersData.get(index));
+            System.out.println("TEST:NEWOWNER:" + newOwnersData.get(index));
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Owner, 5 columns
+            
             if(oldOwner.toString() != newOwner.toString()) {
                 atID = newOwner.getId();
-                checkNewAndOldData(atID, oldOwner.getFirstName(), newOwner.getFirstName());
-                checkNewAndOldData(atID, oldOwner.getLastName(), newOwner.getLastName());
-                checkNewAndOldData(atID, oldOwner.getTelephone(), newOwner.getTelephone());
-                checkNewAndOldData(atID, oldOwner.getAddress(), newOwner.getAddress());
-                checkNewAndOldData(atID, oldOwner.getCity(), newOwner.getCity());
+                checkNewAndOldData(atID, oldOwner.getFirstName(), newOwner.getFirstName(), "first_name");
+                checkNewAndOldData(atID, oldOwner.getLastName(), newOwner.getLastName(), "last_name");
+                checkNewAndOldData(atID, oldOwner.getAddress(), newOwner.getAddress(), "address");
+                checkNewAndOldData(atID, oldOwner.getCity(), newOwner.getCity(), "city");
+                checkNewAndOldData(atID, oldOwner.getTelephone(), newOwner.getTelephone(), "telephone");
                 inconsistency++;
             }   
         }
@@ -46,13 +52,14 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
-    private void checkNewAndOldData(int id, String oldData, String newData) {
-        if(oldData != newData) {
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName){
+        checkNewAndOldData(id,oldData,newData,columnName,"owners");
+    }
+
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
+        if(!(oldData.equals(newData))) {
             printViolationMessage(id, oldData, newData);
-
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
-
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldData, id);
         }
     }
 
@@ -62,5 +69,62 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
                             " is not equal to Old(" + oldData);
     }
 
+    // public static void main(String[] args) {
+    //     ResultSet rsNew = new SQLiteDBConnector().selectAll("owners");
+    //     List<Owner> ownersListNew = new ArrayList<Owner>();
+    //     Owner ownerNew;
+    //     try {
+    //         while (rsNew.next()) {
+    //             int id = rsNew.getInt("id");
+    //             String firstName = rsNew.getString("first_name");
+    //             String lastName = rsNew.getString("last_name");
+    //             String address = rsNew.getString("address");
+    //             String city = rsNew.getString("city");
+    //             String telephone = rsNew.getString("telephone");
+
+    //             ownerNew = new Owner();
+    //             ownerNew.setId(id);
+    //             ownerNew.setFirstName(firstName);
+    //             ownerNew.setLastName(lastName);
+    //             ownerNew.setAddress(address);
+    //             ownerNew.setCity(city);
+    //             ownerNew.setTelephone(telephone);
+
+    //             ownersListNew.add(ownerNew);
+    //         }
+    //         setNewData(ownersListNew);
+    //     } catch (SQLException exception) {
+
+    //     }
+
+    //     ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
+    //     List<Owner> ownersListOld = new ArrayList<Owner>();
+    //     Owner ownerOld;
+    //     try {
+    //         while (rsOld.next()) {
+    //             int id = rsOld.getInt("id");
+    //             String firstName = rsOld.getString("first_name");
+    //             String lastName = rsOld.getString("last_name");
+    //             String address = rsOld.getString("address");
+    //             String city = rsOld.getString("city");
+    //             String telephone = rsOld.getString("telephone");
+
+    //             ownerOld = new Owner();
+    //             ownerOld.setFirstName(firstName);
+    //             ownerOld.setLastName(lastName);
+    //             ownerOld.setAddress(address);
+    //             ownerOld.setCity(city);
+    //             ownerOld.setTelephone(telephone);
+
+    //             ownersListOld.add(ownerOld);
+    //         }
+    //         setOldData(ownersListOld);
+    //     } catch (SQLException exception) {
+
+    //     }
+
+    //     new OwnerConsistencyChecker().consistencyChecker();
+
+    // }
 
 }

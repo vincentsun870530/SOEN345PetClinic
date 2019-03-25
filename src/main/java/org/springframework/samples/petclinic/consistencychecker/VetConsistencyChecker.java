@@ -2,19 +2,20 @@ package org.springframework.samples.petclinic.consistencychecker;
 
 import java.util.List;
 
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.vet.Vet;
 
 public class VetConsistencyChecker implements InConsistencyChecker {
 
-    private List<Vet> oldVetsData;
-    private List<Vet> newVetsData;
+    private static List<Vet> oldVetsData;
+    private static List<Vet> newVetsData;
     
-    public void setOldData(List<Vet> oldTableData) {
-        this.oldVetsData = oldTableData;
+    public static void setOldData(List<Vet> data) {
+        oldVetsData = data;
     }
 
-    public void setNewData(List<Vet> newTableData) {
-        this.newVetsData = newTableData;
+    public static void setNewData(List<Vet> data) {
+        newVetsData = data;
     }
 
     public int consistencyChecker() {
@@ -27,12 +28,12 @@ public class VetConsistencyChecker implements InConsistencyChecker {
             newVet = newVetsData.get(index);
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Vet, 3 columns
-            if(oldVet.toString() != newVet.toString()) {
+            if(!oldVet.toString().equals(newVet.toString())) {
                 atID = newVet.getId();
-                checkNewAndOldData(atID, oldVet.getFirstName(), newVet.getFirstName());
-                checkNewAndOldData(atID, oldVet.getLastName(), newVet.getLastName());
+                checkNewAndOldData(atID, oldVet.getFirstName(), newVet.getFirstName(),"first_name");
+                checkNewAndOldData(atID, oldVet.getLastName(), newVet.getLastName(),"last_name");
                 inconsistency++;
-            }   
+            }
         }
         return inconsistency;
     }
@@ -43,13 +44,14 @@ public class VetConsistencyChecker implements InConsistencyChecker {
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
-    private void checkNewAndOldData(int id, String oldData, String newData) {
-        if(oldData != newData) {
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName){
+        checkNewAndOldData(id,oldData,newData,columnName,"vets");
+    }
+
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
+        if(!(oldData.equals(newData))) {
             printViolationMessage(id, oldData, newData);
-
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
-
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldData, id);
         }
     }
 

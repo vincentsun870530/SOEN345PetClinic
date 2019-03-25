@@ -1,21 +1,22 @@
 package org.springframework.samples.petclinic.consistencychecker;
 
+import org.springframework.samples.petclinic.owner.Pet;
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.samples.petclinic.owner.Pet;
-
 public class PetConsistencyChecker implements InConsistencyChecker {
 
-    private List<Pet> oldPetsData;
-    private List<Pet> newPetsData;
+    private static List<Pet> oldPetsData;
+    private static List<Pet> newPetsData;
     
-    public void setOldData(List<Pet> oldTableData) {
-        this.oldPetsData = oldTableData;
+    public static void setOldData(List<Pet> data) {
+        oldPetsData = data;
     }
 
-    public void setNewData(List<Pet> newTableData) {
-        this.newPetsData = newTableData;
+    public static void setNewData(List<Pet> data) {
+        newPetsData = data;
     }
 
     public int consistencyChecker() {
@@ -30,9 +31,9 @@ public class PetConsistencyChecker implements InConsistencyChecker {
             //for Owner,  columns
             if(oldPet.toString() != newPet.toString()) {
                 atID = newPet.getId();
-                checkNewAndOldData(atID, oldPet.getName(), newPet.getName());
-                checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate());
-                checkIDNewAndOldData(atID, oldPet.getType().getId(), newPet.getOwner().getId());
+                checkNewAndOldData(atID, oldPet.getName(), newPet.getName(),"name");
+                checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
+                checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
                 inconsistency++;
             }   
         }
@@ -40,40 +41,45 @@ public class PetConsistencyChecker implements InConsistencyChecker {
     }
 
     public double calculateConsistencyChecker(int inconsistency) {
-        int sizeOfOwners = oldPetsData.size();
-        double consistency = (1 - (inconsistency/sizeOfOwners))*100;
+        int sizeOfPets = oldPetsData.size();
+        double consistency = (1 - (inconsistency/sizeOfPets))*100;
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
-    private void checkNewAndOldData(int id, String oldData, String newData) {
-        if(oldData != newData) {
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName){
+        checkNewAndOldData(id,oldData,newData,columnName,"pets");
+    }
+
+    private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
+        if(!(oldData.equals(newData))) {
             printViolationMessage(id, oldData, newData);
-
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
-
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldData, id);
         }
     }
 
-    private void checkDateNewAndOldData(int id, LocalDate oldDate, LocalDate newDate) {
+    private void checkDateNewAndOldData(int id, LocalDate oldDate, LocalDate newDate, String columnName) {
+        checkDateNewAndOldData(id,oldDate,newDate,columnName,"pets");
+    }
+
+    private void checkDateNewAndOldData(int id, LocalDate oldDate, LocalDate newDate, String columnName, String tableName) {
         if(oldDate.isEqual(newDate) == false) {
             printViolationMessage(id, oldDate.toString(), newDate.toString());
 
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldDate.toString(), id);
 
         }
     }
 
-    private void checkIDNewAndOldData(int id, int oldId, int newId) {
-        if((oldId == newId) == false) {
-            printViolationMessage(id, Integer.toString(oldId), Integer.toString(newId));
-
-            // TODO update the new database
-            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
-
-        }
-    }
+    //TODO how can u check ID, it is a primary key
+//    private void checkIDNewAndOldData(int id, int oldId, int newId, String columnName) {
+//        if((oldId == newId) == false) {
+//            printViolationMessage(id, Integer.toString(oldId), Integer.toString(newId));
+//
+//            // TODO update the new database
+//            // INSERT CODE HER FOR UPDATING TO THE NEW DATABASE
+//
+//        }
+//    }
 
     public void printViolationMessage(int id, String oldData, String newData) {
         System.out.println("The row " + id + " on the new database," +

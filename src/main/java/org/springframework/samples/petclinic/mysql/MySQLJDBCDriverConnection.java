@@ -2,13 +2,14 @@ package org.springframework.samples.petclinic.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class MySQLJDBCDriverConnection {
 
-    public Connection connect() {
+    public static Connection connect() {
         String url = "jdbc:mysql://127.0.0.1:3306/petclinic";
         String user = "root";
         String password = "petclinic";
@@ -22,7 +23,8 @@ public class MySQLJDBCDriverConnection {
         return connection;
     }
 
-    public ResultSet selectAll(String tableName) {
+    // Return all data
+    public static ResultSet selectAll(String tableName) {
         String query = "SELECT * FROM " + tableName;
         ResultSet resultSet = null;
         try {
@@ -44,7 +46,7 @@ public class MySQLJDBCDriverConnection {
     }
 
     //select one item 
-    public ResultSet selectById(String tableName, int id){
+    public static ResultSet selectById(String tableName, int id){
         String query = "SELECT * FROM " + tableName + " WHERE id = " + id;
         ResultSet resultSet = null;
         try  {
@@ -58,4 +60,15 @@ public class MySQLJDBCDriverConnection {
         }
         return resultSet;
     }
+
+    // public static void updateRow(int id, String tableName, String columnName, String data) {
+    //     String query = "UPDATE " + tableName + " SET " + columnName + "=" + data + " WHERE id=" + id;
+    //         try {
+    //             Connection connection = connect();
+    //             PreparedStatement pStatement = connection.prepareStatement(query);
+    //             pStatement.executeUpdate();
+    //         } catch (SQLException exception) {
+    //             System.out.println("MySQLJDBCDriverConnection/updateRowFor" + tableName + ":" + exception);
+    //         }
+    // }
 }
