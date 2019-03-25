@@ -170,6 +170,39 @@ public class SQLiteDBConnector {
         }
         return rs;
     }
+
+    //selectAll
+    public ResultSet selectAll(String tableName, String column1){
+        String sql = "SELECT * FROM " + tableName + " ORDER BY " + column1 + " ASC;";
+        ResultSet rs = null;
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
+
+            rs = stmt.executeQuery(sql);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return rs;
+    }
+
+
+    //selectAll
+    public ResultSet selectAllASC(String tableName, String column1){
+        String sql = "SELECT * FROM " + tableName + " ORDER BY " + column1 + " ASC;";
+        ResultSet rs = null;
+        try  {
+            Connection conn = connect();
+            Statement stmt = conn.createStatement();
+
+            rs = stmt.executeQuery(sql);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return rs;
+    }
     
     //select one item 
     public ResultSet selectById(String tableName, int id){

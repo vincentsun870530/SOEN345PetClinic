@@ -45,6 +45,28 @@ public class MySQLJDBCDriverConnection {
         return resultSet;
     }
 
+    // Return all data ASC
+    public static ResultSet selectAll(String tableName, String column1) {
+        String query = "SELECT * FROM " + tableName + " ORDER BY " + column1 + " ASC;";
+        ResultSet resultSet = null;
+        try {
+            Connection connection = connect();
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+            // FOR TESTING PURPOSE, TO BE REMOVED
+            // int count = 1;
+            // while(resultSet.next()) {
+            //     System.out.println(count + "." + resultSet.getString("name"));
+            // }
+            //////////////////////////////////////
+
+        } catch (SQLException exception) {
+            System.out.println("MySQLJDBCDriverConnection/selectAll:"+exception);
+        }
+        return resultSet;
+    }
+
     //select one item 
     public static ResultSet selectById(String tableName, int id){
         String query = "SELECT * FROM " + tableName + " WHERE id = " + id;

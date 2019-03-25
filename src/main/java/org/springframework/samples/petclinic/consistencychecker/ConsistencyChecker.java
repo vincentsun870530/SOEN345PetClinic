@@ -18,7 +18,7 @@ import java.util.List;
 public class ConsistencyChecker {
     public static void ownerConsCheck() {
         // START OF CONSISTENCY CHECKER FOR OWNER
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("owners");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("owners", "id");
         List<Owner> ownersListNew = new ArrayList<Owner>();
         Owner ownerNew;
         try {
@@ -28,7 +28,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners", "id");
         List<Owner> ownersListOld = new ArrayList<Owner>();
         Owner ownerOld;
         try {
@@ -65,7 +65,7 @@ public class ConsistencyChecker {
     }
 
     public static void petConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("pets");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("pets", "id");
         List<Pet> petsListNew = new ArrayList<Pet>();
         Pet petNew;
         Owner owner;
@@ -77,7 +77,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("pets");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("pets", "id");
         List<Pet> petsListOld = new ArrayList<Pet>();
         Pet petOld;
         try {
@@ -118,7 +118,7 @@ public class ConsistencyChecker {
     }
 
     public static void specialtyConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("specialties");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("specialties", "id");
         List<Specialty> specialtiesListNew = new ArrayList<Specialty>();
         Specialty specialtyNew;
         try {
@@ -128,7 +128,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("specialties");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("specialties", "id");
         List<Specialty> specialtiesListOld = new ArrayList<Specialty>();
         Specialty specialtyOld;
         try {
@@ -156,7 +156,7 @@ public class ConsistencyChecker {
     }
 
     public static void typeConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("types");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("types", "id");
         List<PetType> typeListNew = new ArrayList<PetType>();
         PetType typeNew;
         try {
@@ -166,7 +166,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("types");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("types", "id");
         List<PetType> typeListOld = new ArrayList<PetType>();
         PetType typeOld;
         try {
@@ -195,7 +195,7 @@ public class ConsistencyChecker {
     }
 
     public static void vetConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("vets");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("vets", "id");
         List<Vet> vetListNew = new ArrayList<Vet>();
         Vet vetNew;
         try {
@@ -205,7 +205,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("vets");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("vets", "id");
         List<Vet> vetListOld = new ArrayList<Vet>();
         Vet vetOld;
         try {
@@ -237,7 +237,7 @@ public class ConsistencyChecker {
 
 
     public static void visitConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("visits");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("visits", "id");
         List<Visit> visitListNew = new ArrayList<Visit>();
         Visit visitNew;
         try {
@@ -247,7 +247,7 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("visits");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("visits", "id");
         List<Visit> visitListOld = new ArrayList<Visit>();
         Visit visitOld;
         try {
