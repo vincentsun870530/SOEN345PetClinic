@@ -228,12 +228,10 @@ public class SQLiteDBConnector {
         int id = 0;
         try {
             String query = "";
-            Connection connection = connect();
-
-            PreparedStatement stmt = null;
-
             // Statement stmt = null;
+            Connection connection = connect();
             // stmt = connection.createStatement();
+            PreparedStatement stmt = null;
             //Switch statement for different tables
             switch(dataArray[0]) {
                 case "owners": 
@@ -261,24 +259,18 @@ public class SQLiteDBConnector {
                     dataArray[1] + ", " + dataArray[2] + ", " + dataArray[3] + ")";
                     break;
             }
-
-            // THIS PART INSERT TWICE, if stmt.execute() is commented out it will insert once but it wont return the id
             stmt = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-            stmt.execute();
-
-            // THIS PART WILL SAY NOT IMPLEMENTED BY SQLITE JDBC DRIVER
-            //stmt.execute(query, PreparedStatement.RETURN_GENERATED_KEYS);
-
-            // THIS PART THROWS A NULL POINTER EXCEPTION
-            // stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-
-            // stmt.executeQuery();
-            System.out.println("QUERY:" + query);
+            System.out.println("TEST BEFORE ExecuteUpdate");
+            stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
 			if(rs.next()){
 				id = rs.getInt(1);
                 System.out.println("THE ID IS " + id);
-			}
+            }
+
+            //Remove the duplication caused by a weird bug
+            if(id != 0) {
+            }
         } catch (SQLException exception) {
             System.out.println(" Insert Failed: " + exception.getMessage());
         }

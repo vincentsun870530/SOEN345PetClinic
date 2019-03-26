@@ -71,7 +71,8 @@ public class IncrementalReplication {
                     // checkConsistency(id, tableName, columnName, value);
                     int id = Integer.parseInt(splittedData[1].replace(" ", ""));
                     SQLiteDBConnector.getInstance().updateRow(splittedData);
-                    checkConsistency(id, splittedData[0], splittedData);
+                    // checkConsistency(id, splittedData[0], splittedData);
+                    checkConsistency(id, splittedData[0]);
 
             }
         }
@@ -88,7 +89,8 @@ public class IncrementalReplication {
                 // String tableName = splittedData[0];
                 int id = SQLiteDBConnector.getInstance().insertData(splittedData);
                 if(id != 0) {
-                    checkConsistency(id, tableName, splittedData);
+                    // checkConsistency(id, tableName, splittedData);
+                    checkConsistency(id, tableName);
                 } else {
                     System.out.println("Error in incrementalReplication(): ID(" + id + ") not found in table(" + tableName + ")");
                 }
@@ -107,7 +109,7 @@ public class IncrementalReplication {
     //     }
     // }
 
-    private static void checkConsistency(int id, String tableName, String array[]) {
+    private static void checkConsistency(int id, String tableName) {
         // String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
         // String newDatabase = (SQLiteDBConnector.getInstance().selectById(tableName, id)).toString();
 

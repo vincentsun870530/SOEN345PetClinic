@@ -12,7 +12,7 @@ public class FeatureToggles {
     public static boolean isEnablePetVisit = true;
 
     //Incremental Replication
-    public static boolean isEnableOwnerCreateIR = false;
+    public static boolean isEnableOwnerCreateIR = true;
     public static boolean isEnableOwnerEditIR = false;
     public static boolean isEnablePetAddIR = false;
     public static boolean isEnablePetEditIR = false;
