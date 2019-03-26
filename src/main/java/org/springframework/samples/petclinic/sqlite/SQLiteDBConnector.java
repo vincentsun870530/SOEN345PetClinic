@@ -2,6 +2,8 @@ package org.springframework.samples.petclinic.sqlite;
 
 import java.sql.*;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -19,6 +21,7 @@ public class SQLiteDBConnector {
     private JdbcTemplate jdbcTemplateObj=null;
 
     private static SQLiteDBConnector sqLiteDBConnector = null;
+    //private ResultSet resultSet;
 
     private SQLiteDBConnector()
     {
@@ -56,81 +59,12 @@ public class SQLiteDBConnector {
         this.jdbcTemplateObj = new JdbcTemplate(dataSource);
     }
 
-    //region create table
-    public void createOwnerTable() {
-       
-        // SQL statement
-        String sql = "SELECT * FROM owners;";
-
-        executeQuery(sql);
-    }
-
-    public void createPetTable() {
-       
-        // SQL statement
-        String sql = "SELECT * FROM pets;";
-        executeQuery(sql);
-    }
-
-    public void createVetTable() {
-        // SQL statement
-        String sql = "SELECT * FROM vets;";
-
-        executeQuery(sql);
-    }
-
-    public void createVisitTable() {
-        // SQL statement
-        String sql = "SELECT * FROM visits;";
-
-        executeQuery(sql);
-    }
-
-    public void createSpecialityTable() {
-        // SQL statement
-        String sql = "SELECT * FROM specialties;";
-
-        executeQuery(sql);
-    }
-
-    private void executeQuery(String sql) {
-        try  {
-            Connection conn = connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void createVetSpecialityTable() {
-        // SQL statement
-        String sql = "SELECT * FROM vet_specialties;";
-        executeQuery(sql);
-    }
-
-    public void createTypeTable() {
-        // SQL statement
-        String sql = "SELECT * FROM types;";
-        executeQuery(sql);
-    }
-    //endregion
-
     //selectAll
     public ResultSet selectAll(String tableName){
         String sql = "SELECT * FROM " + tableName;
         ResultSet rs = null;
         return getResultSet(sql, rs);
     }
-
-    //selectAll
-    public ResultSet selectAll(String tableName, String column1){
-        String sql = "SELECT * FROM " + tableName + " ORDER BY " + column1 + " ASC;";
-        ResultSet rs = null;
-        return getResultSet(sql, rs);
-    }
-
 
     //selectAll
     public ResultSet selectAllASC(String tableName, String column1){
@@ -147,12 +81,14 @@ public class SQLiteDBConnector {
     }
 
     private ResultSet getResultSet(String sql, ResultSet rs) {
+        Connection conn = connect();
         try  {
-            Connection conn = connect();
+            if(conn.isClosed())
+                System.out.println("conn closed: " + sql);
             Statement stmt = conn.createStatement();
 
             rs = stmt.executeQuery(sql);
-
+            //resultSet = rs;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -161,23 +97,28 @@ public class SQLiteDBConnector {
 
     //update one item
     public void updateById(String tableName, String colName, String colValue, int id){
-        String sql = "UPDATE " + tableName + " SET " + colName
-                + " = \'" + colValue + "\' WHERE id = " + id;
-        Statement stmt =null;
+        //String sql = "UPDATE " + tableName + " SET " + colName + " = \'" + colValue + "\' WHERE id = " + id;
+        Connection conn = connect();
+        String sql = "UPDATE " + tableName + " SET " + colName + " = ? WHERE id = ?";
+        PreparedStatement  stmt =null;
+
         try  {
-
-            Connection conn = connect();
-            stmt = conn.createStatement();
-
-            stmt.executeUpdate(sql);
-
+            if(conn.isClosed())
+                System.out.println("conn closed: " + sql);
+            stmt = conn.prepareStatement(sql);
+            //stmt.setString(1,tableName);
+            //stmt.setString(1,colName);
+            stmt.setString(1,colValue);
+            stmt.setInt(2,id);
+            stmt.executeUpdate();
+            //conn.close();
             System.out.println("Updated "+tableName+" on "+colName+" with ID = " + id );
 
         } catch (SQLException e) {
             System.out.println(" Update Failed: " + e.getMessage());
         }
         
-        return;
+        //return;
     }
 
     //Update the whole row

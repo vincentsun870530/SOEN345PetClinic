@@ -69,6 +69,7 @@ class VisitController {
      * @param petId
      * @return Pet
      */
+
     //@ModelAttribute("visit")
     public Visit loadPetWithVisit(@PathVariable("petId") int petId, Map<String, Object> model) {
         return this.loadPetWithVisit(petId,model,new Visit());
@@ -86,7 +87,7 @@ class VisitController {
     // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
     @GetMapping("/owners/*/pets/{petId}/visits/new")
     public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
-
+        System.out.println("shadow read");
         if (FeatureToggles.isEnablePetVisit) {
             VisitShadowRead visitShadowReader = new VisitShadowRead();
             List<Visit> visitList = this.visits.findByPetId(petId);
@@ -109,6 +110,7 @@ class VisitController {
         } else {
             this.visits.save(visit);
             if (isEnableShadowWrite) {
+                System.out.println(visit.getDate()+" insert");
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
                 
             }
