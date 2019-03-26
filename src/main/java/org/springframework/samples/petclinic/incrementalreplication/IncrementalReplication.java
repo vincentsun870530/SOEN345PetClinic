@@ -7,11 +7,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import org.springframework.samples.petclinic.consistencychecker.OwnerConsistencyChecker;
+import org.springframework.samples.petclinic.consistencychecker.PetConsistencyChecker;
+import org.springframework.samples.petclinic.consistencychecker.VisitConsistencyChecker;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.Pet;
 import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+import org.springframework.samples.petclinic.visit.Visit;
 
 public class IncrementalReplication {
 
@@ -125,7 +128,15 @@ public class IncrementalReplication {
                     isInconsistency = new OwnerConsistencyChecker().ownerCheckConsistency(oldOwner, newOwner);
                     System.out.println("IN SWITCH isInconsistency:" + isInconsistency);
                     break;
-                
+                case "pets": 
+                    Pet oldPet = petRSet(oldDatabase);
+                    Pet newPet = petRSet(newDatabase);
+                    isInconsistency = new PetConsistencyChecker().petCheckConsistency(oldPet, newPet);
+                    break;
+                case "visits":
+                    Visit oldVisit = visitRSet(oldDatabase);
+                    Visit newVisit = visitRSet(newDatabase);
+                    isInconsistency = new VisitConsistencyChecker().visitCheckConsistency(oldVisit, newVisit);
             }
             if(isInconsistency != 0) {
                 System.out.println("isInconsistency:" + isInconsistency);
@@ -190,6 +201,24 @@ public class IncrementalReplication {
             pet.setOwner(owner);
         }
         return pet;
+    }
+
+    private static Visit visitRSet(ResultSet rs) throws SQLException {
+        Visit visit = null;
+        while (rs.next()) {
+
+            int id = rs.getInt("id");
+            int petId = rs.getInt("pet_id");
+            String visitDate = rs.getString("visit_date");
+            String description = rs.getString("description");
+
+            visit = new Visit();
+            visit.setId(id);
+            visit.setPetId(petId);
+            visit.setDate(LocalDate.parse(visitDate));
+            visit.setDescription(description);
+        }
+        return visit;
     }
 
     /**

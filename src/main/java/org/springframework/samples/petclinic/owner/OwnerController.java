@@ -172,7 +172,6 @@ class OwnerController {
             owner.setId(ownerId);
             this.owners.save(owner);
             IncrementalReplication.addToUpdateList("owners," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
-            System.out.println("THE TELEPHONE IS " + owner.getTelephone());
             IncrementalReplication.incrementalReplication();
             return "redirect:/owners/{ownerId}";
         }
