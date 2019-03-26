@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.shadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.sqlite.SQLiteResultSet;
+import org.springframework.samples.petclinic.sqlite.SQLiteVisitHelper;
 import org.springframework.samples.petclinic.visit.Visit;
 
 import java.sql.ResultSet;
@@ -14,31 +15,29 @@ public class VisitShadowRead {
     //int testC = 0;
     SQLiteDBConnector sqLiteDbConnector = SQLiteDBConnector.getInstance();
     MySQLJDBCDriverConnection mySQLJDBCDriverConnector = new MySQLJDBCDriverConnection();
-    //private Visit oldVisit;
-    //private Visit newVisit;
 
     public void checkVisit(Visit oldVisit){
         System.out.println( " From Visit Shadow Read" + "  -start");
         ResultSet newVisitResult = SQLiteDBConnector.getInstance().selectById("visits", oldVisit.getId());
 
         ArrayList<HashMap> newVisitPack = new ArrayList();
-        List<ArrayList> newVisitList = null;
-
+        List<Visit> newVisitList;
+        newVisitList = SQLiteVisitHelper.getInstance().getModelList(newVisitResult);
         boolean isInconsistent = false;
         String strInconsis = "";
 
         //sqLiteDbConnector.connect();
         try{
             System.out.println( " From Visit Shadow Read" + "  -try");
-            while(newVisitResult.next()){
+            for(int i =0; i<newVisitList.size();i++){
                 System.out.println( " From Visit Shadow Read" + "  -while");
-                String pet_id = newVisitResult.getString("pet_id");
+                String pet_id = newVisitList.get(i).getPetId().toString();
                 System.out.println( " From Visit Shadow Read " + pet_id);
                 System.out.println( " From Visit Shadow Read " + oldVisit.getPetId().toString());
-                String visit_date = newVisitResult.getString("visit_date");
+                String visit_date = newVisitList.get(i).getDate().toString();
                 System.out.println( " From Visit Shadow Read " + visit_date);
                 System.out.println( " From Visit Shadow Read " + oldVisit.getDate().toString());
-                String description = newVisitResult.getString("description");
+                String description = newVisitList.get(i).getDescription();
                 System.out.println( " From Visit Shadow Read " + description);
                 System.out.println( " From Visit Shadow Read " + oldVisit.getDescription());
                 HashMap inconsistencyRow = new HashMap();
@@ -119,6 +118,6 @@ public class VisitShadowRead {
     public int getReadInconsistencies() {
         return readInconsistencies;
     }
-    
+
 
 }

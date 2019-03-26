@@ -1,9 +1,11 @@
 package org.springframework.samples.petclinic.sqlite;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.springframework.samples.petclinic.visit.Visit;
+
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLiteVisitHelper {
     private static final String INSERT_SQL = "INSERT INTO visits(pet_id, visit_date, description) VALUES(?, ?, ?)";
@@ -45,6 +47,31 @@ public class SQLiteVisitHelper {
     //update
 
     //delete
+
+
+    //Retrieve from ResultSet
+    public List<Visit> getModelList(ResultSet rs){
+        ArrayList<Visit> visitList = new ArrayList<Visit>();
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try{
+            while(rs.next()){
+                Visit visit = new Visit();
+                System.out.println(rs.getInt("id"));
+                visit.setId(rs.getInt("id"));
+                System.out.println(rs.getString("pet_id"));
+                visit.setPetId(Integer.parseInt(rs.getString("pet_id")));
+                System.out.println(LocalDate.parse(rs.getString("visit_date")));
+                visit.setDate(LocalDate.parse(rs.getString("visit_date")));
+                System.out.println(rs.getString("description"));
+                visit.setDescription(rs.getString("description"));
+                visitList.add(visit);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            System.out.println(e.getMessage() + " Retrieve Error From Visit Helper");
+        }
+        return visitList;
+    }
 
 
 
