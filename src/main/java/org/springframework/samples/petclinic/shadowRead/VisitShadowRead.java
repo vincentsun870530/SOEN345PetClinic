@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.shadowRead;
 
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.sqlite.SQLiteResultSet;
@@ -20,7 +21,7 @@ public class VisitShadowRead {
         System.out.println( " From Visit Shadow Read" + "  -start");
         ResultSet newVisitResult = SQLiteDBConnector.getInstance().selectById("visits", oldVisit.getId());
 
-        ArrayList<HashMap> newVisitPack = new ArrayList();
+        ArrayList<HashMap> newVisitCorrectionPack = new ArrayList();
         List<Visit> newVisitList;
         boolean isInconsistent = false;
         String strInconsis = "";
@@ -34,7 +35,11 @@ public class VisitShadowRead {
                 String pet_id = newVisitList.get(i).getPetId().toString();
                 System.out.println( " From Visit Shadow Read " + pet_id);
                 System.out.println( " From Visit Shadow Read " + oldVisit.getPetId().toString());
+                //turn off repository date correction toggle for new db date
+                FeatureToggles.isEnableIncrementDate = false;
                 String visit_date = newVisitList.get(i).getDate().toString();
+                //turn the toggle back on
+                FeatureToggles.isEnableIncrementDate = true;
                 System.out.println( " From Visit Shadow Read " + visit_date);
                 System.out.println( " From Visit Shadow Read " + oldVisit.getDate().toString());
                 String description = newVisitList.get(i).getDescription();
@@ -67,7 +72,7 @@ public class VisitShadowRead {
 
                     //System.out.println(strInconsis);
                     //SQLiteDBConnector.getInstance().updateById("visits","visit_date",oldVisit.getDate().toString(),oldVisit.getId());
-                    inconsistencyRow.replace("visit_date",oldVisit.getDate().plusDays(1).toString());
+                    inconsistencyRow.replace("visit_date",oldVisit.getDate().toString());
                 }
                 if(!oldVisit.getDescription().equals(description)){
                     isInconsistent=true;
@@ -84,28 +89,28 @@ public class VisitShadowRead {
                     readInconsistencies++;
                     System.out.println(strInconsis);
                     System.out.println( "Shadow Read Inconsistency count: " + readInconsistencies + " From Visit Shadow Read");
-                    newVisitPack.add(inconsistencyRow);
+                    newVisitCorrectionPack.add(inconsistencyRow);
                 }else {
                     System.out.println( "Shadow Read Inconsistency count: " + readInconsistencies + " From Visit Shadow Read");
                     System.out.println( "Shadow Read successfully From Visit Shadow Read");
                 }
             }
             System.out.println( "done while loop From Visit Shadow Read");
-            for(int i = 0; i<newVisitPack.size();i++)
+            for(int i = 0; i<newVisitCorrectionPack.size();i++)
             {
                 System.out.println( "start updating From Visit Shadow Read");
-                int id = Integer.parseInt(newVisitPack.get(i).get("id").toString());
-                if(newVisitPack.get(i).get("pet_id") != null) {
+                int id = Integer.parseInt(newVisitCorrectionPack.get(i).get("id").toString());
+                if(newVisitCorrectionPack.get(i).get("pet_id") != null) {
 
-                    sqLiteVisitHelper.updateColById("pet_id", newVisitPack.get(i).get("pet_id").toString(), id);
+                    sqLiteVisitHelper.updateColById("pet_id", newVisitCorrectionPack.get(i).get("pet_id").toString(), id);
                 }
-                if(newVisitPack.get(i).get("visit_date") != null) {
+                if(newVisitCorrectionPack.get(i).get("visit_date") != null) {
 
-                    sqLiteVisitHelper.updateColById("visit_date", newVisitPack.get(i).get("visit_date").toString(), id);
+                    sqLiteVisitHelper.updateColById("visit_date", newVisitCorrectionPack.get(i).get("visit_date").toString(), id);
                 }
-                if(newVisitPack.get(i).get("description") != null) {
+                if(newVisitCorrectionPack.get(i).get("description") != null) {
 
-                    sqLiteVisitHelper.updateColById("description", newVisitPack.get(i).get("description").toString(), id);
+                    sqLiteVisitHelper.updateColById("description", newVisitCorrectionPack.get(i).get("description").toString(), id);
                 }
             }
 
