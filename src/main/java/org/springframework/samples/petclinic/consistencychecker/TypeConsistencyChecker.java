@@ -7,11 +7,11 @@ import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 
 public class TypeConsistencyChecker implements InConsistencyChecker{
-    private List<PetType> oldPetTypeData;
-    private List<PetType> newPetTypeData;
+    private static List<PetType> oldPetTypeData;
+    private static List<PetType> newPetTypeData;
 
-    public void setOldData(List<PetType> oldPetTypeData){this.oldPetTypeData = oldPetTypeData;}
-    public void setNewData(List<PetType>  newPetTypeData){this.newPetTypeData = newPetTypeData;}
+    public static void setOldData(List<PetType> data){ oldPetTypeData = data;}
+    public static void setNewData(List<PetType>  data){ newPetTypeData = data;}
 
     public int consistencyChecker(){
         PetType oldPetType;
@@ -23,7 +23,7 @@ public class TypeConsistencyChecker implements InConsistencyChecker{
             newPetType = newPetTypeData.get(index);
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for PetType,  columns 2
-            if(oldPetType.toString() != newPetType.toString()) {
+            if(!oldPetType.toString().equals(newPetType.toString())) {
                 atID = newPetType.getId();
                 checkNewAndOldData(atID, oldPetType.getName(), newPetType.getName(),"name");
                 inconsistency++;
@@ -43,9 +43,9 @@ public class TypeConsistencyChecker implements InConsistencyChecker{
     }
 
     private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
-        if(oldData != newData) {
+        if(!(oldData.equals(newData))) {
             printViolationMessage(id, oldData, newData);
-            new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldData, id);
         }
     }
 

@@ -1,22 +1,22 @@
 package org.springframework.samples.petclinic.consistencychecker;
 
+import org.springframework.samples.petclinic.owner.Pet;
+import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+
 import java.time.LocalDate;
 import java.util.List;
-import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
-import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
-import org.springframework.samples.petclinic.owner.Pet;
 
 public class PetConsistencyChecker implements InConsistencyChecker {
 
-    private List<Pet> oldPetsData;
-    private List<Pet> newPetsData;
+    private static List<Pet> oldPetsData;
+    private static List<Pet> newPetsData;
     
-    public void setOldData(List<Pet> oldTableData) {
-        this.oldPetsData = oldTableData;
+    public static void setOldData(List<Pet> data) {
+        oldPetsData = data;
     }
 
-    public void setNewData(List<Pet> newTableData) {
-        this.newPetsData = newTableData;
+    public static void setNewData(List<Pet> data) {
+        newPetsData = data;
     }
 
     public int consistencyChecker() {
@@ -51,9 +51,9 @@ public class PetConsistencyChecker implements InConsistencyChecker {
     }
 
     private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
-        if(oldData != newData) {
+        if(!(oldData.equals(newData))) {
             printViolationMessage(id, oldData, newData);
-            new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldData, id);
         }
     }
 
@@ -65,7 +65,7 @@ public class PetConsistencyChecker implements InConsistencyChecker {
         if(oldDate.isEqual(newDate) == false) {
             printViolationMessage(id, oldDate.toString(), newDate.toString());
 
-            new SQLiteDBConnector().updateById(tableName,columnName, oldDate.toString(), id);
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldDate.toString(), id);
 
         }
     }

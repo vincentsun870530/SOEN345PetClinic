@@ -1,37 +1,28 @@
 package org.springframework.samples.petclinic.owner;
 
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
-import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.owner.PetController;
-import org.springframework.samples.petclinic.owner.PetRepository;
-import org.springframework.samples.petclinic.owner.PetType;
-import org.springframework.samples.petclinic.owner.PetTypeFormatter;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the {@link PetController}
@@ -39,6 +30,7 @@ import static org.junit.Assert.*;
  * @author Colin But
  */
 @RunWith(SpringRunner.class)
+@ActiveProfiles({ "test" })
 @WebMvcTest(value = PetController.class,
     includeFilters = @ComponentScan.Filter(
                             value = PetTypeFormatter.class,
@@ -130,7 +122,7 @@ public class PetControllerTests {
     	PetController petController = new PetController(pr, or);
     	
     	when(result.hasErrors()).thenReturn(false);
-    	String str = petController.processCreationForm(owner, pet, result, model);
+    	String str = petController.processCreationFormTest(owner, pet, result, model);
     	
     	verify(pet,atLeast(1)).getName();
     	verify(pet,atMost(2)).getName();
@@ -158,7 +150,7 @@ public class PetControllerTests {
     	when(pet.isNew()).thenReturn(true);
     	when(owner.getPet("Kitty", true)).thenReturn(pet);
     	when(result.hasErrors()).thenReturn(true);
-    	String str = petController.processCreationForm(owner, pet, result, model);
+    	String str = petController.processCreationFormTest(owner, pet, result, model);
     	
     	verify(pet,times(2)).getName();
     	verify(pet,times(1)).isNew();

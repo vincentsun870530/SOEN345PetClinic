@@ -8,15 +8,17 @@ import org.springframework.samples.petclinic.visit.Visit;
 
 public class VisitConsistencyChecker implements InConsistencyChecker {
 
-    private List<Visit> oldVisitsData;
-    private List<Visit> newVisitsData;
+    private static List<Visit> oldVisitsData;
+    private static List<Visit> newVisitsData;
     
-    public void setOldData(List<Visit> oldTableData) {
-        this.oldVisitsData = oldTableData;
+    public static void setOldData(List<Visit> oldTableData) {
+        // this.oldVisitsData = oldTableData;
+        oldVisitsData = oldTableData;
     }
 
-    public void setNewData(List<Visit> newTableData) {
-        this.newVisitsData = newTableData;
+    public static void setNewData(List<Visit> newTableData) {
+        // this.newVisitsData = newTableData;
+        newVisitsData = newTableData;
     }
 
     public int consistencyChecker() {
@@ -51,9 +53,9 @@ public class VisitConsistencyChecker implements InConsistencyChecker {
     }
 
     private void checkNewAndOldData(int id, String oldData, String newData, String columnName, String tableName) {
-        if(oldData != newData) {
+        if(!(oldData.equals(newData))) {
             printViolationMessage(id, oldData, newData);
-            new SQLiteDBConnector().updateById(tableName,columnName, oldData, id);
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldData, id);
         }
     }
 
@@ -65,7 +67,7 @@ public class VisitConsistencyChecker implements InConsistencyChecker {
         if(oldDate.isEqual(newDate) == false) {
             printViolationMessage(id, oldDate.toString(), newDate.toString());
 
-            new SQLiteDBConnector().updateById(tableName,columnName, oldDate.toString(), id);
+            SQLiteDBConnector.getInstance().updateById(tableName,columnName, oldDate.toString(), id);
 
         }
     }

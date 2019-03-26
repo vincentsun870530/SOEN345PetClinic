@@ -1,31 +1,26 @@
 package org.springframework.samples.petclinic.sqlite;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import org.springframework.samples.petclinic.sqlite.SQLiteResultSet;
 
 public class test {
     public static void main(String[] args) {
 
-        SQLiteResultSet.getVisits(new SQLiteDBConnector().selectAll("visits"));
-//        ResultSet rs = new SQLiteDBConnector().selectAll("pets");
-//
-//        try {
-//            while (rs.next()) {
-//                //String strDate = dateFormat.format(rs.getDate("birth_date"));
-//                System.out.println(rs.getInt("id") + "\t" +
-//                        rs.getString("name") + "\t" +
-//                        "\t" +
-//                        rs.getInt("type_id") + "\t" +
-//                        rs.getInt("owner_id"));
-//
-//
-//                System.out.println(rs.getString("birth_date"));
-//            }
-//        }  catch (Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-//        try(r.next()) {
-//            System.out.print(r.getString());
-//        }
-
+        //SQLiteResultSet.getPets(new SQLiteDBConnector().selectAll("pets"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        String ts = sdf.format(timestamp);
+        System.out.println(ts);
+        // Test Pet Helper
+        SQLiteDBConnector.getInstance().updateById("visits","description","test",4);
+        ResultSet r=SQLiteDBConnector.getInstance().selectAll("visits");
+        SQLiteResultSet rs = new SQLiteResultSet();
+        rs.getVisits(r);
+        //SQLitePetHelper.getInstance().insert("1",ts,5,2);
+        // Test Visit Helper
+        //SQLiteVisitHelper.getInstance().insert(10,ts,"This is a test");
+       // System.out.println(LocalDate.now());
     }
 }
