@@ -84,18 +84,23 @@ class VisitController {
 
     // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
     @GetMapping("/owners/*/pets/{petId}/visits/new")
-    public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
-        // Shadow read
-        if (FeatureToggles.isEnablePetVisit && FeatureToggles.isEnableShadowRead) {
-            VisitShadowRead visitShadowReader = new VisitShadowRead();
-            List<Visit> visitList = this.visits.findByPetId(petId);
-            //System.out.println(visitList .get(0).getPetId());
+    public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model)
+    {
+        if (FeatureToggles.isEnablePetVisit)
+            {
+                // Shadow read
+                if(FeatureToggles.isEnableShadowRead)
+                    {
+                    VisitShadowRead visitShadowReader = new VisitShadowRead();
+                    List<Visit> visitList = this.visits.findByPetId(petId);
+                    //System.out.println(visitList .get(0).getPetId());
 
-            for(Visit visit :  visitList) {
-                System.out.println(visit.getPetId() + "from controller");
-                //Shadow read return problem id
-                visitShadowReader.checkVisit(visit);
-                //if it's not good call incremental replication
+                    for (Visit visit : visitList) {
+                        System.out.println(visit.getPetId() + "from controller");
+                        //Shadow read return problem id
+                        visitShadowReader.checkVisit(visit);
+                        //if it's not good call incremental replication
+                    }
             }
             return "pets/createOrUpdateVisitForm";
         }
