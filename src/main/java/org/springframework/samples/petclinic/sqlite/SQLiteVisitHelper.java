@@ -45,6 +45,10 @@ public class SQLiteVisitHelper {
     }
 
     //update
+    public void updateColById(String colName, String colValue, int id)
+    {
+        SQLiteDBConnector.getInstance().updateById("visits",colName,colValue,id);
+    }
 
     //delete
 

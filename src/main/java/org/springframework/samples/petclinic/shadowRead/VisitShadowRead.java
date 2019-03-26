@@ -15,7 +15,7 @@ public class VisitShadowRead {
     //int testC = 0;
     SQLiteDBConnector sqLiteDbConnector = SQLiteDBConnector.getInstance();
     MySQLJDBCDriverConnection mySQLJDBCDriverConnector = new MySQLJDBCDriverConnection();
-
+    SQLiteVisitHelper sqLiteVisitHelper = SQLiteVisitHelper.getInstance();
     public void checkVisit(Visit oldVisit){
         System.out.println( " From Visit Shadow Read" + "  -start");
         ResultSet newVisitResult = SQLiteDBConnector.getInstance().selectById("visits", oldVisit.getId());
@@ -97,15 +97,15 @@ public class VisitShadowRead {
                 int id = Integer.parseInt(newVisitPack.get(i).get("id").toString());
                 if(newVisitPack.get(i).get("pet_id") != null) {
 
-                    sqLiteDbConnector.updateById("visits", "pet_id", newVisitPack.get(i).get("pet_id").toString(), id);
+                    sqLiteVisitHelper.updateColById("pet_id", newVisitPack.get(i).get("pet_id").toString(), id);
                 }
                 if(newVisitPack.get(i).get("visit_date") != null) {
 
-                    sqLiteDbConnector.updateById("visits", "visit_date", newVisitPack.get(i).get("visit_date").toString(), id);
+                    sqLiteVisitHelper.updateColById("visit_date", newVisitPack.get(i).get("visit_date").toString(), id);
                 }
                 if(newVisitPack.get(i).get("description") != null) {
 
-                    sqLiteDbConnector.updateById("visits", "description", newVisitPack.get(i).get("description").toString(), id);
+                    sqLiteVisitHelper.updateColById("description", newVisitPack.get(i).get("description").toString(), id);
                 }
             }
 
