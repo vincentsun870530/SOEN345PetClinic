@@ -103,7 +103,7 @@ class PetController {
                 SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
                 
             }
-            if (FeatureToggles.isEnablePetAdd) {
+            if (FeatureToggles.isEnablePetAddIR) {
                 IncrementalReplication.addToCreateList("pets," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
                 IncrementalReplication.incrementalReplication();
             }
@@ -151,7 +151,7 @@ class PetController {
         } else {
             owner.addPet(pet);
             this.pets.save(pet);
-            if (FeatureToggles.isEnablePetEdit) {
+            if (FeatureToggles.isEnablePetEditIR) {
                 IncrementalReplication.addToUpdateList("pets," + pet.getId() + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
                 IncrementalReplication.incrementalReplication();
             }

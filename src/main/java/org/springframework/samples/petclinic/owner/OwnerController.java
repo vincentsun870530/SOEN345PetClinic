@@ -97,7 +97,7 @@ class OwnerController {
                 SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
             }
 
-            if(FeatureToggles.isEnableOwnerCreate == true) {
+            if(FeatureToggles.isEnableOwnerCreateIR == true) {
                 IncrementalReplication.addToCreateList("owners," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
                 IncrementalReplication.incrementalReplication();
             }
@@ -174,7 +174,7 @@ class OwnerController {
         } else {
             owner.setId(ownerId);
             this.owners.save(owner);
-            if (FeatureToggles.isEnableOwnerEdit) {
+            if (FeatureToggles.isEnableOwnerEditIR) {
                 IncrementalReplication.addToUpdateList("owners," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
                 IncrementalReplication.incrementalReplication();
             }

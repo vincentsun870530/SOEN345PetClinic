@@ -112,7 +112,7 @@ class VisitController {
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
                 
             }
-            if (FeatureToggles.isEnablePetVisit) {
+            if (FeatureToggles.isEnablePetVisitIR) {
                 IncrementalReplication.addToCreateList("visits," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
                 IncrementalReplication.incrementalReplication();
             }
