@@ -110,6 +110,9 @@ class VisitController {
             this.visits.save(visit);
             if (isEnableShadowWrite) {
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
+                
+            }
+            if (FeatureToggles.isEnablePetVisit) {
                 IncrementalReplication.addToCreateList("visits," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
                 IncrementalReplication.incrementalReplication();
             }

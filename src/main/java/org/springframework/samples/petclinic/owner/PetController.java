@@ -101,6 +101,9 @@ class PetController {
         if (activeProfile.equals("mysql")) {
             if (isEnableShadowWrite) {
                 SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
+                
+            }
+            if (FeatureToggles.isEnablePetAdd) {
                 IncrementalReplication.addToCreateList("pets," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
                 IncrementalReplication.incrementalReplication();
             }
@@ -148,8 +151,10 @@ class PetController {
         } else {
             owner.addPet(pet);
             this.pets.save(pet);
-            IncrementalReplication.addToUpdateList("pets," + pet.getId() + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
-            IncrementalReplication.incrementalReplication();
+            if (FeatureToggles.isEnablePetEdit) {
+                IncrementalReplication.addToUpdateList("pets," + pet.getId() + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
+                IncrementalReplication.incrementalReplication();
+            }
             return "redirect:/owners/{ownerId}";
         }
     }
