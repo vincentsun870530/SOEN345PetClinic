@@ -95,7 +95,8 @@ class OwnerController {
             //Shadow write
             if (isEnableShadowWrite) {
                 SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
-                IncrementalReplication.addToCreateList("owners, " + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                IncrementalReplication.addToCreateList("owners," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                IncrementalReplication.incrementalReplication();
             }
             return "redirect:/owners/" + owner.getId();
         }
@@ -121,7 +122,6 @@ class OwnerController {
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
 
         if (FeatureToggles.isEnableOwnerFind) {
-            System.out.println("inside");
             // allow parameterless GET request for /owners to return all records
             if (owner.getLastName() == null) {
                 owner.setLastName(""); // empty string signifies broadest possible search
@@ -171,7 +171,9 @@ class OwnerController {
         } else {
             owner.setId(ownerId);
             this.owners.save(owner);
-            IncrementalReplication.addToUpdateList("owners, " + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+            IncrementalReplication.addToUpdateList("owners," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+            System.out.println("THE TELEPHONE IS " + owner.getTelephone());
+            IncrementalReplication.incrementalReplication();
             return "redirect:/owners/{ownerId}";
         }
     }

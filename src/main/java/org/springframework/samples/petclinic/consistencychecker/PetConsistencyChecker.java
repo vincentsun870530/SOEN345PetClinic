@@ -28,33 +28,58 @@ public class PetConsistencyChecker implements InConsistencyChecker {
             for (int index = 0; index < oldPetsData.size(); index++) {
                 oldPet = oldPetsData.get(index);
                 newPet = newPetsData.get(index);
-                if (oldPet.getId() == newPet.getId()) {
-                    atID = newPet.getId();
-                    if (inconsistency != 0) {
-                        System.out.println("OLD:" + oldPetsData.get(index));
-                        System.out.println("NEW:" + newPetsData.get(index));
-                    }
-                    //need the number of columns (use hardcoded number or dynamically check the number of columns)
-                    //for Owner,  columns
-                    if (!oldPet.getName().equals(newPet.getName())) {
-                        checkNewAndOldData(atID, oldPet.getName(), newPet.getName(), "name");
-                        inconsistency++;
-                    }
-                    if (!oldPet.getBirthDate().equals(newPet.getBirthDate())) {
-                        checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
-                        inconsistency++;
-                    }
-                    if (!oldPet.getType().equals(newPet.getType())) {
-                        checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
-                        inconsistency++;
-                    }
-                } else {
-                    System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldPet.getId() + " != " + newPet.getId());
-                    inconsistency++;
-                }
+                
+                inconsistency += petCheckConsistency(oldPet, newPet);
+                // if (oldPet.getId() == newPet.getId()) {
+                //     atID = newPet.getId();
+                //     if (inconsistency != 0) {
+                //         System.out.println("OLD:" + oldPetsData.get(index));
+                //         System.out.println("NEW:" + newPetsData.get(index));
+                //     }
+                //     //need the number of columns (use hardcoded number or dynamically check the number of columns)
+                //     //for Owner,  columns
+                //     if (!oldPet.getName().equals(newPet.getName())) {
+                //         checkNewAndOldData(atID, oldPet.getName(), newPet.getName(), "name");
+                //         inconsistency++;
+                //     }
+                //     if (!oldPet.getBirthDate().equals(newPet.getBirthDate())) {
+                //         checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
+                //         inconsistency++;
+                //     }
+                //     if (!oldPet.getType().equals(newPet.getType())) {
+                //         checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
+                //         inconsistency++;
+                //     }
+                // } else {
+                //     System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldPet.getId() + " != " + newPet.getId());
+                //     inconsistency++;
+                // }
             }
         } else {
             System.out.println("Old and new DB table size don't match! " + oldPetsData.size() + " != " + newPetsData.size());
+            inconsistency++;
+        }
+        return inconsistency;
+    }
+
+    public int petCheckConsistency(Pet oldPet, Pet newPet) {
+        int inconsistency = 0;
+        if (oldPet.getId() == newPet.getId()) {
+            int atID = newPet.getId();
+            if (!oldPet.getName().equals(newPet.getName())) {
+                checkNewAndOldData(atID, oldPet.getName(), newPet.getName(), "name");
+                inconsistency++;
+            }
+            if (!oldPet.getBirthDate().equals(newPet.getBirthDate())) {
+                checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
+                inconsistency++;
+            }
+            if (!oldPet.getType().equals(newPet.getType())) {
+                checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
+                inconsistency++;
+            }
+        } else {
+            System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldPet.getId() + " != " + newPet.getId());
             inconsistency++;
         }
         return inconsistency;

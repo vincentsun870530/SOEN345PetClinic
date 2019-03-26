@@ -1,9 +1,16 @@
 package org.springframework.samples.petclinic.incrementalreplication;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
+import org.springframework.samples.petclinic.consistencychecker.OwnerConsistencyChecker;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.owner.Owner;
+import org.springframework.samples.petclinic.owner.Pet;
+import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 
 public class IncrementalReplication {
@@ -22,6 +29,7 @@ public class IncrementalReplication {
             updateArray = new ArrayList<String>();
         }
         updateArray.add(data);
+        System.out.println("Data saved to update list");
     }
 
     public static void addToCreateList(String data) {
@@ -29,6 +37,7 @@ public class IncrementalReplication {
             createArray = new ArrayList<String>();
         }
         createArray.add(data);
+        System.out.println("Data saved to create list");
     }
 
     public static void incrementalReplication() {
@@ -57,9 +66,9 @@ public class IncrementalReplication {
                     // SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
 
                     // checkConsistency(id, tableName, columnName, value);
-
+                    int id = Integer.parseInt(splittedData[1].replace(" ", ""));
                     SQLiteDBConnector.getInstance().updateRow(splittedData);
-                    checkConsistency(Integer.parseInt(splittedData[1]), splittedData[0], splittedData);
+                    checkConsistency(id, splittedData[0], splittedData);
 
             }
         }
@@ -96,12 +105,36 @@ public class IncrementalReplication {
     // }
 
     private static void checkConsistency(int id, String tableName, String array[]) {
-        String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
-        String newDatabase = (SQLiteDBConnector.getInstance().selectById(tableName, id)).toString();
+        // String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
+        // String newDatabase = (SQLiteDBConnector.getInstance().selectById(tableName, id)).toString();
 
-        if(oldDatabase != newDatabase) {
-            printViolationMessage(id, tableName);
-            SQLiteDBConnector.getInstance().updateRow(array);
+        // if(oldDatabase != newDatabase) {
+        //     printViolationMessage(id, tableName);
+        //     SQLiteDBConnector.getInstance().updateRow(array);
+        // }
+
+        try {
+            ResultSet oldDatabase = MySQLJDBCDriverConnection.selectById(tableName, id);
+            ResultSet newDatabase = SQLiteDBConnector.getInstance().selectById(tableName, id);
+            int isInconsistency = 0;
+            System.out.println("TEST ID:" + id);
+            switch(tableName) {
+                case "owners":
+                    Owner oldOwner = ownerRSet(oldDatabase);
+                    Owner newOwner = ownerRSet(newDatabase);
+                    isInconsistency = new OwnerConsistencyChecker().ownerCheckConsistency(oldOwner, newOwner);
+                    System.out.println("IN SWITCH isInconsistency:" + isInconsistency);
+                    break;
+                
+            }
+            if(isInconsistency != 0) {
+                System.out.println("isInconsistency:" + isInconsistency);
+                printViolationMessage(id, tableName);
+            } else {
+                System.out.println("SUCCESS");
+            }
+        } catch (SQLException exception) {
+            System.out.println("ERROR IncrementalReplication/checkConsistency:" + exception.toString());
         }
     }
 
@@ -110,6 +143,53 @@ public class IncrementalReplication {
         //                     " does not match: New(" + newData + 
         //                     " is not equal to Old(" + oldData);
         System.out.println("The row " + id + " in the table " + tableName + "is inconsistent with the old database");
+    }
+
+    private static Owner ownerRSet(ResultSet rs) throws SQLException {
+        Owner owner = null;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String firstName = rs.getString("first_name");
+            String lastName = rs.getString("last_name");
+            String address = rs.getString("address");
+            String city = rs.getString("city");
+            String telephone = rs.getString("telephone");
+
+            owner = new Owner();
+            owner.setId(id);
+            owner.setFirstName(firstName);
+            owner.setLastName(lastName);
+            owner.setAddress(address);
+            owner.setCity(city);
+            owner.setTelephone(telephone);
+        }
+        return owner;
+    }
+
+    private static Pet petRSet(ResultSet rs) throws SQLException {
+        Pet pet = null;
+        Owner owner;
+        PetType petType;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            String birth_date = rs.getString("birth_date");
+            int type_id = rs.getInt("type_id");
+            int owner_id = rs.getInt("owner_id");
+
+            pet = new Pet();
+            owner = new Owner();
+            owner.setId(owner_id);
+            petType = new PetType();
+            petType.setId(type_id);
+
+            pet.setId(id);
+            pet.setName(name);
+            pet.setBirthDate(LocalDate.parse(birth_date));
+            pet.setType(petType);
+            pet.setOwner(owner);
+        }
+        return pet;
     }
 
     /**
