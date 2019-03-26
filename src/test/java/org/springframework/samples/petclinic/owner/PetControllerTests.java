@@ -166,7 +166,7 @@ public class PetControllerTests {
 
     @Test
     public void testInitUpdateForm() throws Exception {
-        // switch off Date incremental, keep original test
+        //switch off Date incremental, keep original test
         FeatureToggles.isEnableIncrementDate = false;
         mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID))
             .andExpect(status().isOk())
@@ -187,7 +187,7 @@ public class PetControllerTests {
 
     @Test
     public void testProcessUpdateFormHasErrors() throws Exception {
-        // switch off Date incremental, keep original test
+        //switch off Date incremental, keep original test
         FeatureToggles.isEnableIncrementDate = false;
         mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
             .param("name", "Betty")

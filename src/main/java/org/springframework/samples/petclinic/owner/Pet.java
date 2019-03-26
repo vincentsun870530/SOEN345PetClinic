@@ -71,10 +71,10 @@ public class Pet extends NamedEntity {
     }
 
     public LocalDate getBirthDate() {
-        if(FeatureToggles.isEnableIncrementDate==true) {
-            return DateCorrector.correctDate(this.birthDate);
-        }
-        return this.birthDate;
+            if(FeatureToggles.isEnableIncrementDate==true && this.birthDate!=null){
+            return this.birthDate.plusDays(1);
+            }
+            return this.birthDate;
     }
 
     public PetType getType() {
