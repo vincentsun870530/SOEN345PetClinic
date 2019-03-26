@@ -22,12 +22,12 @@ public class VisitShadowRead {
 
         ArrayList<HashMap> newVisitPack = new ArrayList();
         List<Visit> newVisitList;
-        newVisitList = SQLiteVisitHelper.getInstance().getModelList(newVisitResult);
         boolean isInconsistent = false;
         String strInconsis = "";
 
         //sqLiteDbConnector.connect();
         try{
+            newVisitList = SQLiteVisitHelper.getInstance().getModelList(newVisitResult);
             System.out.println( " From Visit Shadow Read" + "  -try");
             for(int i =0; i<newVisitList.size();i++){
                 System.out.println( " From Visit Shadow Read" + "  -while");
@@ -67,7 +67,7 @@ public class VisitShadowRead {
 
                     //System.out.println(strInconsis);
                     //SQLiteDBConnector.getInstance().updateById("visits","visit_date",oldVisit.getDate().toString(),oldVisit.getId());
-                    inconsistencyRow.replace("visit_date",oldVisit.getDate().toString());
+                    inconsistencyRow.replace("visit_date",oldVisit.getDate().plusDays(1).toString());
                 }
                 if(!oldVisit.getDescription().equals(description)){
                     isInconsistent=true;
