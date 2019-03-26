@@ -20,4 +20,7 @@ public class FeatureToggles {
     // For shadow write
     public static boolean isEnableShadowWrite = true;
 
+    //For temp debugging system.out.print
+    public static boolean isEnableDebuggingSystemOutPrint = true;
+
 }

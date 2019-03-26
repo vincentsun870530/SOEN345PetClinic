@@ -145,36 +145,4 @@ public class SQLiteDBConnector {
         }
     }
 
-
-    public List<HashMap> getItemSet(ResultSet rs){
-        ResultSetMetaData rsmd;
-        List<HashMap> pack = null;
-        try {
-            rsmd = rs.getMetaData();
-            int arraySize = rsmd.getColumnCount();
-            System.out.println("Size " + arraySize);
-            ArrayList<String> rowh = new ArrayList();
-            for(int i=1;i<arraySize+1;i++){
-                rowh.add(rsmd.getColumnName(i).toString());
-                System.out.print(rowh.get(i-1) +"  |  ");
-            }
-            //pack.add(rowh);
-            System.out.println("");
-            while(rs.next()){
-                HashMap row = new HashMap();
-                for(int i=1;i<arraySize+1;i++) {
-                    //System.out.print(rs.getString(i) + " | ");
-                    row.put(rowh.get(i-1) ,rs.getString(i));
-                    //System.out.print(row.get(rowh.get(i-1)) + " | ");
-                }
-                System.out.println("");
-                pack.add(row);
-            }
-
-        }catch (SQLException e){
-            System.out.println(" Converting Failed: " + e.getMessage());
-        }
-        return pack;
-    }
-
 }
