@@ -17,12 +17,14 @@ package org.springframework.samples.petclinic.visit;
 
 import java.time.LocalDate;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.Date.DateCorrector;
 import org.springframework.samples.petclinic.model.BaseEntity;
 
 /**
@@ -54,7 +56,8 @@ public class Visit extends BaseEntity {
     }
 
     public LocalDate getDate() {
-        return this.date;
+        // Correct date
+        return DateCorrector.correctDate(this.date);
     }
 
     public void setDate(LocalDate date) {
