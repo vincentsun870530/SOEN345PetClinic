@@ -35,6 +35,8 @@ import javax.persistence.Table;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.Date.DateCorrector;
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.model.NamedEntity;
 import org.springframework.samples.petclinic.visit.Visit;
 
@@ -69,6 +71,9 @@ public class Pet extends NamedEntity {
     }
 
     public LocalDate getBirthDate() {
+        if(FeatureToggles.isEnableIncrementDate==true) {
+            return DateCorrector.correctDate(this.birthDate);
+        }
         return this.birthDate;
     }
 

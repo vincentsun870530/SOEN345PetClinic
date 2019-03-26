@@ -11,6 +11,9 @@ public class FeatureToggles {
     public static boolean isEnablePetEdit = true;
     public static boolean isEnablePetVisit = true;
 
+    //For Date incremental
+    public static boolean isEnableIncrementDate = true;
+
     // For package vet
     public static boolean isEnableVetPage = true;
 
