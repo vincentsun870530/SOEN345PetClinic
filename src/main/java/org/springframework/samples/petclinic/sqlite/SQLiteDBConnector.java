@@ -228,10 +228,12 @@ public class SQLiteDBConnector {
         int id = 0;
         try {
             String query = "";
-            // Statement stmt = null;
             Connection connection = connect();
-            // stmt = connection.createStatement();
+
             PreparedStatement stmt = null;
+
+            // Statement stmt = null;
+            // stmt = connection.createStatement();
             //Switch statement for different tables
             switch(dataArray[0]) {
                 case "owners": 
@@ -260,9 +262,12 @@ public class SQLiteDBConnector {
                     break;
             }
 
-            // THIS PART INSERT TWICE
-            // stmt = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-            // stmt.execute();
+            // THIS PART INSERT TWICE, if stmt.execute() is commented out it will insert once but it wont return the id
+            stmt = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            stmt.execute();
+
+            // THIS PART WILL SAY NOT IMPLEMENTED BY SQLITE JDBC DRIVER
+            //stmt.execute(query, PreparedStatement.RETURN_GENERATED_KEYS);
 
             // THIS PART THROWS A NULL POINTER EXCEPTION
             // stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
