@@ -31,7 +31,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
 /**
  * @author Juergen Hoeller
@@ -85,16 +84,23 @@ class VisitController {
 
     // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
     @GetMapping("/owners/*/pets/{petId}/visits/new")
-    public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
-        System.out.println("shadow read");
-        if (FeatureToggles.isEnablePetVisit) {
-            VisitShadowRead visitShadowReader = new VisitShadowRead();
-            List<Visit> visitList = this.visits.findByPetId(petId);
-            //System.out.println(visitList .get(0).getPetId());
+    public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model)
+    {
+        if (FeatureToggles.isEnablePetVisit)
+            {
+                // Shadow read
+                if(FeatureToggles.isEnableShadowRead)
+                    {
+                    VisitShadowRead visitShadowReader = new VisitShadowRead();
+                    List<Visit> visitList = this.visits.findByPetId(petId);
+                    //System.out.println(visitList .get(0).getPetId());
 
-            for(Visit visit :  visitList) {
-                System.out.println(visit.getPetId() + "from controller");
-                visitShadowReader.checkVisit(visit);
+                    for (Visit visit : visitList) {
+                        System.out.println(visit.getPetId() + "from controller");
+                        //Shadow read return problem id
+                        visitShadowReader.checkVisit(visit);
+                        //if it's not good call incremental replication
+                    }
             }
             return "pets/createOrUpdateVisitForm";
         }
@@ -108,7 +114,7 @@ class VisitController {
             return "pets/createOrUpdateVisitForm";
         } else {
             this.visits.save(visit);
-            if (isEnableShadowWrite) {
+            if (FeatureToggles.isEnableShadowWrite) {
                 System.out.println(visit.getDate()+" insert");
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
             }

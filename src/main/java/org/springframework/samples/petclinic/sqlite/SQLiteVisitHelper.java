@@ -64,7 +64,7 @@ public class SQLiteVisitHelper {
                 visit.setId(rs.getInt("id"));
                 System.out.println(rs.getString("pet_id"));
                 visit.setPetId(Integer.parseInt(rs.getString("pet_id")));
-                LocalDate localDate = LocalDate.parse(rs.getString("visit_date")).plusDays(-1);
+                LocalDate localDate = LocalDate.parse(rs.getString("visit_date"));
                 System.out.println(localDate);
                 visit.setDate(localDate);
                 System.out.println(rs.getString("description"));
