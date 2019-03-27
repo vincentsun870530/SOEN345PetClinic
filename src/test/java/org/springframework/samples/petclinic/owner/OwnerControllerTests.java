@@ -50,7 +50,7 @@ public class OwnerControllerTests {
     @MockBean
     private OwnerRepository owners;
     private Owner george;
-    private Owner mike;
+    private Owner betty;
 
     @Before
     public void setup() {
@@ -63,14 +63,14 @@ public class OwnerControllerTests {
         george.setTelephone("6085551023");
         given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
 
-		mike = new Owner();
-		mike.setId(2);
-		mike.setFirstName("Mike");
-		mike.setLastName("Miller");
-		mike.setAddress("110 Peel");
-		mike.setCity("Madison");
-		mike.setTelephone("7977551023");
-		given(this.owners.findById(2)).willReturn(mike);
+		betty = new Owner();
+		betty.setId(2);
+		betty.setFirstName("Betty");
+		betty.setLastName("Davis");
+		betty.setAddress("638 Cardinal Ave.");
+		betty.setCity("Sun Prairie");
+		betty.setTelephone("6085551749");
+		given(this.owners.findById(2)).willReturn(betty);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class OwnerControllerTests {
     }
     @Test
     public void testProcessFindFormSuccess() throws Exception {
-        given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, mike));
+        given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, betty));
         mockMvc.perform(get("/owners"))
             .andExpect(status().isOk())
             .andExpect(view().name("owners/ownersList"));
@@ -237,7 +237,6 @@ public class OwnerControllerTests {
     	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
     	when(results.isEmpty()).thenReturn(false);
 		when(results.size()).thenReturn(2);
-		when(ownerController.processFindForm(owner, result, model)).thenReturn("owners/ownersList");
 		String str1 = ownerController.processFindForm(owner, result, model);
     	String str2 = "owners/ownersList";
     	
