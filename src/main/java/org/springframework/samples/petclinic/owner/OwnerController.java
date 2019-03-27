@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 
@@ -107,8 +109,9 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
-
+//TODO shadow read
         if (FeatureToggles.isEnableOwnerPage) {
+            OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
             model.put("owner", owner);
             return "owners/findOwners";
         }
@@ -116,7 +119,7 @@ class OwnerController {
     }
 
     @GetMapping("/owners")
-    public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
+    public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) throws SQLException {
 
         if (FeatureToggles.isEnableOwnerFind) {
             System.out.println("inside");
@@ -136,9 +139,16 @@ class OwnerController {
             } else if (results.size() == 1) {
                 // 1 owner found
                 owner = results.iterator().next();
+                OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
+                int inconsistency_id = ownerShadowReader.checkOwner(owner);
+                if(inconsistency_id > -1){
+                    //TODO adapt incream..
+                }
+
                 return "redirect:/owners/" + owner.getId();
             } else {
                 // multiple owners found
+                //TODO shadow read as above but in a loop
                 model.put("selections", results);
                 return "owners/ownersList";
             }
@@ -152,7 +162,7 @@ class OwnerController {
     }
 
     @GetMapping("/owners/{ownerId}/edit")
-    public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
+    public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
 
         if (FeatureToggles.isEnableOwnerEdit) {
             Owner owner = this.owners.findById(ownerId);

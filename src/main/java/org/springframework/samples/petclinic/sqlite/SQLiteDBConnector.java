@@ -104,6 +104,7 @@ public class SQLiteDBConnector {
         String sql = "UPDATE " + tableName + " SET " + colName + " = ? WHERE id = ?";
         PreparedStatement  stmt =null;
 
+
         try  {
             if(conn.isClosed())
                 System.out.println("conn closed: " + sql);

@@ -2,28 +2,23 @@ package org.springframework.samples.petclinic.shadowRead;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.samples.petclinic.shadowRead.UpdateOwner;
-
 
 public class OwnerShadowRead {
 		
 		private int readInconsistencies = 0;
 		private int inconsistencies = 0;
 		SQLiteDBConnector sqLiteDbConnector = SQLiteDBConnector.getInstance();
-		 UpdateOwner updateOwner = new UpdateOwner();
+		SQLiteOwnerHelper sqLiteOwnerHelper = SQLiteOwnerHelper.getInstance();
+		UpdateOwner updateOwner = new UpdateOwner();
 		
 		@Async
-		public void shadowRead(OwnerRepository repo, int id) throws SQLException{
-
-			//Owner in old MySql database with the specified id
-			Owner owner = (Owner) repo.findById(id);
-
+		public int checkOwner(Owner owner) throws SQLException{
+			int inconsistencyId = -1;
 			//Owner in SqLite db with the specified id
-			ResultSet result = sqLiteDbConnector.selectById("Owner", id);
-
+			ResultSet result = sqLiteDbConnector.selectById("owners", owner.getId());
 			//initialise variables
 			String firstName = null;
 			String lastName = null;
@@ -56,23 +51,25 @@ public class OwnerShadowRead {
 
 			if(!(owner.getLastName().equals(lastName))){
 				ReadInconsistency(owner.getLastName(), lastName);
-				updateOwner.updateLastName(owner);
+			//	updateOwner.updateLastName(owner);
 			}
 
 			if(!(owner.getAddress().equals(address))){
 				ReadInconsistency(owner.getAddress(), address);
-				updateOwner.updateAddress(owner);
+			//	updateOwner.updateAddress(owner);
 			}
 
 			if(!(owner.getCity().equals(city))){
 				ReadInconsistency(owner.getCity(), city);
-				updateOwner.updateCity(owner);
+			//	updateOwner.updateCity(owner);
 			}
 
 			if(!(owner.getTelephone().equals(telephone))){
 				ReadInconsistency(owner.getTelephone(), telephone);
-				updateOwner.updateTelephone(owner);
+			//	updateOwner.updateTelephone(owner);
 			}
+
+			return inconsistencyId;
 		}
 
 		//print read inconsistency
