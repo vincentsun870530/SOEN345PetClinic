@@ -17,14 +17,6 @@ import org.springframework.samples.petclinic.owner.PetType;
 public class IncrementalReplicationChecker {
 
     public static boolean isConsistency(int id, String tableName) {
-        // String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
-        // String newDatabase = (SQLiteDBConnector.getInstance().selectById(tableName, id)).toString();
-
-        // if(oldDatabase != newDatabase) {
-        //     printViolationMessage(id, tableName);
-        //     SQLiteDBConnector.getInstance().updateRow(array);
-        // }
-
         try {
             ResultSet oldDatabase = MySQLJDBCDriverConnection.selectById(tableName, id);
             ResultSet newDatabase = SQLiteDBConnector.getInstance().selectById(tableName, id);
@@ -60,10 +52,7 @@ public class IncrementalReplicationChecker {
         return false;
     }
 
-    public static void printViolationMessage(int id, String tableName){ //, String oldData, String newData) {
-        // System.out.println("The row " + id + " on the new database," +
-        //                     " does not match: New(" + newData + 
-        //                     " is not equal to Old(" + oldData);
+    public static void printViolationMessage(int id, String tableName){
         System.out.println("The row " + id + " in the table " + tableName + "is inconsistent with the old database");
     }
 
