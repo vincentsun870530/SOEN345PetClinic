@@ -62,8 +62,8 @@ public class SQLitePetHelper {
                 pet.setId(rs.getInt("id"));
                 System.out.println(rs.getString("name"));
                 pet.setName(rs.getString("name"));
-                System.out.println(rs.getInt("birth_date"));
-                pet.setBirthDate(LocalDate.parse("birth_date"));
+                System.out.println(rs.getString("birth_date"));
+                pet.setBirthDate(LocalDate.parse(rs.getString("birth_date")));
                 System.out.println(rs.getString("type_id"));
                 PetType typeIdHolder = new PetType();
                 typeIdHolder.setId(Integer.parseInt(rs.getString("type_id")));

@@ -86,10 +86,33 @@ class PetController {
 
         if (FeatureToggles.isEnablePetAdd) {
             // Pet Shadow Read
+            PetShadowRead petShadowRead = new PetShadowRead();
+            //Shadow read return problem id
+            if(pet != null) {
+                //this is an if filter for test since the test did not mock or setup all the details of the pet;
+                //TODO add mocked or setup dedetails for test
+                if(pet.getType() !=null) {
+                    int inconsistency_id = petShadowRead.checkPet(pet);
+                    //if it's not good call incremental replication
+                    if (inconsistency_id > -1) {
+                        //TODO adapt increamental replication
+
+                        return null;
+                    } else {
+                        System.out.println("Shadow Read for visits passed from controller");
+                    }
+                }
+            }
+
             this.pet = pet;
+
             owner.addPet(pet);
             model.put("pet", pet);
+
+            //TODO change to logger info//
+                System.out.println("Shadow Read for visits passed from controller");
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+
         }
         return null;
     }
@@ -133,6 +156,24 @@ class PetController {
 
         if (FeatureToggles.isEnablePetEdit) {
             Pet pet = this.pets.findById(petId);
+            //shadow read for pet
+            PetShadowRead petShadowRead = new PetShadowRead();
+            //Shadow read return problem id
+            if(pet != null) {
+                //this is an if filter for test since the test did not mock or setup all the details of the pet;
+                //TODO add mocked or setup dedetails for test
+                if(pet.getType() !=null) {
+                    int inconsistency_id = petShadowRead.checkPet(pet);
+                    //if it's not good call incremental replication
+                    if (inconsistency_id > -1) {
+                        //TODO adapt increamental replication
+
+                        return null;
+                    } else {
+                        System.out.println("Shadow Read for visits passed from controller");
+                    }
+                }
+            }
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         }

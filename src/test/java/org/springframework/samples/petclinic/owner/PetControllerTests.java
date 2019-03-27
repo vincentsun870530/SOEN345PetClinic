@@ -172,6 +172,8 @@ public class PetControllerTests {
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("pet"))
             .andExpect(view().name("pets/createOrUpdatePetForm"));
+
+        FeatureToggles.isEnableIncrementDate = true;
     }
 
     @Test
