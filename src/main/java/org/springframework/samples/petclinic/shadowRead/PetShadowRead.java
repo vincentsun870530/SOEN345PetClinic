@@ -119,7 +119,8 @@ public class PetShadowRead {
 
             System.out.println( "Done while loop from Pet Shadow Read");
 
-            for(int i = 0; i<newPetPack.size();i++)
+            /** Previously for update
+             for(int i = 0; i<newPetPack.size();i++)
             {
                 System.out.println( "start updating from Pet Shadow Read");
                 int id = Integer.parseInt(newPetPack.get(i).get("id").toString());
@@ -140,7 +141,7 @@ public class PetShadowRead {
 
                     sqLitePetHelper.updateColById("owner_id", newPetPack.get(i).get("owner_id").toString(), id);
                 }
-            }
+            } **/
 
         }catch (Exception e){
             System.out.println(e.getMessage() + " Error from Pet Shadow Read");
