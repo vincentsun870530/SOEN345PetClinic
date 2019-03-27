@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.core.env.Environment;
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -165,6 +166,8 @@ public class PetControllerTests {
 
     @Test
     public void testInitUpdateForm() throws Exception {
+        //switch off Date incremental, keep original test
+        FeatureToggles.isEnableIncrementDate = false;
         mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("pet"))
@@ -184,6 +187,8 @@ public class PetControllerTests {
 
     @Test
     public void testProcessUpdateFormHasErrors() throws Exception {
+        //switch off Date incremental, keep original test
+        FeatureToggles.isEnableIncrementDate = false;
         mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
             .param("name", "Betty")
             .param("birthDate", "2015/02/12")

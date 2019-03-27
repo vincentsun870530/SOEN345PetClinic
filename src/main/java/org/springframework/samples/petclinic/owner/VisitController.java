@@ -16,6 +16,8 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+import org.springframework.samples.petclinic.shadowRead.VisitShadowRead;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
@@ -66,6 +69,7 @@ class VisitController {
      * @param petId
      * @return Pet
      */
+
     //@ModelAttribute("visit")
     public Visit loadPetWithVisit(@PathVariable("petId") int petId, Map<String, Object> model) {
         return this.loadPetWithVisit(petId,model,new Visit());
@@ -83,8 +87,16 @@ class VisitController {
     // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
     @GetMapping("/owners/*/pets/{petId}/visits/new")
     public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
-
+        System.out.println("shadow read");
         if (FeatureToggles.isEnablePetVisit) {
+            VisitShadowRead visitShadowReader = new VisitShadowRead();
+            List<Visit> visitList = this.visits.findByPetId(petId);
+            //System.out.println(visitList .get(0).getPetId());
+
+            for(Visit visit :  visitList) {
+                System.out.println(visit.getPetId() + "from controller");
+                visitShadowReader.checkVisit(visit);
+            }
             return "pets/createOrUpdateVisitForm";
         }
         return null;
@@ -98,7 +110,13 @@ class VisitController {
         } else {
             this.visits.save(visit);
             if (isEnableShadowWrite) {
+                System.out.println(visit.getDate()+" insert");
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
+                
+            }
+            if (FeatureToggles.isEnablePetVisitIR) {
+                IncrementalReplication.addToCreateList("visits," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                IncrementalReplication.incrementalReplication();
             }
             return "redirect:/owners/{ownerId}";
         }

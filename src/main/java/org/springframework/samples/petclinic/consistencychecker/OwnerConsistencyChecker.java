@@ -21,27 +21,93 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
     }
 
     public int consistencyChecker() {
-        Owner oldOwner;
-        Owner newOwner;
-        int atID;
         int inconsistency = 0;
-        for(int index=0; index < oldOwnersData.size(); index++) {
-            oldOwner = oldOwnersData.get(index);
-            newOwner = newOwnersData.get(index);
-            System.out.println("TEST:OLDOWNER:" + oldOwnersData.get(index));
-            System.out.println("TEST:NEWOWNER:" + newOwnersData.get(index));
+        if (oldOwnersData.size() == newOwnersData.size()) {
+            Owner oldOwner;
+            Owner newOwner;
+            int atID;
+            for (int index = 0; index < oldOwnersData.size(); index++) {
+                oldOwner = oldOwnersData.get(index);
+                newOwner = newOwnersData.get(index);
+
+                inconsistency += ownerCheckConsistency(oldOwner, newOwner);
+                // if (oldOwner.getId() == newOwner.getId()) {
+                //     atID = newOwner.getId();
+                //     if (inconsistency != 0) {
+                //         System.out.println("OLD:" + oldOwnersData.get(index));
+                //         System.out.println("NEW:" + newOwnersData.get(index));
+                //     }
+                //     //need the number of columns (use hardcoded number or dynamically check the number of columns)
+                //     //for Owner, 5 columns
+                //     if (oldOwner.getId() != newOwner.getId()) {
+                //         System.out.println("\t" + oldOwner.getId() + "!=" + newOwner.getId());
+                //         inconsistency++;
+                //     }
+                //     if (!oldOwner.getFirstName().equals(newOwner.getFirstName())) {
+                //         checkNewAndOldData(atID, oldOwner.getFirstName(), newOwner.getFirstName(), "first_name");
+                //         inconsistency++;
+                //     }
+                //     if (!oldOwner.getLastName().equals(newOwner.getLastName())) {
+                //         checkNewAndOldData(atID, oldOwner.getLastName(), newOwner.getLastName(), "last_name");
+                //         inconsistency++;
+                //     }
+                //     if (!oldOwner.getAddress().equals(newOwner.getAddress())) {
+                //         checkNewAndOldData(atID, oldOwner.getAddress(), newOwner.getAddress(), "address");
+                //         inconsistency++;
+                //     }
+                //     if (!oldOwner.getCity().equals(newOwner.getCity())) {
+                //         checkNewAndOldData(atID, oldOwner.getCity(), newOwner.getCity(), "city");
+                //         inconsistency++;
+                //     }
+                //     if (!oldOwner.getTelephone().equals(newOwner.getTelephone())) {
+                //         checkNewAndOldData(atID, oldOwner.getTelephone(), newOwner.getTelephone(), "telephone");
+                //         inconsistency++;
+                //     }
+                // } else {
+                //     System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldOwner.getId() + " != " + newOwner.getId());
+                //     inconsistency++;
+                // }
+            }
+        } else {
+            System.out.println("Old and new DB table size don't match! " + oldOwnersData.size() + " != " + newOwnersData.size());
+            inconsistency++;
+        }
+        return inconsistency;
+    }
+
+    public int ownerCheckConsistency(Owner oldOwner, Owner newOwner) {
+        int inconsistency = 0;
+        if (oldOwner.getId() == newOwner.getId()) {
+            int atID = newOwner.getId();
             //need the number of columns (use hardcoded number or dynamically check the number of columns)
             //for Owner, 5 columns
-            
-            if(oldOwner.toString() != newOwner.toString()) {
-                atID = newOwner.getId();
+            if (oldOwner.getId() != newOwner.getId()) {
+                System.out.println("\t" + oldOwner.getId() + "!=" + newOwner.getId());
+                inconsistency++;
+            }
+            if (!oldOwner.getFirstName().equals(newOwner.getFirstName())) {
                 checkNewAndOldData(atID, oldOwner.getFirstName(), newOwner.getFirstName(), "first_name");
+                inconsistency++;
+            }
+            if (!oldOwner.getLastName().equals(newOwner.getLastName())) {
                 checkNewAndOldData(atID, oldOwner.getLastName(), newOwner.getLastName(), "last_name");
+                inconsistency++;
+            }
+            if (!oldOwner.getAddress().equals(newOwner.getAddress())) {
                 checkNewAndOldData(atID, oldOwner.getAddress(), newOwner.getAddress(), "address");
+                inconsistency++;
+            }
+            if (!oldOwner.getCity().equals(newOwner.getCity())) {
                 checkNewAndOldData(atID, oldOwner.getCity(), newOwner.getCity(), "city");
+                inconsistency++;
+            }
+            if (!oldOwner.getTelephone().equals(newOwner.getTelephone())) {
                 checkNewAndOldData(atID, oldOwner.getTelephone(), newOwner.getTelephone(), "telephone");
                 inconsistency++;
-            }   
+            }
+        } else {
+            System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldOwner.getId() + " != " + newOwner.getId());
+            inconsistency++;
         }
         return inconsistency;
     }
@@ -66,65 +132,6 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
     public void printViolationMessage(int id, String oldData, String newData) {
         System.out.println("The row " + id + " on the new database," +
                             " does not match: New(" + newData + 
-                            " is not equal to Old(" + oldData);
+                            ") is not equal to Old(" + oldData + ")");
     }
-
-    // public static void main(String[] args) {
-    //     ResultSet rsNew = new SQLiteDBConnector().selectAll("owners");
-    //     List<Owner> ownersListNew = new ArrayList<Owner>();
-    //     Owner ownerNew;
-    //     try {
-    //         while (rsNew.next()) {
-    //             int id = rsNew.getInt("id");
-    //             String firstName = rsNew.getString("first_name");
-    //             String lastName = rsNew.getString("last_name");
-    //             String address = rsNew.getString("address");
-    //             String city = rsNew.getString("city");
-    //             String telephone = rsNew.getString("telephone");
-
-    //             ownerNew = new Owner();
-    //             ownerNew.setId(id);
-    //             ownerNew.setFirstName(firstName);
-    //             ownerNew.setLastName(lastName);
-    //             ownerNew.setAddress(address);
-    //             ownerNew.setCity(city);
-    //             ownerNew.setTelephone(telephone);
-
-    //             ownersListNew.add(ownerNew);
-    //         }
-    //         setNewData(ownersListNew);
-    //     } catch (SQLException exception) {
-
-    //     }
-
-    //     ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
-    //     List<Owner> ownersListOld = new ArrayList<Owner>();
-    //     Owner ownerOld;
-    //     try {
-    //         while (rsOld.next()) {
-    //             int id = rsOld.getInt("id");
-    //             String firstName = rsOld.getString("first_name");
-    //             String lastName = rsOld.getString("last_name");
-    //             String address = rsOld.getString("address");
-    //             String city = rsOld.getString("city");
-    //             String telephone = rsOld.getString("telephone");
-
-    //             ownerOld = new Owner();
-    //             ownerOld.setFirstName(firstName);
-    //             ownerOld.setLastName(lastName);
-    //             ownerOld.setAddress(address);
-    //             ownerOld.setCity(city);
-    //             ownerOld.setTelephone(telephone);
-
-    //             ownersListOld.add(ownerOld);
-    //         }
-    //         setOldData(ownersListOld);
-    //     } catch (SQLException exception) {
-
-    //     }
-
-    //     new OwnerConsistencyChecker().consistencyChecker();
-
-    // }
-
 }

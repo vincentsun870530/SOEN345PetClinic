@@ -11,10 +11,22 @@ public class FeatureToggles {
     public static boolean isEnablePetEdit = true;
     public static boolean isEnablePetVisit = true;
 
+    //Incremental Replication
+    public static boolean isEnableOwnerCreateIR = false;
+    public static boolean isEnableOwnerEditIR = false;
+    public static boolean isEnablePetAddIR = false;
+    public static boolean isEnablePetEditIR = false;
+    public static boolean isEnablePetVisitIR = false;
+    //For Date incremental
+    public static boolean isEnableIncrementDate = true;
+
     // For package vet
     public static boolean isEnableVetPage = true;
 
     // For shadow write
     public static boolean isEnableShadowWrite = true;
+
+    //For temp debugging system.out.print
+    public static boolean isEnableDebuggingSystemOutPrint = true;
 
 }
