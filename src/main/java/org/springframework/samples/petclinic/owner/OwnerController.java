@@ -22,6 +22,7 @@ import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
+import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
@@ -111,7 +113,6 @@ class OwnerController {
     public String initFindForm(Map<String, Object> model , Owner owner) {
 //TODO shadow read
         if (FeatureToggles.isEnableOwnerPage) {
-            OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
             model.put("owner", owner);
             return "owners/findOwners";
         }
@@ -142,13 +143,26 @@ class OwnerController {
                 OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
                 int inconsistency_id = ownerShadowReader.checkOwner(owner);
                 if(inconsistency_id > -1){
-                    //TODO adapt incream..
+                    //TODO adapt incremental replication
                 }
 
                 return "redirect:/owners/" + owner.getId();
             } else {
                 // multiple owners found
                 //TODO shadow read as above but in a loop
+                OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
+                /*
+                 //TODO
+                 //This enhanced for loop was commented out because it fails the tests
+                 // Trying to solve this issue
+
+                 for (Owner own : results) {
+                        System.out.println(own.getId() + " Owner Id from controller");
+                        //Shadow read return problem id
+                        ownerShadowReader.checkOwner(own);
+                       //if it's not good call incremental replication
+                    }
+                 */
                 model.put("selections", results);
                 return "owners/ownersList";
             }

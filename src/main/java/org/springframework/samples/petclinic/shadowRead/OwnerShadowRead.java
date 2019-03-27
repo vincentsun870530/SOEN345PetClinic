@@ -76,6 +76,7 @@ public class OwnerShadowRead {
 		private void ReadInconsistency(Object oldRow, Object newRow) {
 			System.out.println("\n Old object in Mysql db does not match the new object in SqLite db" + "\n Old: " + oldRow	+ "\n New: " + newRow);
 			readInconsistencies++;
+			System.out.println("\n Read inconsistencies = " + readInconsistencies);
 		}
 		
 		public int getReadInconsistencies() {

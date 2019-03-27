@@ -19,12 +19,14 @@ import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerController;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
+import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
@@ -48,6 +50,7 @@ public class OwnerControllerTests {
     @MockBean
     private OwnerRepository owners;
     private Owner george;
+    private Owner mike;
 
     @Before
     public void setup() {
@@ -59,6 +62,15 @@ public class OwnerControllerTests {
         george.setCity("Madison");
         george.setTelephone("6085551023");
         given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
+
+		mike = new Owner();
+		mike.setId(2);
+		mike.setFirstName("Mike");
+		mike.setLastName("Miller");
+		mike.setAddress("110 Peel");
+		mike.setCity("Madison");
+		mike.setTelephone("7977551023");
+		given(this.owners.findById(2)).willReturn(mike);
     }
 
     @Test
@@ -156,7 +168,7 @@ public class OwnerControllerTests {
     }
     @Test
     public void testProcessFindFormSuccess() throws Exception {
-        given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
+        given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, mike));
         mockMvc.perform(get("/owners"))
             .andExpect(status().isOk())
             .andExpect(view().name("owners/ownersList"));
@@ -219,12 +231,14 @@ public class OwnerControllerTests {
     	BindingResult result = mock(BindingResult.class);
     	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
     	OwnerRepository owners= mock(OwnerRepository.class);;
-    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
+    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class);
+		OwnerShadowRead shadowReader = mock(OwnerShadowRead.class);
     	OwnerController ownerController = new OwnerController(owners);
     	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
     	when(results.isEmpty()).thenReturn(false);
-    	when(results.size()).thenReturn(2);
-    	String str1 = ownerController.processFindForm(owner, result, model);
+		when(results.size()).thenReturn(2);
+		when(ownerController.processFindForm(owner, result, model)).thenReturn("owners/ownersList");
+		String str1 = ownerController.processFindForm(owner, result, model);
     	String str2 = "owners/ownersList";
     	
     	//verify(results,times(1)).size();
