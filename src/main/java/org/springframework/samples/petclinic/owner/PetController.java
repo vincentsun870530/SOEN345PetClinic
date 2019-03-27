@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLitePetHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,6 +31,7 @@ import javax.validation.Valid;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.List;
 
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
@@ -83,6 +85,7 @@ class PetController {
     public String initCreationForm(Owner owner, ModelMap model, Pet pet) {
 
         if (FeatureToggles.isEnablePetAdd) {
+            // Pet Shadow Read
             this.pet = pet;
             owner.addPet(pet);
             model.put("pet", pet);
