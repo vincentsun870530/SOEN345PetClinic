@@ -13,78 +13,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class ConsistencyChecker {
-
-    public static void main(String[] args) {
-        System.out.println("Owner Consistency Check");
-        ownerConsCheck();
-        System.out.println("\nPet Consistency Check");
-        petConsCheck();
-        System.out.println("\nSpecialty Consistency Check");
-        specialtyConsCheck();
-        System.out.println("\nType Consistency Check");
-        typeConsCheck();
-        System.out.println("\nVet Consistency Check");
-        vetConsCheck();
-        System.out.println("\nVisit Consistency Check");
-        visitConsCheck();
-    }
-
     public static void ownerConsCheck() {
         // START OF CONSISTENCY CHECKER FOR OWNER
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("owners");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("owners", "id");
         List<Owner> ownersListNew = new ArrayList<Owner>();
         Owner ownerNew;
         try {
-            while (rsNew.next()) {
-                int id = rsNew.getInt("id");
-                String firstName = rsNew.getString("first_name");
-                String lastName = rsNew.getString("last_name");
-                String address = rsNew.getString("address");
-                String city = rsNew.getString("city");
-                String telephone = rsNew.getString("telephone");
-
-                ownerNew = new Owner();
-                ownerNew.setId(id);
-                ownerNew.setFirstName(firstName);
-                ownerNew.setLastName(lastName);
-                ownerNew.setAddress(address);
-                ownerNew.setCity(city);
-                ownerNew.setTelephone(telephone);
-
-                ownersListNew.add(ownerNew);
-            }
+            ownerRSet(rsNew, ownersListNew);
             OwnerConsistencyChecker.setNewData(ownersListNew);
         } catch (SQLException exception) {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("owners", "id");
         List<Owner> ownersListOld = new ArrayList<Owner>();
         Owner ownerOld;
         try {
-            while (rsOld.next()) {
-                int id = rsOld.getInt("id");
-                String firstName = rsOld.getString("first_name");
-                String lastName = rsOld.getString("last_name");
-                String address = rsOld.getString("address");
-                String city = rsOld.getString("city");
-                String telephone = rsOld.getString("telephone");
-
-                ownerOld = new Owner();
-                ownerOld.setId(id);
-                ownerOld.setFirstName(firstName);
-                ownerOld.setLastName(lastName);
-                ownerOld.setAddress(address);
-                ownerOld.setCity(city);
-                ownerOld.setTelephone(telephone);
-
-                ownersListOld.add(ownerOld);
-            }
+            ownerRSet(rsOld, ownersListOld);
             OwnerConsistencyChecker.setOldData(ownersListOld);
         } catch (SQLException exception) {
             System.out.println(exception);
@@ -94,64 +42,46 @@ public class ConsistencyChecker {
         //END OF CONSISTENCY CHECKER FOR OWNER
     }
 
+    private static void ownerRSet(ResultSet rs, List<Owner> ownersList) throws SQLException {
+        Owner owner;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String firstName = rs.getString("first_name");
+            String lastName = rs.getString("last_name");
+            String address = rs.getString("address");
+            String city = rs.getString("city");
+            String telephone = rs.getString("telephone");
+
+            owner = new Owner();
+            owner.setId(id);
+            owner.setFirstName(firstName);
+            owner.setLastName(lastName);
+            owner.setAddress(address);
+            owner.setCity(city);
+            owner.setTelephone(telephone);
+
+            ownersList.add(owner);
+        }
+    }
+
     public static void petConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("pets");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("pets", "id");
         List<Pet> petsListNew = new ArrayList<Pet>();
         Pet petNew;
         Owner owner;
         PetType petType;
         try {
-            while (rsNew.next()) {
-                int id = rsNew.getInt("id");
-                String name = rsNew.getString("name");
-                String birth_date = rsNew.getString("birth_date");
-                int type_id = rsNew.getInt("type_id");
-                int owner_id = rsNew.getInt("owner_id");
-
-                petNew = new Pet();
-                owner = new Owner();
-                owner.setId(owner_id);
-                petType = new PetType();
-                petType.setId(type_id);
-
-                petNew.setId(id);
-                petNew.setName(name);
-                petNew.setBirthDate(LocalDate.parse(birth_date));
-                petNew.setType(petType);
-                petNew.setOwner(owner);
-
-                petsListNew.add(petNew);
-            }
+            petRSet(rsNew, petsListNew);
             PetConsistencyChecker.setNewData(petsListNew);
         } catch (SQLException exception) {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("pets");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("pets", "id");
         List<Pet> petsListOld = new ArrayList<Pet>();
         Pet petOld;
         try {
-            while (rsOld.next()) {
-                int id = rsOld.getInt("id");
-                String name = rsOld.getString("name");
-                String birth_date = rsOld.getString("birth_date");
-                int type_id = rsOld.getInt("type_id");
-                int owner_id = rsOld.getInt("owner_id");
-
-                petOld = new Pet();
-                owner = new Owner();
-                owner.setId(owner_id);
-                petType = new PetType();
-                petType.setId(type_id);
-
-                petOld.setId(id);
-                petOld.setName(name);
-                petOld.setBirthDate(LocalDate.parse(birth_date));
-                petOld.setType(petType);
-                petOld.setOwner(owner);
-
-                petsListOld.add(petOld);
-            }
+            petRSet(rsOld, petsListOld);
             PetConsistencyChecker.setOldData(petsListNew);
         } catch (SQLException exception) {
             System.out.println(exception);
@@ -160,41 +90,49 @@ public class ConsistencyChecker {
         System.out.println("Number(s) of inconsistencies: " + new PetConsistencyChecker().consistencyChecker());
     }
 
+    private static void petRSet(ResultSet rs, List<Pet> petsList) throws SQLException {
+        Pet pet;
+        Owner owner;
+        PetType petType;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            String birth_date = rs.getString("birth_date");
+            int type_id = rs.getInt("type_id");
+            int owner_id = rs.getInt("owner_id");
+
+            pet = new Pet();
+            owner = new Owner();
+            owner.setId(owner_id);
+            petType = new PetType();
+            petType.setId(type_id);
+
+            pet.setId(id);
+            pet.setName(name);
+            pet.setBirthDate(LocalDate.parse(birth_date));
+            pet.setType(petType);
+            pet.setOwner(owner);
+
+            petsList.add(pet);
+        }
+    }
+
     public static void specialtyConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("specialties");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("specialties", "id");
         List<Specialty> specialtiesListNew = new ArrayList<Specialty>();
         Specialty specialtyNew;
         try {
-            while (rsNew.next()) {
-                int id = rsNew.getInt("id");
-                String name = rsNew.getString("name");
-
-                specialtyNew = new Specialty();
-
-                specialtyNew.setId(id);
-                specialtyNew.setName(name);
-
-                specialtiesListNew.add(specialtyNew);
-            }
+            specialtyRSet(rsNew, specialtiesListNew);
             SpecialityConsistencyChecker.setNewData(specialtiesListNew);
         } catch (SQLException exception) {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("specialties");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("specialties", "id");
         List<Specialty> specialtiesListOld = new ArrayList<Specialty>();
         Specialty specialtyOld;
         try {
-            while (rsOld.next()) {
-                int id = rsOld.getInt("id");
-                String name = rsOld.getString("name");
-                specialtyOld = new Specialty();
-
-                specialtyOld.setId(id);
-                specialtyOld.setName(name);
-
-                specialtiesListOld.add(specialtyOld);
-            }
+            specialtyRSet(rsOld, specialtiesListOld);
             SpecialityConsistencyChecker.setOldData(specialtiesListNew);
         } catch (SQLException exception) {
             System.out.println(exception);
@@ -203,42 +141,36 @@ public class ConsistencyChecker {
         System.out.println("Number(s) of inconsistencies: " + new SpecialityConsistencyChecker().consistencyChecker());
     }
 
+    private static void specialtyRSet(ResultSet rs, List<Specialty> specialtiesList) throws SQLException {
+        Specialty specialty;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            specialty = new Specialty();
+
+            specialty.setId(id);
+            specialty.setName(name);
+
+            specialtiesList.add(specialty);
+        }
+    }
+
     public static void typeConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("types");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("types", "id");
         List<PetType> typeListNew = new ArrayList<PetType>();
         PetType typeNew;
         try {
-            while (rsNew.next()) {
-                int id = rsNew.getInt("id");
-                String name = rsNew.getString("name");
-
-                typeNew = new PetType();
-
-                typeNew.setId(id);
-                typeNew.setName(name);
-
-                typeListNew.add(typeNew);
-            }
+            typeRSet(rsNew, typeListNew);
             TypeConsistencyChecker.setNewData(typeListNew);
         } catch (SQLException exception) {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("types");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("types", "id");
         List<PetType> typeListOld = new ArrayList<PetType>();
         PetType typeOld;
         try {
-            while (rsOld.next()) {
-                int id = rsOld.getInt("id");
-                String name = rsOld.getString("name");
-
-                typeOld = new PetType();
-
-                typeOld.setId(id);
-                typeOld.setName(name);
-
-                typeListOld.add(typeOld);
-            }
+            typeRSet(rsOld, typeListOld);
             TypeConsistencyChecker.setOldData(typeListOld);
         } catch (SQLException exception) {
             System.out.println(exception);
@@ -247,46 +179,37 @@ public class ConsistencyChecker {
         System.out.println("Number(s) of inconsistencies: " + new TypeConsistencyChecker().consistencyChecker());
     }
 
+    private static void typeRSet(ResultSet rs, List<PetType> typeList) throws SQLException {
+        PetType type;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+
+            type = new PetType();
+
+            type.setId(id);
+            type.setName(name);
+
+            typeList.add(type);
+        }
+    }
+
     public static void vetConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("vets");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("vets", "id");
         List<Vet> vetListNew = new ArrayList<Vet>();
         Vet vetNew;
         try {
-            while (rsNew.next()) {
-                int id = rsNew.getInt("id");
-                String first_name = rsNew.getString("first_name");
-                String last_name = rsNew.getString("last_name");
-
-                vetNew = new Vet();
-
-                vetNew.setId(id);
-                vetNew.setFirstName(first_name);
-                vetNew.setLastName(last_name);
-
-                vetListNew.add(vetNew);
-            }
+            vetRSet(rsNew, vetListNew);
             VetConsistencyChecker.setNewData(vetListNew);
         } catch (SQLException exception) {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("vets");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("vets", "id");
         List<Vet> vetListOld = new ArrayList<Vet>();
         Vet vetOld;
         try {
-            while (rsOld.next()) {
-                int id = rsOld.getInt("id");
-                String first_name = rsOld.getString("first_name");
-                String last_name = rsOld.getString("last_name");
-
-                vetOld = new Vet();
-
-                vetOld.setId(id);
-                vetOld.setFirstName(first_name);
-                vetOld.setLastName(last_name);
-
-                vetListOld.add(vetOld);
-            }
+            vetRSet(rsOld, vetListOld);
             VetConsistencyChecker.setOldData(vetListOld);
         } catch (SQLException exception) {
             System.out.println(exception);
@@ -295,57 +218,64 @@ public class ConsistencyChecker {
         System.out.println("Number(s) of inconsistencies: " + new VetConsistencyChecker().consistencyChecker());
     }
 
-    
+    private static void vetRSet(ResultSet rs, List<Vet> vetList) throws SQLException {
+        Vet vet;
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String first_name = rs.getString("first_name");
+            String last_name = rs.getString("last_name");
+
+            vet = new Vet();
+
+            vet.setId(id);
+            vet.setFirstName(first_name);
+            vet.setLastName(last_name);
+
+            vetList.add(vet);
+        }
+    }
+
 
     public static void visitConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("visits");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("visits", "id");
         List<Visit> visitListNew = new ArrayList<Visit>();
         Visit visitNew;
         try {
-            while (rsNew.next()) {
-
-                int id = rsNew.getInt("id");
-                int petId = rsNew.getInt("pet_id");
-                String visitDate = rsNew.getString("visit_date");
-                String description = rsNew.getString("description");
-
-                visitNew = new Visit();
-                visitNew.setId(id);
-                visitNew.setPetId(petId);
-                visitNew.setDate(LocalDate.parse(visitDate));
-                visitNew.setDescription(description);
-
-                visitListNew.add(visitNew);
-            }
+            visitRSet(rsNew, visitListNew);
             new VisitConsistencyChecker().setNewData(visitListNew);
         } catch (SQLException exception) {
             System.out.println(exception);
         }
 
-        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("visits");
+        ResultSet rsOld = MySQLJDBCDriverConnection.selectAll("visits", "id");
         List<Visit> visitListOld = new ArrayList<Visit>();
         Visit visitOld;
         try {
-            while (rsNew.next()) {
-
-                int id = rsOld.getInt("id");
-                int petId = rsOld.getInt("pet_id");
-                String visitDate = rsOld.getString("visit_date");
-                String description = rsOld.getString("description");
-
-                visitOld = new Visit();
-                visitOld.setId(id);
-                visitOld.setPetId(petId);
-                visitOld.setDate(LocalDate.parse(visitDate));
-                visitOld.setDescription(description);
-
-                visitListOld.add(visitOld);
-            }
+            visitRSet(rsOld, visitListOld);
             new VisitConsistencyChecker().setOldData(visitListOld);
         } catch (SQLException exception) {
             System.out.println(exception);
         }
 
         System.out.println("Number(s) of inconsistencies: " + new VisitConsistencyChecker().consistencyChecker());
+    }
+
+    private static void visitRSet(ResultSet rs, List<Visit> visitList) throws SQLException {
+        Visit visit;
+        while (rs.next()) {
+
+            int id = rs.getInt("id");
+            int petId = rs.getInt("pet_id");
+            String visitDate = rs.getString("visit_date");
+            String description = rs.getString("description");
+
+            visit = new Visit();
+            visit.setId(id);
+            visit.setPetId(petId);
+            visit.setDate(LocalDate.parse(visitDate));
+            visit.setDescription(description);
+
+            visitList.add(visit);
+        }
     }
 }

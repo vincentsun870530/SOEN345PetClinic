@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
@@ -126,6 +127,11 @@ class PetController {
         if (activeProfile.equals("mysql")) {
             if (isEnableShadowWrite) {
                 SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
+                
+            }
+            if (FeatureToggles.isEnablePetAddIR) {
+                IncrementalReplication.addToCreateList("pets," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
+                IncrementalReplication.incrementalReplication();
             }
         }
         if (result.hasErrors()) {
@@ -189,6 +195,10 @@ class PetController {
         } else {
             owner.addPet(pet);
             this.pets.save(pet);
+            if (FeatureToggles.isEnablePetEditIR) {
+                IncrementalReplication.addToUpdateList("pets," + pet.getId() + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
+                IncrementalReplication.incrementalReplication();
+            }
             return "redirect:/owners/{ownerId}";
         }
     }

@@ -1,10 +1,21 @@
 package org.springframework.samples.petclinic.incrementalreplication;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
+import org.springframework.samples.petclinic.consistencychecker.OwnerConsistencyChecker;
+import org.springframework.samples.petclinic.consistencychecker.PetConsistencyChecker;
+import org.springframework.samples.petclinic.consistencychecker.VisitConsistencyChecker;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.owner.Owner;
+import org.springframework.samples.petclinic.owner.Pet;
+import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+import org.springframework.samples.petclinic.sqlite.SQLiteIncrementalReplicationHelper;
+import org.springframework.samples.petclinic.visit.Visit;
 
 public class IncrementalReplication {
 
@@ -22,6 +33,7 @@ public class IncrementalReplication {
             updateArray = new ArrayList<String>();
         }
         updateArray.add(data);
+        System.out.println("Data saved to update list");
     }
 
     public static void addToCreateList(String data) {
@@ -29,34 +41,24 @@ public class IncrementalReplication {
             createArray = new ArrayList<String>();
         }
         createArray.add(data);
+        System.out.println("Data saved to create list");
     }
 
     public static void incrementalReplication() {
         String data = null;
         String[] splittedData = null;
 
-
-        //TODO ADD SQLITE CONNECTION 
         Connection connectionMySQL = MySQLJDBCDriverConnection.connect();
         Connection connectionSQLite = SQLiteDBConnector.getInstance().connect();
-
 
         if(updateArray != null) {
             for(int index=0; index<updateArray.size(); index++) {
                     data = updateArray.get(index);
                     splittedData = data.split(",");
 
-                    // Could use the array value directly to the query
-                    String idString = splittedData[0];
-                    String tableName = splittedData[1];
-                    String columnName = splittedData[2];
-                    String value = splittedData[3];
-
-                    int id = Integer.parseInt(idString);
-
-                    SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
-
-                    checkConsistency(id, tableName, columnName, value);
+                    int id = Integer.parseInt(splittedData[1].replace(" ", ""));
+                    SQLiteIncrementalReplicationHelper.getInstance().updateRow(splittedData);
+                    IncrementalReplicationChecker.isConsistency(id, splittedData[0]);
 
             }
         }
@@ -68,34 +70,14 @@ public class IncrementalReplication {
             for(int index=0; index<createArray.size(); index++) {
                 data = createArray.get(index);
                 splittedData = data.split(",");
-
                 String tableName = splittedData[0];
-                SQLiteDBConnector.getInstance().insertData(tableName, splittedData);
-
+                int id = SQLiteIncrementalReplicationHelper.getInstance().insertData(splittedData);
+                if(id != 0) {
+                    IncrementalReplicationChecker.isConsistency(id, tableName);
+                } else {
+                    System.out.println("Error in incrementalReplication(): ID(" + id + ") not found in table(" + tableName + ")");
+                }
             }
         }
     }
-
-    private static void checkConsistency(int id, String tableName, String columnName, String value) {
-        String oldDatabase = (MySQLJDBCDriverConnection.selectById(tableName, id)).toString();
-        String newDatabase = (SQLiteDBConnector.getInstance().selectById(tableName, id)).toString();
-
-        if(oldDatabase != newDatabase) {
-            printViolationMessage(id);
-            SQLiteDBConnector.getInstance().updateById(tableName, columnName, value, id);
-        }
-    }
-
-    public static void printViolationMessage(int id){ //, String oldData, String newData) {
-        // System.out.println("The row " + id + " on the new database," +
-        //                     " does not match: New(" + newData + 
-        //                     " is not equal to Old(" + oldData);
-        System.out.println("The row " + id + " is inconsistent with the old database");
-    }
-
-    /**
-     * TODO ADD CALLS TO THOSE METHODS IN ALL CONTROLLERS FOR UPDATE AND CREATE
-     */
-
-
 }
