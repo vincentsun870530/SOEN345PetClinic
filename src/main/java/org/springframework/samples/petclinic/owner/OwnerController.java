@@ -95,8 +95,9 @@ class OwnerController {
             //Shadow write
             if (isEnableShadowWrite) {
                 SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
+                
             }
-
+            
             if(FeatureToggles.isEnableOwnerCreateIR == true) {
                 IncrementalReplication.addToCreateList("owners," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
                 IncrementalReplication.incrementalReplication();

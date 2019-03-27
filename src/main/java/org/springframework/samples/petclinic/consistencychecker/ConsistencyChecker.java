@@ -118,7 +118,7 @@ public class ConsistencyChecker {
     }
 
     public static void specialtyConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("specialties", "id");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("specialties", "id");
         List<Specialty> specialtiesListNew = new ArrayList<Specialty>();
         Specialty specialtyNew;
         try {
@@ -156,7 +156,7 @@ public class ConsistencyChecker {
     }
 
     public static void typeConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("types", "id");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("types", "id");
         List<PetType> typeListNew = new ArrayList<PetType>();
         PetType typeNew;
         try {
@@ -195,7 +195,7 @@ public class ConsistencyChecker {
     }
 
     public static void vetConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("vets", "id");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("vets", "id");
         List<Vet> vetListNew = new ArrayList<Vet>();
         Vet vetNew;
         try {
@@ -237,7 +237,7 @@ public class ConsistencyChecker {
 
 
     public static void visitConsCheck() {
-        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAll("visits", "id");
+        ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("visits", "id");
         List<Visit> visitListNew = new ArrayList<Visit>();
         Visit visitNew;
         try {
