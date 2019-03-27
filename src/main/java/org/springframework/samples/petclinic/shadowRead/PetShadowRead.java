@@ -2,6 +2,7 @@
 
 package org.springframework.samples.petclinic.shadowRead;
 
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.owner.Pet;
@@ -19,10 +20,10 @@ public class PetShadowRead {
     MySQLJDBCDriverConnection mySQLJDBCDriverConnector = new MySQLJDBCDriverConnection();
     SQLitePetHelper sqLitePetHelper = SQLitePetHelper.getInstance();
 
-    public void checkPet(Pet oldPet){
+    public int checkPet(Pet oldPet){
         System.out.println( " From Pet Shadow Read" + "  -start");
         ResultSet newPetResult = SQLiteDBConnector.getInstance().selectById("pets", oldPet.getId());
-
+        int inconsistencyId =-1;
         ArrayList<HashMap> newPetPack = new ArrayList();
         List<Pet> newPetList;
         newPetList = SQLitePetHelper.getInstance().getModelList(newPetResult);
@@ -37,21 +38,25 @@ public class PetShadowRead {
 
                 System.out.println( " From Pet Shadow Read" + "  -while");
 
-                String name = newPetResult.getString("name");
+                String name = newPetList.get(i).getName();
                 System.out.println( " From Pet Shadow Read " + name);
                 System.out.println( " From Pet Shadow Read " + oldPet.getName());
 
-                String birth_date = newPetResult.getString("birth_date");
+                //turn off repository date correction toggle for new db date
+                FeatureToggles.isEnableIncrementDate = false;
+                String birth_date = newPetList.get(i).getBirthDate().toString();
+                //turn the toggle back on
+                FeatureToggles.isEnableIncrementDate = true;
                 System.out.println( " From Pet Shadow Read " + birth_date);
                 System.out.println( " From Pet Shadow Read " + oldPet.getBirthDate().toString());
 
-                String type_id = newPetResult.getString("type_id");
+                String type_id = newPetList.get(i).getType().getId().toString();
                 System.out.println( " From Pet Shadow Read " + type_id);
-                System.out.println( " From Pet Shadow Read " + oldPet.getType());
+                System.out.println( " From Pet Shadow Read " + oldPet.getType().getId().toString());
 
-                String owner_id = newPetResult.getString("owner_id");
+                String owner_id = newPetList.get(i).getOwner().getId().toString();
                 System.out.println( " From Pet Shadow Read " + owner_id);
-                System.out.println( " From Pet Shadow Read " + oldPet.getOwner().toString());
+                System.out.println( " From Pet Shadow Read " + oldPet.getOwner().getId().toString());
 
                 HashMap inconsistencyRow = new HashMap();
                 inconsistencyRow.put("id",oldPet.getId());
@@ -86,24 +91,24 @@ public class PetShadowRead {
                     inconsistencyRow.replace("birth_date",oldPet.getBirthDate().toString());
                 }
 
-                if(!oldPet.getType().equals(type_id)){
+                if(!oldPet.getType().getId().toString().equals(type_id)){
                     isInconsistent=true;
 
                     strInconsistant += "Shadow Read Inconsistency found: From table pets, at id "+oldPet.getId()+
-                            ", at column type_id: " + oldPet.getType() +
+                            ", at column type_id: " + oldPet.getType().getId().toString() +
                             " | " + type_id + " \n";
 
-                    inconsistencyRow.replace("type_id",oldPet.getType());
+                    inconsistencyRow.replace("type_id",oldPet.getType().getId().toString());
                 }
 
-                if(!oldPet.getOwner().equals(owner_id)){
+                if(!oldPet.getOwner().getId().toString().equals(owner_id)){
                     isInconsistent=true;
 
                     strInconsistant += "Shadow Read Inconsistency found: From table pets, at id "+oldPet.getId()+
-                            ", at column type_id: " + oldPet.getOwner() +
+                            ", at column type_id: " + oldPet.getOwner().getId().toString() +
                             " | " + type_id + " \n";
 
-                    inconsistencyRow.replace("owner_id",oldPet.getOwner());
+                    inconsistencyRow.replace("owner_id",oldPet.getOwner().getId().toString());
                 }
 
                 if(isInconsistent){
@@ -111,6 +116,7 @@ public class PetShadowRead {
                     System.out.println(strInconsistant);
                     System.out.println( "Shadow Read Inconsistency count: " + readInconsistencies + " from Pet Shadow Read");
                     newPetPack.add(inconsistencyRow);
+                    inconsistencyId = oldPet.getId();
                 }else {
                     System.out.println( "Shadow Read Inconsistency count: " + readInconsistencies + " from Pet Shadow Read");
                     System.out.println( "Shadow Read successfully from Pet Shadow Read");
@@ -119,33 +125,12 @@ public class PetShadowRead {
 
             System.out.println( "Done while loop from Pet Shadow Read");
 
-            /** Previously for update
-             for(int i = 0; i<newPetPack.size();i++)
-            {
-                System.out.println( "start updating from Pet Shadow Read");
-                int id = Integer.parseInt(newPetPack.get(i).get("id").toString());
-
-                if(newPetPack.get(i).get("name") != null) {
-
-                    sqLitePetHelper.updateColById("name", newPetPack.get(i).get("name").toString(), id);
-                }
-                if(newPetPack.get(i).get("birth_date") != null) {
-
-                    sqLitePetHelper.updateColById("birth_date", newPetPack.get(i).get("birth_date").toString(), id);
-                }
-                if(newPetPack.get(i).get("type_id") != null) {
-
-                    sqLitePetHelper.updateColById("type_id", newPetPack.get(i).get("type_id").toString(), id);
-                }
-                if(newPetPack.get(i).get("updateColById") != null) {
-
-                    sqLitePetHelper.updateColById("owner_id", newPetPack.get(i).get("owner_id").toString(), id);
-                }
-            } **/
 
         }catch (Exception e){
             System.out.println(e.getMessage() + " Error from Pet Shadow Read");
         }
+
+        return inconsistencyId;
 
     }
 
