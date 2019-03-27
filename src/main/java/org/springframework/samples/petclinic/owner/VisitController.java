@@ -32,7 +32,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
 /**
  * @author Juergen Hoeller
@@ -86,17 +85,34 @@ class VisitController {
 
     // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
     @GetMapping("/owners/*/pets/{petId}/visits/new")
-    public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
-        System.out.println("shadow read");
-        if (FeatureToggles.isEnablePetVisit) {
-            VisitShadowRead visitShadowReader = new VisitShadowRead();
-            List<Visit> visitList = this.visits.findByPetId(petId);
-            //System.out.println(visitList .get(0).getPetId());
+    public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model)
+    {
+        if (FeatureToggles.isEnablePetVisit)
+            {
+                // Shadow read
+                if(FeatureToggles.isEnableShadowRead)
+                {
+                    VisitShadowRead visitShadowReader = new VisitShadowRead();
+                    List<Visit> visitList = this.visits.findByPetId(petId);
+                    int inconsistencyShadowReadCounter = 0;
+                    for (Visit visit : visitList) {
+                        System.out.println(visit.getPetId() + "from controller");
 
-            for(Visit visit :  visitList) {
-                System.out.println(visit.getPetId() + "from controller");
-                visitShadowReader.checkVisit(visit);
-            }
+                        //Shadow read return problem id
+                        int inconsistency_id = visitShadowReader.checkVisit(visit);
+
+                        //if it's not good call incremental replication
+                        if(inconsistency_id>-1){
+                            //TODO adapt the Increamental Replication
+                            inconsistencyShadowReadCounter++;
+                        }
+                    }
+
+                    if(inconsistencyShadowReadCounter == 0){
+                        //TODO change to logger info
+                        System.out.println("Shadow Read for visits passed from controller");
+                    }
+                }
             return "pets/createOrUpdateVisitForm";
         }
         return null;
@@ -109,7 +125,7 @@ class VisitController {
             return "pets/createOrUpdateVisitForm";
         } else {
             this.visits.save(visit);
-            if (isEnableShadowWrite) {
+            if (FeatureToggles.isEnableShadowWrite) {
                 System.out.println(visit.getDate()+" insert");
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
                 
