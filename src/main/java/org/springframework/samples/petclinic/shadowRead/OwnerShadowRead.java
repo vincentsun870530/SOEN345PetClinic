@@ -15,7 +15,7 @@ public class OwnerShadowRead {
 		UpdateOwner updateOwner = new UpdateOwner();
 		
 		@Async
-		public int checkOwner(Owner owner) throws SQLException{
+		public int checkOwner(Owner owner){
 			int inconsistencyId = -1;
 			//Owner in SqLite db with the specified id
 			ResultSet result = sqLiteDbConnector.selectById("owners", owner.getId());
@@ -25,22 +25,25 @@ public class OwnerShadowRead {
 			String address = null;
 			String city = null;
 			String telephone = null;
-			
-			//get the number of the column in the SqLite database
-			int first_name_col = result.findColumn("first_name");
-			int last_name_col = result.findColumn("last_name");
-			int address_col = result.findColumn("address");
-			int city_col = result.findColumn("city");
-			int telephone_col = result.findColumn("telephone");
-			
-			//Obtain the value of the row proper to the specified id nin the SqLite db
-			if(result != null) {
-				firstName = (String) result.getObject(first_name_col);
-				lastName = (String) result.getObject(last_name_col);
-				address = (String) result.getObject(address_col);
-				city = (String) result.getObject(city_col);
-				telephone = (String) result.getObject(telephone_col);
-			}
+
+			try {
+				//get the number of the column in the SqLite database
+				int first_name_col = result.findColumn("first_name");
+				int last_name_col = result.findColumn("last_name");
+				int address_col = result.findColumn("address");
+				int city_col = result.findColumn("city");
+				int telephone_col = result.findColumn("telephone");
+
+				//Obtain the value of the row proper to the specified id nin the SqLite db
+				if (result != null) {
+					firstName = (String) result.getObject(first_name_col);
+					lastName = (String) result.getObject(last_name_col);
+					address = (String) result.getObject(address_col);
+					city = (String) result.getObject(city_col);
+					telephone = (String) result.getObject(telephone_col);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();}
 
 			//checking that the values of the rows retrieved from both old and new databases are the same
 			//when the rows are different increment readConsistencies and print the inconsistency

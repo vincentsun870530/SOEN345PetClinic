@@ -120,7 +120,7 @@ class OwnerController {
     }
 
     @GetMapping("/owners")
-    public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) throws SQLException {
+    public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
         if (FeatureToggles.isEnableOwnerFind) {
             System.out.println("inside");
             // allow parameterless GET request for /owners to return all records
@@ -141,6 +141,7 @@ class OwnerController {
                 // 1 owner found
                 owner = results.iterator().next();
                 OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
+
                 int inconsistency_id = ownerShadowReader.checkOwner(owner);
                 if (inconsistency_id > -1) {
                     //TODO adapt incremental replication
