@@ -13,6 +13,7 @@ import java.util.List;
 
 public class SQLitePetHelper {
     private static final String INSERT_SQL = "INSERT INTO pets(name, birth_date, type_id, owner_id) VALUES(?, ?, ?, ?)";
+    private static final String UPDATE_SQL = "UPDATE pets SET name = ?, birth_date = ?, type_id = ?, owner_id = ?, WHERE ID = ?";
     private Connection connection = (SQLiteDBConnector.getInstance()).connect();
 
     private static SQLitePetHelper sqLitePetHelper = null;
@@ -42,6 +43,23 @@ public class SQLitePetHelper {
             e.printStackTrace();
         } finally {
             close(ps);
+        }
+        return numRowsInserted;
+    }
+
+    public int update(Pet pet, Owner owner) {
+        int numRowsInserted = 0;
+        PreparedStatement ps = null;
+        try{
+            PreparedStatement statement = this.connection.prepareStatement(UPDATE_SQL);
+            statement.setString(1, pet.getName());
+            statement.setString(2, pet.getBirthDate().toString());
+            statement.setInt(3, pet.getType().getId());
+            statement.setInt(4, owner.getId());
+            statement.setInt(5, pet.getId());
+            numRowsInserted = ps.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Exception in updating pet" + ex);
         }
         return numRowsInserted;
     }
