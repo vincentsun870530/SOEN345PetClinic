@@ -121,7 +121,6 @@ class OwnerController {
 
     @GetMapping("/owners")
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) throws SQLException {
-
         if (FeatureToggles.isEnableOwnerFind) {
             System.out.println("inside");
             // allow parameterless GET request for /owners to return all records
@@ -142,31 +141,28 @@ class OwnerController {
                 owner = results.iterator().next();
                 OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
                 int inconsistency_id = ownerShadowReader.checkOwner(owner);
-                if(inconsistency_id > -1){
+                if (inconsistency_id > -1) {
                     //TODO adapt incremental replication
                 }
 
                 return "redirect:/owners/" + owner.getId();
             } else {
                 // multiple owners found
-                //TODO shadow read as above but in a loop
-                OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
-                /*
-                 //TODO
-                 //This enhanced for loop was commented out because it fails the tests
-                 // Trying to solve this issue
+                if (FeatureToggles.isEnableOwnerFind) {
+                    OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
 
-                 for (Owner own : results) {
+                    for (Owner own : results) {
                         System.out.println(own.getId() + " Owner Id from controller");
                         //Shadow read return problem id
                         ownerShadowReader.checkOwner(own);
-                       //if it's not good call incremental replication
-                    }
-                 */
-                model.put("selections", results);
-                return "owners/ownersList";
-            }
+                        //if it's not good call incremental replication
 
+                        model.put("selections", results);
+                        return "owners/ownersList";
+                    }
+                }
+
+            }
         }
         return null;
     }

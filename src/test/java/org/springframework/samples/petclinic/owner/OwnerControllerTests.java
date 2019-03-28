@@ -6,6 +6,8 @@ import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableOwnerFind;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -19,14 +21,9 @@ import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerController;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
-import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
@@ -108,6 +105,7 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessCreationFormSuccess_mockito() throws Exception {
+		isEnableShadowWrite = false;
     	Owner owner = mock(Owner.class);
     	OwnerRepository owners= mock(OwnerRepository.class);
     	BindingResult result = mock(BindingResult.class);
@@ -221,25 +219,27 @@ public class OwnerControllerTests {
 		//verify(results, times(1)).isEmpty();
 		//verify(results,times(1)).size();
 		//verify(results, times(1)).iterator().next();
-		String str2 =  "owners/findOwners";
+		//TODO replace the value of str2 by "owners/findOwners" when toggles are removed
+		String str2 =  null;
 		assertEquals(str1, str2);
 	}
     
     @Test
     public void testProcessFindFormSuccessMultipleOwners_mockito() throws Exception {
+		isEnableOwnerFind = false;
     	Owner owner = mock(Owner.class);
     	BindingResult result = mock(BindingResult.class);
     	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
     	OwnerRepository owners= mock(OwnerRepository.class);;
     	Collection<Owner> results = (Collection<Owner>) mock(Collection.class);
-		OwnerShadowRead shadowReader = mock(OwnerShadowRead.class);
     	OwnerController ownerController = new OwnerController(owners);
     	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
     	when(results.isEmpty()).thenReturn(false);
 		when(results.size()).thenReturn(2);
 		String str1 = ownerController.processFindForm(owner, result, model);
-    	String str2 = "owners/ownersList";
-    	
+    	//TODO replace the value of str2 by "owners/ownersList" when toggles are removed
+		// String str2 = "owners/ownersList";
+		String str2 = null;
     	//verify(results,times(1)).size();
     	//verify(model,times(1)).put("selections", results);
     	
@@ -249,6 +249,7 @@ public class OwnerControllerTests {
     }
     @Test
     public void testProcessFindFormByLastName() throws Exception {
+		isEnableOwnerFind = true;
         given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
         mockMvc.perform(get("/owners")
             .param("lastName", "Franklin")
@@ -270,6 +271,7 @@ public class OwnerControllerTests {
 
     @Test
     public void testProcessFindFormNoOwnersFound_mockito() throws Exception {
+		isEnableOwnerFind = true;
     	Owner owner = mock(Owner.class);
     	BindingResult result = mock(BindingResult.class);
     	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
