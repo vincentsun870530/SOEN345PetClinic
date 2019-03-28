@@ -16,10 +16,11 @@
 package org.springframework.samples.petclinic.vet;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.shadowRead.VetShadowRead;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import java.util.Collection;
 import java.util.Map;
 
@@ -54,8 +55,37 @@ class VetController {
             // Here we are returning an object of type 'Vets' rather than a collection of Vet
             // objects so it is simpler for Object-Xml mapping
             this.vets = vets;
-            vets.getVetList().addAll(this.vetrepository.findAll());
+            Collection<Vet> vetList = this.vetrepository.findAll();
+            vets.getVetList().addAll(vetList);
             model.put("vets", vets);
+
+            // Shadow read
+            if(FeatureToggles.isEnableShadowRead)
+            {
+                VetShadowRead vetShadowReader = new VetShadowRead();
+                //Collection<Vet> vetShadowList = this.vetrepository.findAll();
+                int inconsistencyShadowReadCounter = 0;
+
+                for (Vet vet : vetList) {
+                    //TODO change to logger debug
+                    System.out.println(vet.getFirstName() + " from controller");
+
+                    //Shadow read return problem id
+                    int inconsistency_id = vetShadowReader.checkVet(vet);
+
+                    //if it's not good call incremental replication
+                    if(inconsistency_id>-1){
+                        //TODO adapt the Increamental Replication
+                        inconsistencyShadowReadCounter++;
+                    }
+                }
+                if(inconsistencyShadowReadCounter == 0){
+                    //TODO change to logger info
+                    System.out.println("Shadow Read for vets passed from controller");
+                }
+
+            }
+
             return "vets/vetList";
         }
         return null;
@@ -73,7 +103,33 @@ class VetController {
         // Here we are returning an object of type 'Vets' rather than a collection of Vet
         // objects so it is simpler for JSon/Object mapping
         this.vets = vets;
-        vets.getVetList().addAll(this.vetrepository.findAll());
+        Collection<Vet> vetList = this.vetrepository.findAll();
+        vets.getVetList().addAll(vetList);
+        // Shadow read
+        if(FeatureToggles.isEnableShadowRead)
+        {
+            VetShadowRead vetShadowReader = new VetShadowRead();
+            //Collection<Vet> vetShadowList = this.vetrepository.findAll();
+            int inconsistencyShadowReadCounter = 0;
+
+            for (Vet vet : vetList) {
+                System.out.println(vet.getFirstName() + "from controller");
+
+                //Shadow read return problem id
+                int inconsistency_id = vetShadowReader.checkVet(vet);
+
+                //if it's not good call incremental replication
+                if(inconsistency_id>-1){
+                    //TODO adapt the Increamental Replication
+                    inconsistencyShadowReadCounter++;
+                }
+            }
+            if(inconsistencyShadowReadCounter == 0){
+                //TODO change to logger info
+                System.out.println("Shadow Read for vets passed from controller");
+            }
+
+        }
         return vets;
     }
 

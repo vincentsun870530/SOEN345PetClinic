@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.shadowRead.VisitShadowRead;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
@@ -90,18 +91,28 @@ class VisitController {
             {
                 // Shadow read
                 if(FeatureToggles.isEnableShadowRead)
-                    {
+                {
                     VisitShadowRead visitShadowReader = new VisitShadowRead();
                     List<Visit> visitList = this.visits.findByPetId(petId);
-                    //System.out.println(visitList .get(0).getPetId());
-
+                    int inconsistencyShadowReadCounter = 0;
                     for (Visit visit : visitList) {
                         System.out.println(visit.getPetId() + "from controller");
+
                         //Shadow read return problem id
-                        visitShadowReader.checkVisit(visit);
+                        int inconsistency_id = visitShadowReader.checkVisit(visit);
+
                         //if it's not good call incremental replication
+                        if(inconsistency_id>-1){
+                            //TODO adapt the Increamental Replication
+                            inconsistencyShadowReadCounter++;
+                        }
                     }
-            }
+
+                    if(inconsistencyShadowReadCounter == 0){
+                        //TODO change to logger info
+                        System.out.println("Shadow Read for visits passed from controller");
+                    }
+                }
             return "pets/createOrUpdateVisitForm";
         }
         return null;
@@ -117,6 +128,11 @@ class VisitController {
             if (FeatureToggles.isEnableShadowWrite) {
                 System.out.println(visit.getDate()+" insert");
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
+                
+            }
+            if (FeatureToggles.isEnablePetVisitIR) {
+                IncrementalReplication.addToCreateList("visits," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                IncrementalReplication.incrementalReplication();
             }
             return "redirect:/owners/{ownerId}";
         }

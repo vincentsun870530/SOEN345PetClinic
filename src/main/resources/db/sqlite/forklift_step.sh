@@ -1,7 +1,8 @@
+#!/bin/bash
 #1.Get dump.sql from mySQL db
 echo "MySQLDUMP starting....."
-#mysql 8.0 
-#mysqldump --column-statistics=0 --protocol=TCP -t -h localhost -P 3306 -u root --password=root petclinic > dump.sql 
+#mysql 8.0
+#mysqldump --column-statistics=0 --protocol=TCP -t -h localhost -P 3306 -u root --password=root petclinic > dump.sql
 #mysql 5.7
 mysqldump --protocol=TCP -t -h localhost -P 3306 -u root --password=root petclinic > dump.sql
 sleep 3

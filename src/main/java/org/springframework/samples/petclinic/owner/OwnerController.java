@@ -21,6 +21,7 @@ import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.stereotype.Component;
@@ -81,7 +82,7 @@ class OwnerController {
     @GetMapping("/owners/new")
     public String initCreationForm(Map<String, Object> model , Owner owner) {
 
-        if(FeatureToggles.isEnableOwnerCreate) {
+        if(FeatureToggles.isEnableOwnerCreate == true) {
             this.owner = owner;
             model.put("owner", owner);
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
@@ -98,6 +99,12 @@ class OwnerController {
             //Shadow write
             if (isEnableShadowWrite) {
                 SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
+                
+            }
+            
+            if(FeatureToggles.isEnableOwnerCreateIR == true) {
+                IncrementalReplication.addToCreateList("owners," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                IncrementalReplication.incrementalReplication();
             }
             return "redirect:/owners/" + owner.getId();
         }
@@ -122,7 +129,6 @@ class OwnerController {
     @GetMapping("/owners")
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
         if (FeatureToggles.isEnableOwnerFind) {
-            System.out.println("inside");
             // allow parameterless GET request for /owners to return all records
             if (owner.getLastName() == null) {
                 owner.setLastName(""); // empty string signifies broadest possible search
@@ -203,6 +209,10 @@ class OwnerController {
         } else {
             owner.setId(ownerId);
             this.owners.save(owner);
+            if (FeatureToggles.isEnableOwnerEditIR) {
+                IncrementalReplication.addToUpdateList("owners," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                IncrementalReplication.incrementalReplication();
+            }
             return "redirect:/owners/{ownerId}";
         }
     }

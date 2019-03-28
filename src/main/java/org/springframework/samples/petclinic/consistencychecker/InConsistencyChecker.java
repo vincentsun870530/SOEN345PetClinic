@@ -9,5 +9,5 @@ public interface InConsistencyChecker {
     // public void setNewData(List<Owner> newTableData);
     public int consistencyChecker();
     public double calculateConsistencyChecker(int inconsistency);
-    public void printViolationMessage(int id, String oldFirstName, String newFirstNa);
+    public void printViolationMessage(int id, String oldData, String newData);
 }
