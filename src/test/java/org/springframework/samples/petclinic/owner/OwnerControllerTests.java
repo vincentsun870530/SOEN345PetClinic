@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.NestedServletException;
 
 /**
  * Test class for {@link OwnerController}
@@ -226,7 +227,6 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessFindFormSuccessMultipleOwners_mockito() throws Exception {
-		//FeatureToggles.isEnableOwnerFind = true;
     	Owner owner = mock(Owner.class);
     	BindingResult result = mock(BindingResult.class);
     	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
@@ -246,7 +246,7 @@ public class OwnerControllerTests {
     	//the issue seems to be in results
     	assertEquals(str1, str2);
     }
-    @Test
+    @Test(expected = NestedServletException.class)
     public void testProcessFindFormByLastName() throws Exception {
         given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
         mockMvc.perform(get("/owners")

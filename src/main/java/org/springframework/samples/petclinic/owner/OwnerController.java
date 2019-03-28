@@ -111,7 +111,7 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
-//TODO shadow read
+
         if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);
             return "owners/findOwners";
