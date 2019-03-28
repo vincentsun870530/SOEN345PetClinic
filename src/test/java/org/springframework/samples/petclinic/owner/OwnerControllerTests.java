@@ -6,8 +6,7 @@ import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableOwnerFind;
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -72,6 +71,7 @@ public class OwnerControllerTests {
 
     @Test
     public void testInitCreationForm() throws Exception {
+		isEnableOwnerCreate =true;
         mockMvc.perform(get("/owners/new"))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("owner"))
@@ -251,6 +251,7 @@ public class OwnerControllerTests {
     @Test
     public void testProcessFindFormByLastName() throws Exception {
 		isEnableOwnerFind = true;
+		isEnableOwnerCreate =true;
         given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
         mockMvc.perform(get("/owners")
             .param("lastName", "Franklin")
