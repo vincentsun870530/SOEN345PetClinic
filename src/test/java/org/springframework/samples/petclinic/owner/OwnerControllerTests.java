@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerController;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
@@ -84,6 +85,7 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessCreationFormSuccess() throws Exception {
+		FeatureToggles.isEnableShadowWrite = false;
         mockMvc.perform(post("/owners/new")
             .param("firstName", "Joe")
             .param("lastName", "Bloggs")
@@ -96,6 +98,7 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessCreationFormSuccess_mockito() throws Exception {
+		FeatureToggles.isEnableShadowWrite = false;
     	Owner owner = mock(Owner.class);
     	OwnerRepository owners= mock(OwnerRepository.class);
     	BindingResult result = mock(BindingResult.class);
@@ -109,6 +112,7 @@ public class OwnerControllerTests {
 
     @Test
     public void testProcessCreationFormHasErrors() throws Exception {
+		FeatureToggles.isEnableShadowWrite = false;
         mockMvc.perform(post("/owners/new")
             .param("firstName", "Joe")
             .param("lastName", "Bloggs")
@@ -123,6 +127,7 @@ public class OwnerControllerTests {
 
     @Test
     public void testProcessCreationFormHasErrors_mockito() throws Exception {
+		FeatureToggles.isEnableShadowWrite = false;
     	Owner owner = mock(Owner.class);
     	OwnerRepository owners= mock(OwnerRepository.class);
     	BindingResult result = mock(BindingResult.class);
@@ -308,6 +313,7 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessUpdateOwnerFormSuccess() throws Exception {
+		FeatureToggles.isEnableShadowWrite = false;
         mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
             .param("firstName", "Joe")
             .param("lastName", "Bloggs")
@@ -321,6 +327,7 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessUpdateOwnerFormSuccess_mockito() throws Exception {
+		FeatureToggles.isEnableShadowWrite = false;
     	int ownerId = 1;
     	Owner owner = mock(Owner.class);
     	BindingResult result = mock(BindingResult.class);
@@ -336,6 +343,7 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessUpdateOwnerFormHasErrors() throws Exception {
+		FeatureToggles.isEnableShadowWrite = false;
         mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID)
             .param("firstName", "Joe")
             .param("lastName", "Bloggs")
@@ -349,6 +357,7 @@ public class OwnerControllerTests {
     }
     
     public void testProcessUpdateOwnerFormHasErrors_mockito() throws Exception {
+		FeatureToggles.isEnableShadowWrite = false;
     	int ownerId=1;
     	Owner owner = mock(Owner.class);
     	BindingResult result = mock(BindingResult.class);
