@@ -150,19 +150,21 @@ class OwnerController {
                 return "redirect:/owners/" + owner.getId();
             } else {
                 // multiple owners found
-                if (FeatureToggles.isEnableOwnerFind) {
-                    OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
-
-                    for (Owner own : results) {
-                        System.out.println(own.getId() + " Owner Id from controller");
-                        //Shadow read return problem id
-                        ownerShadowReader.checkOwner(own);
-                        //if it's not good call incremental replication
-
+                    if (FeatureToggles.isEnableShadowRead) {
+                        OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
+                        try {
+                            for (Owner own : results) {
+                                System.out.println(own.getId() + " Owner Id from controller");
+                                //Shadow read return problem id
+                                ownerShadowReader.checkOwner(own);
+                                //if it's not good call incremental replication
+                            }
+                        }catch(Exception e){
+                            e.getMessage();
+                        }
+                    }
                         model.put("selections", results);
                         return "owners/ownersList";
-                    }
-                }
 
             }
         }

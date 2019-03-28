@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
@@ -71,7 +72,6 @@ public class OwnerControllerTests {
 
     @Test
     public void testInitCreationForm() throws Exception {
-		isEnableOwnerCreate =true;
         mockMvc.perform(get("/owners/new"))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists("owner"))
@@ -105,7 +105,7 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessCreationFormSuccess_mockito() throws Exception {
-		isEnableShadowWrite = false;
+    	FeatureToggles.isEnableShadowWrite = false;
     	Owner owner = mock(Owner.class);
     	OwnerRepository owners= mock(OwnerRepository.class);
     	BindingResult result = mock(BindingResult.class);
@@ -166,7 +166,6 @@ public class OwnerControllerTests {
     }
     @Test
     public void testProcessFindFormSuccess() throws Exception {
-		isEnableOwnerFind = true;
         given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, betty));
         mockMvc.perform(get("/owners"))
             .andExpect(status().isOk())
@@ -220,14 +219,14 @@ public class OwnerControllerTests {
 		//verify(results, times(1)).isEmpty();
 		//verify(results,times(1)).size();
 		//verify(results, times(1)).iterator().next();
-		//TODO replace the value of str2 by "owners/findOwners" when toggles are removed
-		String str2 =  null;
+
+		String str2 =  "owners/findOwners";
 		assertEquals(str1, str2);
 	}
     
     @Test
     public void testProcessFindFormSuccessMultipleOwners_mockito() throws Exception {
-		isEnableOwnerFind = false;
+		//FeatureToggles.isEnableOwnerFind = true;
     	Owner owner = mock(Owner.class);
     	BindingResult result = mock(BindingResult.class);
     	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
@@ -238,9 +237,8 @@ public class OwnerControllerTests {
     	when(results.isEmpty()).thenReturn(false);
 		when(results.size()).thenReturn(2);
 		String str1 = ownerController.processFindForm(owner, result, model);
-    	//TODO replace the value of str2 by "owners/ownersList" when toggles are removed
-		// String str2 = "owners/ownersList";
-		String str2 = null;
+		String str2 = "owners/ownersList";
+
     	//verify(results,times(1)).size();
     	//verify(model,times(1)).put("selections", results);
     	
@@ -271,7 +269,6 @@ public class OwnerControllerTests {
 
     @Test
     public void testProcessFindFormNoOwnersFound_mockito() throws Exception {
-		isEnableOwnerFind = true;
     	Owner owner = mock(Owner.class);
     	BindingResult result = mock(BindingResult.class);
     	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
