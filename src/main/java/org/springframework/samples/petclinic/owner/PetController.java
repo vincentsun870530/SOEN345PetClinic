@@ -211,10 +211,31 @@ class PetController {
         } else {
             owner.addPet(pet);
             this.pets.save(pet);
-            if (FeatureToggles.isEnablePetEditIR) {
-                IncrementalReplication.addToUpdateList("pets," + pet.getId() + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
-                IncrementalReplication.incrementalReplication();
+
+            if (FeatureToggles.isEnableShadowWrite) {
+                SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
+                System.out.println(pet.getName() + " update");
+                int responseRowId = SQLitePetHelper.getInstance().update(pet, owner);
+                System.out.println(responseRowId + "responseRowId");
+                FeatureToggles.isEnableIncrementDate = true;
+                // call incremental consistency check
+                boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"pets");
+                System.out.println(isConsistency + "result");
+                // if incremental consistency check is not good call incremental replication
+                if (FeatureToggles.isEnableIR && isConsistency == false) {
+                    FeatureToggles.isEnableIncrementDate = false;
+                    //System.out.println("incremental replication!!!");
+                    IncrementalReplication.addToUpdateList("pets," + responseRowId + "," + pet.getName()+ "," + pet.getBirthDate().toString()+ "," + pet.getType().getId()+ "," + owner.getId());
+                    IncrementalReplication.incrementalReplication();
+                    FeatureToggles.isEnableIncrementDate = true;
+                }
             }
+
+//            if (FeatureToggles.isEnablePetEditIR) {
+//                IncrementalReplication.addToUpdateList("pets," + pet.getId() + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
+//                IncrementalReplication.incrementalReplication();
+//
+//            }
             return "redirect:/owners/{ownerId}";
         }
     }
