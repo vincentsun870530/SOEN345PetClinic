@@ -110,6 +110,11 @@ class VisitController {
                         //if it's not good call incremental replication
                         if(inconsistency_id>-1){
                             //TODO adapt the Increamental Replication
+                            FeatureToggles.isEnableIncrementDate = false;
+                            //System.out.println("incremental replication!!!");
+                            IncrementalReplication.addToUpdateList("visits," + inconsistency_id + "," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                            IncrementalReplication.incrementalReplication();
+                            FeatureToggles.isEnableIncrementDate = true;
                             inconsistencyShadowReadCounter++;
                         }
                     }
