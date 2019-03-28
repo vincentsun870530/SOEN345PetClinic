@@ -133,8 +133,8 @@ class VisitController {
             // shadow write
             if (FeatureToggles.isEnableShadowWrite) {
 
-                //To make db difference
-                //FeatureToggles.isEnableIncrementDate = false;
+                //To make db difference comment out the isEnableIncrementDate toggle
+                FeatureToggles.isEnableIncrementDate = false;
                 System.out.println(visit.getDate() + " insert");
                 int responseRowId = SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
                 System.out.println(responseRowId+"responseRowId");
