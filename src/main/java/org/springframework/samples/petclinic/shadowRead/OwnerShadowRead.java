@@ -5,6 +5,8 @@ import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.scheduling.annotation.Async;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OwnerShadowRead {
 		
@@ -13,7 +15,8 @@ public class OwnerShadowRead {
 		SQLiteDBConnector sqLiteDbConnector = SQLiteDBConnector.getInstance();
 		SQLiteOwnerHelper sqLiteOwnerHelper = SQLiteOwnerHelper.getInstance();
 		UpdateOwner updateOwner = new UpdateOwner();
-		
+        private static Logger log = LoggerFactory.getLogger(OwnerShadowRead.class);
+
 		@Async
 		public int checkOwner(Owner owner){
 			int inconsistencyId = -1;
@@ -50,56 +53,57 @@ public class OwnerShadowRead {
 			if(!(owner.getFirstName().equals(firstName))){
 				ReadInconsistency(owner.getFirstName(), firstName);
 			//	updateOwner.updateFirstName(owner);
+				inconsistencyId ++;
 			}
-			//TODO change this to logger debug
-			System.out.println(owner.getFirstName() + " | " + firstName );
+
+			log.debug(owner.getFirstName() + " | " + firstName );
 
 			if(!(owner.getLastName().equals(lastName))){
 				ReadInconsistency(owner.getLastName(), lastName);
 			//	updateOwner.updateLastName(owner);
+				inconsistencyId ++;
 			}
-			//TODO change this to logger debug
-			System.out.println(owner.getLastName() + " | " + lastName );
+
+            log.debug(owner.getLastName() + " | " + lastName );
 
 			if(!(owner.getAddress().equals(address))){
 				ReadInconsistency(owner.getAddress(), address);
 			//	updateOwner.updateAddress(owner);
+				inconsistencyId ++;
 			}
-			//TODO change this to logger debug
-			System.out.println(owner.getAddress() + " | " + address );
+
+            log.debug(owner.getAddress() + " | " + address );
 
 			if(!(owner.getCity().equals(city))){
 				ReadInconsistency(owner.getCity(), city);
 			//	updateOwner.updateCity(owner);
+				inconsistencyId ++;
 			}
-			//TODO change this to logger debug
-			System.out.println(owner.getCity() + " | " + city );
+
+            log.debug(owner.getCity() + " | " + city );
 
 			if(!(owner.getTelephone().equals(telephone))){
 				ReadInconsistency(owner.getTelephone(), telephone);
 			//	updateOwner.updateTelephone(owner);
+				inconsistencyId ++;
 			}
-			//TODO change this to logger debug
-			System.out.println(owner.getTelephone() + " | " + telephone );
+
+            log.debug(owner.getTelephone() + " | " + telephone );
 
 			return inconsistencyId;
 		}
 
 		//print read inconsistency
 		private void ReadInconsistency(Object oldRow, Object newRow) {
-			//TODO change this to logger error
-			System.out.println("\n Old object in Mysql db does not match the new object in SqLite db" + "\n Old: " + oldRow	+ "\n New: " + newRow);
+			log.error("\n Old object in Mysql db does not match the new object in SqLite db" + "\n Old: " + oldRow	+ "\n New: " + newRow);
 			readInconsistencies++;
-			System.out.println("\n Read inconsistencies = " + readInconsistencies);
+            log.error("\n Read inconsistencies = " + readInconsistencies);
 		}
 		
 		public int getReadInconsistencies() {
 			return readInconsistencies;
 		}
-		public int getInconsistencies() {
-			
-			return inconsistencies;
-		}
+
 
 	}
 

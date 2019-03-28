@@ -46,7 +46,6 @@ public class SQLiteOwnerHelper {
     //update
     public void updateColById(String colName, String colValue, int id)
     {
-        //TODO use the UpdateOwner instead if u have time
         SQLiteDBConnector.getInstance().updateById("owners",colName,colValue,id);
 
     }

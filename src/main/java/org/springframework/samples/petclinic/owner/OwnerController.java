@@ -40,6 +40,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
@@ -56,6 +58,7 @@ class OwnerController {
     private final OwnerRepository owners;
     private Owner owner;
     private Collection<Owner> results;
+    private static Logger log = LoggerFactory.getLogger(OwnerController.class);
 
     @Autowired
    public OwnerController(OwnerRepository clinicService) {
@@ -149,13 +152,13 @@ class OwnerController {
 
                 //shadow read for owner
                 OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
-                //TODO change this to logger trace
-                System.out.println(owner.getId() + " Owner Id from controller");
+                log.trace(owner.getId() + " Owner Id from controller");
                 //Shadow read return problem id
                 int inconsistency_id = ownerShadowReader.checkOwner(owner);
                 //if it's not good call incremental replication
                 if (inconsistency_id > -1) {
-                    //TODO adapt incremental replication
+                    IncrementalReplication.addToUpdateList("owners" + "," + owner.getId() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                    IncrementalReplication.incrementalReplication();
                 }
 
                 return "redirect:/owners/" + owner.getId();
@@ -166,13 +169,13 @@ class OwnerController {
                         try {
                             //shadow read for owner
                             for (Owner own : results) {
-                                //TODO change this to logger trace
-                                System.out.println(own.getId() + " Owner Id from controller");
+                                log.trace(own.getId() + " Owner Id from controller");
                                 //Shadow read return problem id
                                 int inconsistency_id = ownerShadowReader.checkOwner(own);
                                 //if it's not good call incremental replication
                                 if (inconsistency_id > -1) {
-                                    //TODO adapt incremental replication
+                                    IncrementalReplication.addToUpdateList("owners" + "," + owner.getId() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                                    IncrementalReplication.incrementalReplication();
                                 }
                             }
                         }catch(Exception e){
@@ -210,7 +213,7 @@ class OwnerController {
             owner.setId(ownerId);
             this.owners.save(owner);
             if (FeatureToggles.isEnableOwnerEditIR) {
-                IncrementalReplication.addToUpdateList("owners," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                IncrementalReplication.addToUpdateList("owners" + "," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
                 IncrementalReplication.incrementalReplication();
             }
             return "redirect:/owners/{ownerId}";

@@ -94,7 +94,9 @@ public class OwnerControllerTests {
     
     @Test
     public void testProcessCreationFormSuccess() throws Exception {
-        mockMvc.perform(post("/owners/new")
+		// isEnableShadowWrite = false fixes bug writing to sQLite DB
+    	isEnableShadowWrite = false;
+    	mockMvc.perform(post("/owners/new")
             .param("firstName", "Joe")
             .param("lastName", "Bloggs")
             .param("address", "123 Caramel Street")

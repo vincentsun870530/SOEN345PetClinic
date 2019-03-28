@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.VisitShadowRead;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
@@ -31,7 +32,8 @@ import java.text.SimpleDateFormat;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Juergen Hoeller
@@ -45,6 +47,7 @@ class VisitController {
 
     private final VisitRepository visits;
     private final PetRepository pets;
+    private static Logger log = LoggerFactory.getLogger(VisitController.class);
     Visit visit;
 
 
@@ -109,8 +112,7 @@ class VisitController {
                     }
 
                     if(inconsistencyShadowReadCounter == 0){
-                        //TODO change to logger info
-                        System.out.println("Shadow Read for visits passed from controller");
+                        log.info("Shadow Read for visits passed from controller");
                     }
                 }
             return "pets/createOrUpdateVisitForm";
@@ -126,7 +128,7 @@ class VisitController {
         } else {
             this.visits.save(visit);
             if (FeatureToggles.isEnableShadowWrite) {
-                System.out.println(visit.getDate()+" insert");
+                log.trace(visit.getDate()+" insert");
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
                 
             }
