@@ -65,8 +65,9 @@ public class VisitConsistencyChecker implements InConsistencyChecker {
     }
 
     public int visitCheckConsistency(Visit oldVisit, Visit newVisit) {
-        int inconsistency = 0;
-        if (newVisit.getId() == oldVisit.getId()) {
+       int inconsistency = 0;
+       try{
+       if (newVisit.getId() == oldVisit.getId()) {
             int atID = newVisit.getId();
             if (inconsistency != 0) {
                 System.out.println("OLD:" + oldVisit);
@@ -89,9 +90,12 @@ public class VisitConsistencyChecker implements InConsistencyChecker {
         } else {
             System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldVisit.getId() + " != " + newVisit.getId());
             inconsistency++;
-        }
+        }}catch (Exception e){
+           System.out.println(e.getMessage());
+       }
         return inconsistency;
     }
+
 
     public double calculateConsistencyChecker(int inconsistency) {
         int sizeOfVisits = oldVisitsData.size();

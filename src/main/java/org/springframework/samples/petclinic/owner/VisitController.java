@@ -17,7 +17,10 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
-import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
+
+//import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
+
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.shadowRead.VisitShadowRead;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
@@ -127,14 +130,27 @@ class VisitController {
             return "pets/createOrUpdateVisitForm";
         } else {
             this.visits.save(visit);
+            // shadow write
             if (FeatureToggles.isEnableShadowWrite) {
-                log.trace(visit.getDate()+" insert");
-                SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
-                
-            }
-            if (FeatureToggles.isEnablePetVisitIR) {
-                IncrementalReplication.addToCreateList("visits," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
-                IncrementalReplication.incrementalReplication();
+
+                //To make db difference
+                //FeatureToggles.isEnableIncrementDate = false;
+                System.out.println(visit.getDate() + " insert");
+                int responseRowId = SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
+                System.out.println(responseRowId+"responseRowId");
+                FeatureToggles.isEnableIncrementDate = true;
+                // call incremental consistency check
+                boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"visits");
+                System.out.println(isConsistency+"result");
+                // if incremental consistency check is not good call incremental replication
+                if (FeatureToggles.isEnableIR && isConsistency == false) {
+                    FeatureToggles.isEnableIncrementDate = false;
+                    //System.out.println("incremental replication!!!");
+                    IncrementalReplication.addToCreateList("visits," + responseRowId + "," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                    IncrementalReplication.incrementalReplication();
+                    FeatureToggles.isEnableIncrementDate = true;
+                }
+
             }
             return "redirect:/owners/{ownerId}";
         }
