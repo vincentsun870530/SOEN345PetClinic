@@ -194,7 +194,7 @@ class OwnerController {
 //                //To make db difference
 //                System.out.println(owner.getFirstName() + " " + owner.getLastName() + " update");
 //                // Implement an update Form
-//                int responseRowId = SQLiteOwnerHelper.getInstance().update(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
+//                int responseRowId = SQLiteOwnerHelper.getInstance().update(owner);
 //                System.out.println(responseRowId + "responseRowId");
 //                FeatureToggles.isEnableIncrementDate = true;
 //                // call incremental consistency check
