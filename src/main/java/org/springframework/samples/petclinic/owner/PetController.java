@@ -103,16 +103,16 @@ class PetController {
                 SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
                 
             }
-            if (FeatureToggles.isEnablePetAddIR) {
-                IncrementalReplication.addToCreateList("pets," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
-                IncrementalReplication.incrementalReplication();
-            }
         }
         if (result.hasErrors()) {
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
             this.pets.save(pet);
+            if (FeatureToggles.isEnablePetAddIR) {
+                IncrementalReplication.addToCreateList("pets," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
+                IncrementalReplication.incrementalReplication();
+            }
             return "redirect:/owners/{ownerId}";
         }
     }
