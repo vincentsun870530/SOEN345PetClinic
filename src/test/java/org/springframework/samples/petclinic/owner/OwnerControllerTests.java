@@ -250,7 +250,6 @@ public class OwnerControllerTests {
     }
     @Test
     public void testProcessFindFormByLastName() throws Exception {
-		isEnableOwnerFind = true;
         given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
         mockMvc.perform(get("/owners")
             .param("lastName", "Franklin")
