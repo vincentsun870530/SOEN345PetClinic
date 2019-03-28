@@ -16,6 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConsistencyChecker {
+    public static void main(String[] args) {
+        System.out.println("Owner Consistency Check");
+        ownerConsCheck();
+        System.out.println("\nPet Consistency Check");
+        petConsCheck();
+        System.out.println("\nSpecialty Consistency Check");
+        specialtyConsCheck();
+        System.out.println("\nType Consistency Check");
+        typeConsCheck();
+        System.out.println("\nVet Consistency Check");
+        vetConsCheck();
+        System.out.println("\nVisit Consistency Check");
+        visitConsCheck();
+    }
+
     public static void ownerConsCheck() {
         // START OF CONSISTENCY CHECKER FOR OWNER
         ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("owners", "id");
