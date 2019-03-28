@@ -51,6 +51,7 @@ public class SQLiteIncrementalReplicationHelper {
              * */
             query = returnUpdateQuery(dataArray);
             stmt.executeUpdate(query);
+            close(stmt);
             return true;
         } catch (SQLException exception) {
             System.out.println(" Update Failed: " + exception.getMessage());
