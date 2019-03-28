@@ -121,7 +121,7 @@ class OwnerController {
 
     @GetMapping("/owners")
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) throws SQLException {
-        if (FeatureToggles.isEnableOwnerFind) {
+
             System.out.println("inside");
             // allow parameterless GET request for /owners to return all records
             if (owner.getLastName() == null) {
@@ -132,6 +132,7 @@ class OwnerController {
             //this.results = this.owners.findByLastName(owner.getLastName());
             setResults(owner);
             System.out.println(results.toString());
+            if (FeatureToggles.isEnableOwnerFind) {
             if (results.isEmpty()) {
                 // no owners found
                 result.rejectValue("lastName", "notFound", "not found");
