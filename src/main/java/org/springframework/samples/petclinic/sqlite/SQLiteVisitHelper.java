@@ -30,12 +30,15 @@ public class SQLiteVisitHelper {
         int numRowsInserted = 0;
         PreparedStatement ps = null;
         try {
-            ps = this.connection.prepareStatement(INSERT_SQL);
+            ps = this.connection.prepareStatement(INSERT_SQL,PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, pet_id);
             ps.setString(2,visit_date);
             ps.setString(3, description);
-            numRowsInserted = ps.executeUpdate();
-
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                numRowsInserted = rs.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

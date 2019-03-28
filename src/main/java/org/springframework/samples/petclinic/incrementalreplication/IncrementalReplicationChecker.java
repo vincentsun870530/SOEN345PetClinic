@@ -38,6 +38,7 @@ public class IncrementalReplicationChecker {
                     Visit oldVisit = visitRSet(oldDatabase);
                     Visit newVisit = visitRSet(newDatabase);
                     isInconsistency = new VisitConsistencyChecker().visitCheckConsistency(oldVisit, newVisit);
+                    System.out.println("IN SWITCH isInconsistency:" + isInconsistency);
             }
             if(isInconsistency != 0) {
                 System.out.println("isInconsistency:" + isInconsistency);
@@ -118,6 +119,7 @@ public class IncrementalReplicationChecker {
             visit.setDate(LocalDate.parse(visitDate));
             visit.setDescription(description);
         }
+        System.out.println(visit.toString());
         return visit;
     }
     

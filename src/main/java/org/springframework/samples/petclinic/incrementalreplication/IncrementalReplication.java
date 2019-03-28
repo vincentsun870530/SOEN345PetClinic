@@ -71,11 +71,17 @@ public class IncrementalReplication {
                 data = createArray.get(index);
                 splittedData = data.split(",");
                 String tableName = splittedData[0];
-                int id = SQLiteIncrementalReplicationHelper.getInstance().insertData(splittedData);
-                if(id != 0) {
-                    IncrementalReplicationChecker.isConsistency(id, tableName);
+                int primaryKey = Integer.parseInt(splittedData[1]);
+                /*for(int k =0  ; k<splittedData.length;k++){
+                    System.out.println(splittedData[k]+k);
+                }*/
+                //System.out.println(splittedData.length+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                boolean isSuccess = SQLiteIncrementalReplicationHelper.getInstance().updateRow(splittedData);
+
+                if(isSuccess) {
+                    IncrementalReplicationChecker.isConsistency(primaryKey, tableName);
                 } else {
-                    System.out.println("Error in incrementalReplication(): ID(" + id + ") not found in table(" + tableName + ")");
+                    System.out.println("Error in incrementalReplication(): ID(" + primaryKey + ") not found in table(" + tableName + ")");
                 }
             }
         }
