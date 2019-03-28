@@ -67,7 +67,8 @@ class VetController {
                 int inconsistencyShadowReadCounter = 0;
 
                 for (Vet vet : vetList) {
-                    System.out.println(vet.getFirstName() + "from controller");
+                    //TODO change to logger debug
+                    System.out.println(vet.getFirstName() + " from controller");
 
                     //Shadow read return problem id
                     int inconsistency_id = vetShadowReader.checkVet(vet);

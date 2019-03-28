@@ -21,7 +21,7 @@ public class VetShadowRead {
     public int checkVet(Vet oldVet){
         System.out.println( " From Vet Shadow Read" + "  -start");
 
-        ResultSet newVetResult = SQLiteDBConnector.getInstance().selectById("vet", oldVet.getId());
+        ResultSet newVetResult = SQLiteDBConnector.getInstance().selectById("vets", oldVet.getId());
         int inconsistencyId = -1;
         ArrayList<HashMap> newVetCorrectionPack = new ArrayList();
         List<Vet> newVetList;
@@ -85,21 +85,10 @@ public class VetShadowRead {
             }
 
 
-
-
-
-
         } catch (Exception e){
         System.out.println(e.getMessage() + " Error From Vet Shadow Read");
     }
         return inconsistencyId;
-
-
-
-
-
-
-
 
 
     }
