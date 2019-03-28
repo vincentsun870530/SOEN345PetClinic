@@ -101,13 +101,13 @@ class OwnerController {
                 System.out.println(responseRowId + "responseRowId");
                 FeatureToggles.isEnableIncrementDate = true;
                 // call incremental consistency check
-                boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"owner");
+                boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"owners");
                 System.out.println(isConsistency+"result");
                 // if incremental consistency check is not good call incremental replication
                 if (FeatureToggles.isEnableIR && isConsistency == false) {
                     FeatureToggles.isEnableIncrementDate = false;
                     //System.out.println("incremental replication!!!");
-                    IncrementalReplication.addToCreateList("owner," + responseRowId + "," + owner.getFirstName()+ "," + owner.getLastName()+ "," + owner.getAddress()+ "," + owner.getCity()+ "," + owner.getTelephone());
+                    IncrementalReplication.addToCreateList("owners," + responseRowId + "," + owner.getFirstName()+ "," + owner.getLastName()+ "," + owner.getAddress()+ "," + owner.getCity()+ "," + owner.getTelephone());
                     IncrementalReplication.incrementalReplication();
                     FeatureToggles.isEnableIncrementDate = true;
                 }
