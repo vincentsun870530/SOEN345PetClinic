@@ -49,34 +49,45 @@ public class OwnerShadowRead {
 			//when the rows are different increment readConsistencies and print the inconsistency
 			if(!(owner.getFirstName().equals(firstName))){
 				ReadInconsistency(owner.getFirstName(), firstName);
-				updateOwner.updateFirstName(owner);
+			//	updateOwner.updateFirstName(owner);
 			}
+			//TODO change this to logger debug
+			System.out.println(owner.getFirstName() + " | " + firstName );
 
 			if(!(owner.getLastName().equals(lastName))){
 				ReadInconsistency(owner.getLastName(), lastName);
 			//	updateOwner.updateLastName(owner);
 			}
+			//TODO change this to logger debug
+			System.out.println(owner.getLastName() + " | " + lastName );
 
 			if(!(owner.getAddress().equals(address))){
 				ReadInconsistency(owner.getAddress(), address);
 			//	updateOwner.updateAddress(owner);
 			}
+			//TODO change this to logger debug
+			System.out.println(owner.getAddress() + " | " + address );
 
 			if(!(owner.getCity().equals(city))){
 				ReadInconsistency(owner.getCity(), city);
 			//	updateOwner.updateCity(owner);
 			}
+			//TODO change this to logger debug
+			System.out.println(owner.getCity() + " | " + city );
 
 			if(!(owner.getTelephone().equals(telephone))){
 				ReadInconsistency(owner.getTelephone(), telephone);
 			//	updateOwner.updateTelephone(owner);
 			}
+			//TODO change this to logger debug
+			System.out.println(owner.getTelephone() + " | " + telephone );
 
 			return inconsistencyId;
 		}
 
 		//print read inconsistency
 		private void ReadInconsistency(Object oldRow, Object newRow) {
+			//TODO change this to logger error
 			System.out.println("\n Old object in Mysql db does not match the new object in SqLite db" + "\n Old: " + oldRow	+ "\n New: " + newRow);
 			readInconsistencies++;
 			System.out.println("\n Read inconsistencies = " + readInconsistencies);

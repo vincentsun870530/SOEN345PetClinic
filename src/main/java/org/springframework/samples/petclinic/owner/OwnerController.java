@@ -140,9 +140,14 @@ class OwnerController {
             } else if (results.size() == 1) {
                 // 1 owner found
                 owner = results.iterator().next();
-                OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
 
+                //shadow read for owner
+                OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
+                //TODO change this to logger trace
+                System.out.println(owner.getId() + " Owner Id from controller");
+                //Shadow read return problem id
                 int inconsistency_id = ownerShadowReader.checkOwner(owner);
+                //if it's not good call incremental replication
                 if (inconsistency_id > -1) {
                     //TODO adapt incremental replication
                 }
@@ -153,11 +158,16 @@ class OwnerController {
                     if (FeatureToggles.isEnableShadowRead) {
                         OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
                         try {
+                            //shadow read for owner
                             for (Owner own : results) {
+                                //TODO change this to logger trace
                                 System.out.println(own.getId() + " Owner Id from controller");
                                 //Shadow read return problem id
-                                ownerShadowReader.checkOwner(own);
+                                int inconsistency_id = ownerShadowReader.checkOwner(own);
                                 //if it's not good call incremental replication
+                                if (inconsistency_id > -1) {
+                                    //TODO adapt incremental replication
+                                }
                             }
                         }catch(Exception e){
                             e.getMessage();
