@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.shadowRead.VisitShadowRead;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
@@ -32,7 +33,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
 /**
  * @author Juergen Hoeller
@@ -86,17 +86,34 @@ class VisitController {
 
     // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
     @GetMapping("/owners/*/pets/{petId}/visits/new")
-    public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model) {
-        System.out.println("shadow read");
-        if (FeatureToggles.isEnablePetVisit) {
-            VisitShadowRead visitShadowReader = new VisitShadowRead();
-            List<Visit> visitList = this.visits.findByPetId(petId);
-            //System.out.println(visitList .get(0).getPetId());
+    public String initNewVisitForm(@PathVariable("petId") int petId, Map<String, Object> model)
+    {
+        if (FeatureToggles.isEnablePetVisit)
+            {
+                // Shadow read
+                if(FeatureToggles.isEnableShadowRead)
+                {
+                    VisitShadowRead visitShadowReader = new VisitShadowRead();
+                    List<Visit> visitList = this.visits.findByPetId(petId);
+                    int inconsistencyShadowReadCounter = 0;
+                    for (Visit visit : visitList) {
+                        System.out.println(visit.getPetId() + "from controller");
 
-            for(Visit visit :  visitList) {
-                System.out.println(visit.getPetId() + "from controller");
-                visitShadowReader.checkVisit(visit);
-            }
+                        //Shadow read return problem id
+                        int inconsistency_id = visitShadowReader.checkVisit(visit);
+
+                        //if it's not good call incremental replication
+                        if(inconsistency_id>-1){
+                            //TODO adapt the Increamental Replication
+                            inconsistencyShadowReadCounter++;
+                        }
+                    }
+
+                    if(inconsistencyShadowReadCounter == 0){
+                        //TODO change to logger info
+                        System.out.println("Shadow Read for visits passed from controller");
+                    }
+                }
             return "pets/createOrUpdateVisitForm";
         }
         return null;
@@ -109,14 +126,25 @@ class VisitController {
             return "pets/createOrUpdateVisitForm";
         } else {
             this.visits.save(visit);
-            if (isEnableShadowWrite) {
-                System.out.println(visit.getDate()+" insert");
-                SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
-                
-            }
-            if (FeatureToggles.isEnablePetVisitIR) {
-                IncrementalReplication.addToCreateList("visits," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
-                IncrementalReplication.incrementalReplication();
+            // shadow write
+            if (FeatureToggles.isEnableShadowWrite) {
+                //To make db difference
+                //FeatureToggles.isEnableIncrementDate = false;
+                System.out.println(visit.getDate() + " insert");
+                int responseRowId = SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
+                System.out.println(responseRowId+"responseRowId");
+                FeatureToggles.isEnableIncrementDate = true;
+                // call incremental consistency check
+                boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"visits");
+                System.out.println(isConsistency+"result");
+                // if incremental consistency check is not good call incremental replication
+                if (FeatureToggles.isEnableIR && isConsistency == false) {
+                    FeatureToggles.isEnableIncrementDate = false;
+                    //System.out.println("incremental replication!!!");
+                    IncrementalReplication.addToCreateList("visits," + responseRowId + "," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                    IncrementalReplication.incrementalReplication();
+                    FeatureToggles.isEnableIncrementDate = true;
+                }
             }
             return "redirect:/owners/{ownerId}";
         }

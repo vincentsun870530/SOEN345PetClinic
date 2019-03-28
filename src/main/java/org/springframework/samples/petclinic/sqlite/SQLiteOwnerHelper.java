@@ -47,8 +47,6 @@ public class SQLiteOwnerHelper {
 
     //delete
 
-
-
     private void close(Statement statement) {
         try {
             if (statement != null) {
