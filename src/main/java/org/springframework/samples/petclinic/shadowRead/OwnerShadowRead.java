@@ -21,7 +21,7 @@ public class OwnerShadowRead {
 		public int checkOwner(Owner owner){
 			int inconsistencyId = -1;
 			//Owner in SqLite db with the specified id
-			ResultSet result = sqLiteDbConnector.selectById("owners", owner.getId());
+			ResultSet rs = sqLiteDbConnector.selectById("owners", owner.getId());
 			//initialise variables
 			String firstName = null;
 			String lastName = null;
@@ -31,20 +31,21 @@ public class OwnerShadowRead {
 
 			try {
 				//get the number of the column in the SqLite database
-				int first_name_col = result.findColumn("first_name");
-				int last_name_col = result.findColumn("last_name");
-				int address_col = result.findColumn("address");
-				int city_col = result.findColumn("city");
-				int telephone_col = result.findColumn("telephone");
+				int first_name_col = rs.findColumn("first_name");
+				int last_name_col = rs.findColumn("last_name");
+				int address_col = rs.findColumn("address");
+				int city_col = rs.findColumn("city");
+				int telephone_col = rs.findColumn("telephone");
 
 				//Obtain the value of the row proper to the specified id nin the SqLite db
-				if (result != null) {
-					firstName = (String) result.getObject(first_name_col);
-					lastName = (String) result.getObject(last_name_col);
-					address = (String) result.getObject(address_col);
-					city = (String) result.getObject(city_col);
-					telephone = (String) result.getObject(telephone_col);
+				if (rs != null) {
+					firstName = (String) rs.getObject(first_name_col);
+					lastName = (String) rs.getObject(last_name_col);
+					address = (String) rs.getObject(address_col);
+					city = (String) rs.getObject(city_col);
+					telephone = (String) rs.getObject(telephone_col);
 				}
+				rs.close();
 			} catch (SQLException e) {
 				e.printStackTrace();}
 
