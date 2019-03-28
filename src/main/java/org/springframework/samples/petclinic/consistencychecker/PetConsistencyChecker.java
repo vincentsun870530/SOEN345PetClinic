@@ -64,23 +64,27 @@ public class PetConsistencyChecker implements InConsistencyChecker {
 
     public int petCheckConsistency(Pet oldPet, Pet newPet) {
         int inconsistency = 0;
-        if (oldPet.getId() == newPet.getId()) {
-            int atID = newPet.getId();
-            if (!oldPet.getName().equals(newPet.getName())) {
-                checkNewAndOldData(atID, oldPet.getName(), newPet.getName(), "name");
+        try {
+            if (oldPet.getId() == newPet.getId()) {
+                int atID = newPet.getId();
+                if (!oldPet.getName().equals(newPet.getName())) {
+                    checkNewAndOldData(atID, oldPet.getName(), newPet.getName(), "name");
+                    inconsistency++;
+                }
+                if (!oldPet.getBirthDate().equals(newPet.getBirthDate())) {
+                    checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
+                    inconsistency++;
+                }
+                if (!oldPet.getType().equals(newPet.getType())) {
+                    checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
+                    inconsistency++;
+                }
+            } else {
+                System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldPet.getId() + " != " + newPet.getId());
                 inconsistency++;
             }
-            if (!oldPet.getBirthDate().equals(newPet.getBirthDate())) {
-                checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
-                inconsistency++;
-            }
-            if (!oldPet.getType().equals(newPet.getType())) {
-                checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
-                inconsistency++;
-            }
-        } else {
-            System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldPet.getId() + " != " + newPet.getId());
-            inconsistency++;
+        } catch (Exception e){
+            System.out.println(e.getMessage());
         }
         return inconsistency;
     }
