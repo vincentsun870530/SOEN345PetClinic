@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.shadowRead.VisitShadowRead;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
@@ -127,6 +128,11 @@ class VisitController {
             if (FeatureToggles.isEnableShadowWrite) {
                 System.out.println(visit.getDate()+" insert");
                 SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
+                
+            }
+            if (FeatureToggles.isEnablePetVisitIR) {
+                IncrementalReplication.addToCreateList("visits," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                IncrementalReplication.incrementalReplication();
             }
             return "redirect:/owners/{ownerId}";
         }

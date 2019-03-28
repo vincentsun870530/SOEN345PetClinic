@@ -1,10 +1,9 @@
 package org.springframework.samples.petclinic.consistencychecker;
 
-import java.sql.ResultSet;
-import java.util.List;
-
 import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
+
+import java.util.List;
 
 public class TypeConsistencyChecker implements InConsistencyChecker{
     private static List<PetType> oldPetTypeData;
@@ -14,20 +13,34 @@ public class TypeConsistencyChecker implements InConsistencyChecker{
     public static void setNewData(List<PetType>  data){ newPetTypeData = data;}
 
     public int consistencyChecker(){
-        PetType oldPetType;
-        PetType newPetType;
-        int atID;
         int inconsistency = 0;
-        for(int index=0; index < oldPetTypeData.size(); index++) {
-            oldPetType = oldPetTypeData.get(index);
-            newPetType = newPetTypeData.get(index);
-            //need the number of columns (use hardcoded number or dynamically check the number of columns)
-            //for PetType,  columns 2
-            if(!oldPetType.toString().equals(newPetType.toString())) {
-                atID = newPetType.getId();
-                checkNewAndOldData(atID, oldPetType.getName(), newPetType.getName(),"name");
-                inconsistency++;
+        if (oldPetTypeData.size() == newPetTypeData.size()) {
+            PetType oldPetType;
+            PetType newPetType;
+            int atID;
+            for (int index = 0; index < oldPetTypeData.size(); index++) {
+                oldPetType = oldPetTypeData.get(index);
+                newPetType = newPetTypeData.get(index);
+                if (oldPetType.getId() == newPetType.getId()) {
+                    atID = newPetType.getId();
+                    if (inconsistency != 0) {
+                        System.out.println("OLD:" + oldPetType);
+                        System.out.println("NEW:" + newPetType);
+                    }
+                    //need the number of columns (use hardcoded number or dynamically check the number of columns)
+                    //for PetType,  columns 2
+                    if (!oldPetType.getName().equals(newPetType.getName())) {
+                        checkNewAndOldData(atID, oldPetType.getName(), newPetType.getName(), "name");
+                        inconsistency++;
+                    }
+                } else {
+                    System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldPetType.getId() + " != " + newPetType.getId());
+                    inconsistency++;
+                }
             }
+        } else {
+            System.out.println("Old and new DB table size don't match! " + oldPetTypeData.size() + " != " + newPetTypeData.size());
+            inconsistency++;
         }
         return inconsistency;
     }
