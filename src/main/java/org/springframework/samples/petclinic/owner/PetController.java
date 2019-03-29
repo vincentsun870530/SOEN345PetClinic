@@ -155,8 +155,8 @@ class PetController {
                     //if it's not good call incremental replication
                     if (inconsistency_id > -1) {
                         //TODO adapt increamental replication
-
-                        //return null;
+                        IncrementalReplication.addToUpdateList("pets," + inconsistency_id + ","  + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + pet.getOwner().getId());
+                        IncrementalReplication.incrementalReplication();
                     } else {
                         System.out.println("Shadow Read for visits passed from controller");
                     }
