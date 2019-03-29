@@ -65,26 +65,30 @@ class VetController {
             {
                 VetShadowRead vetShadowReader = new VetShadowRead();
                 //Collection<Vet> vetShadowList = this.vetrepository.findAll();
-                int inconsistencyShadowReadCounter = 0;
+                try {
+                    int inconsistencyShadowReadCounter = 0;
 
-                for (Vet vet : vetList) {
-                    //TODO change to logger debug
-                    System.out.println(vet.getFirstName() + " from controller");
+                    for (Vet vet : vetList) {
+                        //TODO change to logger debug
+                        System.out.println(vet.getFirstName() + " from controller");
 
-                    //Shadow read return problem id
-                    int inconsistency_id = vetShadowReader.checkVet(vet);
+                        //Shadow read return problem id
+                        int inconsistency_id = vetShadowReader.checkVet(vet);
 
-                    //if it's not good call incremental replication
-                    if(inconsistency_id>-1){
-                        // Increamental Replication
-                        IncrementalReplication.addToUpdateList("vets," + inconsistency_id + ","  + vet.getFirstName() + "," + vet.getLastName());
-                        IncrementalReplication.incrementalReplication();
-                        inconsistencyShadowReadCounter++;
+                        //if it's not good call incremental replication
+                        if (inconsistency_id > -1) {
+                            // Increamental Replication
+                            IncrementalReplication.addToUpdateList("vets," + inconsistency_id + "," + vet.getFirstName() + "," + vet.getLastName());
+                            IncrementalReplication.incrementalReplication();
+                            inconsistencyShadowReadCounter++;
+                        }
                     }
-                }
-                if(inconsistencyShadowReadCounter == 0){
-                    //TODO change to logger info
-                    System.out.println("Shadow Read for vets passed from controller");
+                    if (inconsistencyShadowReadCounter == 0) {
+                        //TODO change to logger info
+                        System.out.println("Shadow Read for vets passed from controller");
+                    }
+                }catch(Exception e){
+                    e.getMessage();
                 }
 
             }
@@ -113,27 +117,30 @@ class VetController {
         {
             VetShadowRead vetShadowReader = new VetShadowRead();
             //Collection<Vet> vetShadowList = this.vetrepository.findAll();
-            int inconsistencyShadowReadCounter = 0;
+            try {
+                int inconsistencyShadowReadCounter = 0;
 
-            for (Vet vet : vetList) {
-                System.out.println(vet.getFirstName() + "from controller");
+                for (Vet vet : vetList) {
+                    System.out.println(vet.getFirstName() + "from controller");
 
-                //Shadow read return problem id
-                int inconsistency_id = vetShadowReader.checkVet(vet);
+                    //Shadow read return problem id
+                    int inconsistency_id = vetShadowReader.checkVet(vet);
 
-                //if it's not good call incremental replication
-                if(inconsistency_id>-1){
-                    //Increamental Replication
-                    IncrementalReplication.addToUpdateList("vets," + inconsistency_id + ","  + vet.getFirstName() + "," + vet.getLastName());
-                    IncrementalReplication.incrementalReplication();
-                    inconsistencyShadowReadCounter++;
+                    //if it's not good call incremental replication
+                    if (inconsistency_id > -1) {
+                        //Increamental Replication
+                        IncrementalReplication.addToUpdateList("vets," + inconsistency_id + "," + vet.getFirstName() + "," + vet.getLastName());
+                        IncrementalReplication.incrementalReplication();
+                        inconsistencyShadowReadCounter++;
+                    }
                 }
+                if (inconsistencyShadowReadCounter == 0) {
+                    //TODO change to logger info
+                    System.out.println("Shadow Read for vets passed from controller");
+                }
+            }catch(Exception e){
+                e.getMessage();
             }
-            if(inconsistencyShadowReadCounter == 0){
-                //TODO change to logger info
-                System.out.println("Shadow Read for vets passed from controller");
-            }
-
         }
         return vets;
     }

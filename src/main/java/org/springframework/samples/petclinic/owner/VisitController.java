@@ -99,28 +99,32 @@ class VisitController {
                 if(FeatureToggles.isEnableShadowRead)
                 {
                     VisitShadowRead visitShadowReader = new VisitShadowRead();
-                    List<Visit> visitList = this.visits.findByPetId(petId);
-                    int inconsistencyShadowReadCounter = 0;
-                    for (Visit visit : visitList) {
-                        System.out.println(visit.getPetId() + "from controller");
+                    try {
+                        List<Visit> visitList = this.visits.findByPetId(petId);
+                        int inconsistencyShadowReadCounter = 0;
+                        for (Visit visit : visitList) {
+                            System.out.println(visit.getPetId() + "from controller");
 
-                        //Shadow read return problem id
-                        int inconsistency_id = visitShadowReader.checkVisit(visit);
+                            //Shadow read return problem id
+                            int inconsistency_id = visitShadowReader.checkVisit(visit);
 
-                        //if it's not good call incremental replication
-                        if(inconsistency_id>-1){
-                            // Incremental Replication
-                            FeatureToggles.isEnableIncrementDate = false;
-                            //System.out.println("incremental replication!!!");
-                            IncrementalReplication.addToUpdateList("visits," + inconsistency_id + "," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
-                            IncrementalReplication.incrementalReplication();
-                            FeatureToggles.isEnableIncrementDate = true;
-                            inconsistencyShadowReadCounter++;
+                            //if it's not good call incremental replication
+                            if (inconsistency_id > -1) {
+                                // Incremental Replication
+                                FeatureToggles.isEnableIncrementDate = false;
+                                //System.out.println("incremental replication!!!");
+                                IncrementalReplication.addToUpdateList("visits," + inconsistency_id + "," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                                IncrementalReplication.incrementalReplication();
+                                FeatureToggles.isEnableIncrementDate = true;
+                                inconsistencyShadowReadCounter++;
+                            }
                         }
-                    }
 
-                    if(inconsistencyShadowReadCounter == 0){
-                        log.info("Shadow Read for visits passed from controller");
+                        if (inconsistencyShadowReadCounter == 0) {
+                            log.info("Shadow Read for visits passed from controller");
+                        }
+                    }catch(Exception e){
+                        e.getMessage();
                     }
                 }
             return "pets/createOrUpdateVisitForm";
