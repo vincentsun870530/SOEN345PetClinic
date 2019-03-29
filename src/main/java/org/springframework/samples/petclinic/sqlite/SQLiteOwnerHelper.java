@@ -44,6 +44,11 @@ public class SQLiteOwnerHelper {
     }
 
     //update
+    public void updateColById(String colName, String colValue, int id)
+    {
+        SQLiteDBConnector.getInstance().updateById("owners",colName,colValue,id);
+
+    }
 
     //delete
 

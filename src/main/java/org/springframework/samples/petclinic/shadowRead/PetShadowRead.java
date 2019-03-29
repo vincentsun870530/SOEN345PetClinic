@@ -24,13 +24,13 @@ public class PetShadowRead {
         System.out.println( " From Pet Shadow Read" + "  -start");
         ResultSet newPetResult = SQLiteDBConnector.getInstance().selectById("pets", oldPet.getId());
         int inconsistencyId =-1;
+
         ArrayList<HashMap> newPetPack = new ArrayList();
         List<Pet> newPetList;
         newPetList = SQLitePetHelper.getInstance().getModelList(newPetResult);
         boolean isInconsistent = false;
         String strInconsistant = "";
 
-        //sqLiteDbConnector.connect();
         try{
             System.out.println( " From Pet Shadow Read" + "  -try");
 
@@ -116,7 +116,9 @@ public class PetShadowRead {
                     System.out.println(strInconsistant);
                     System.out.println( "Shadow Read Inconsistency count: " + readInconsistencies + " from Pet Shadow Read");
                     newPetPack.add(inconsistencyRow);
+
                     inconsistencyId = oldPet.getId();
+
                 }else {
                     System.out.println( "Shadow Read Inconsistency count: " + readInconsistencies + " from Pet Shadow Read");
                     System.out.println( "Shadow Read successfully from Pet Shadow Read");
@@ -124,7 +126,6 @@ public class PetShadowRead {
             }
 
             System.out.println( "Done while loop from Pet Shadow Read");
-
 
         }catch (Exception e){
             System.out.println(e.getMessage() + " Error from Pet Shadow Read");

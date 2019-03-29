@@ -37,7 +37,7 @@ public class SQLiteIncrementalReplicationHelper {
 
 
     //Update the whole row
-    public void updateRow(String dataArray[]) {
+    public boolean updateRow(String dataArray[]) {
         try {
             String query = "";
             Statement stmt = null;
@@ -49,29 +49,65 @@ public class SQLiteIncrementalReplicationHelper {
              *  dataArray[1] is for the id
              *  the rest of dataArray is the the value of the columns
              * */
-            switch(dataArray[0]) {
-                case "owners": 
-                    query = "UPDATE owners SET first_name = \'" + dataArray[2] + "\', last_name = \'" + dataArray[3] + "\', address = \'" + dataArray[4] + 
-                            "\', city = \'" + dataArray[5] + "\', telephone = \'" + dataArray[6] + "\' WHERE id = " + dataArray[1];
-                    break;
-                case "pets": 
-                    query = "UPDATE pets SET name = \'" + dataArray[2] + "\', birth_date = \'" + dataArray[3] + "\', type_id = \'" + dataArray[4] + 
-                    "\', owner_id = \'" + dataArray[5] + "\' WHERE id = " + dataArray[1];
-                    break;
-                case "vets": 
-                    query = "UPDATE vets SET first_name = \'" + dataArray[2] + "\', last_name = \'" + dataArray[3] + "\' WHERE id = " + dataArray[1];
-                    break;
-                case "visits": 
-                    query = "UPDATE visits SET pet_id = \'" + dataArray[2] + "\', visit_date = \'" + dataArray[3] + "\', description = \'" + dataArray[4] + 
-                    "\' WHERE id = " + dataArray[1];
-                    break;
-            }
+            query = returnUpdateQuery(dataArray);
             stmt.executeUpdate(query);
+            close(stmt);
+            return true;
         } catch (SQLException exception) {
             System.out.println(" Update Failed: " + exception.getMessage());
+            return false;
         }
     }
 
+
+/*    //Update the whole row
+    public int updateRowReturnId(String dataArray[]) {
+        int primaryKey=0;
+        try {
+            String query = "";
+            Statement stmt = null;
+            Connection connection = connect();
+            stmt = connection.createStatement();
+            System.out.println(dataArray.length+"######################################");
+            query = returnUpdateQuery(dataArray);
+            stmt.executeUpdate(query,PreparedStatement.RETURN_GENERATED_KEYS);
+
+        } catch (SQLException exception) {
+            System.out.println(" Update Failed: " + exception.getMessage());
+        }
+        return primaryKey;
+    }*/
+
+    private String returnUpdateQuery(String dataArray[]){
+        String query = "";
+        /**
+         *  Switch statement for different tables
+         *  dataArray[0] is for the table name
+         *  dataArray[1] is for the id
+         *  the rest of dataArray is the the value of the columns
+         * */
+        switch(dataArray[0]) {
+            case "owners":
+                query = "UPDATE owners SET first_name = \'" + dataArray[2] + "\', last_name = \'" + dataArray[3] + "\', address = \'" + dataArray[4] +
+                        "\', city = \'" + dataArray[5] + "\', telephone = \'" + dataArray[6] + "\' WHERE id = " + dataArray[1];
+                break;
+            case "pets":
+                query = "UPDATE pets SET name = \'" + dataArray[2] + "\', birth_date = \'" + dataArray[3] + "\', type_id = \'" + dataArray[4] +
+                        "\', owner_id = \'" + dataArray[5] + "\' WHERE id = " + dataArray[1];
+                break;
+            case "vets":
+                query = "UPDATE vets SET first_name = \'" + dataArray[2] + "\', last_name = \'" + dataArray[3] + "\' WHERE id = " + dataArray[1];
+                break;
+            case "visits":
+                query = "UPDATE visits SET pet_id = \'" + dataArray[2] + "\', visit_date = \'" + dataArray[3] + "\', description = \'" + dataArray[4] +
+                        "\' WHERE id = " + dataArray[1];
+                break;
+        }
+        return query;
+    }
+
+
+    //Insert Data and return ID
     public int insertData(String dataArray[]) {
         int id = 0;
         try {
