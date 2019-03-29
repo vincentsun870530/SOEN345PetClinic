@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.vet;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.shadowRead.VetShadowRead;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,7 +76,9 @@ class VetController {
 
                     //if it's not good call incremental replication
                     if(inconsistency_id>-1){
-                        //TODO adapt the Increamental Replication
+                        // Increamental Replication
+                        IncrementalReplication.addToUpdateList("vets," + inconsistency_id + ","  + vet.getFirstName() + "," + vet.getLastName());
+                        IncrementalReplication.incrementalReplication();
                         inconsistencyShadowReadCounter++;
                     }
                 }
@@ -120,7 +123,9 @@ class VetController {
 
                 //if it's not good call incremental replication
                 if(inconsistency_id>-1){
-                    //TODO adapt the Increamental Replication
+                    //Increamental Replication
+                    IncrementalReplication.addToUpdateList("vets," + inconsistency_id + ","  + vet.getFirstName() + "," + vet.getLastName());
+                    IncrementalReplication.incrementalReplication();
                     inconsistencyShadowReadCounter++;
                 }
             }

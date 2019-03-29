@@ -154,7 +154,7 @@ class PetController {
                     int inconsistency_id = petShadowRead.checkPet(pet);
                     //if it's not good call incremental replication
                     if (inconsistency_id > -1) {
-                        //TODO adapt increamental replication
+                        //increamental replication
                         IncrementalReplication.addToUpdateList("pets," + inconsistency_id + ","  + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + pet.getOwner().getId());
                         IncrementalReplication.incrementalReplication();
                     } else {
