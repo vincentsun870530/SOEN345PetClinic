@@ -119,7 +119,6 @@ class PetController {
             this.pets.save(pet);
             if (activeProfile.equals("mysql")) {
                 if (FeatureToggles.isEnableShadowWrite) {
-                    SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
                     System.out.println(pet.getName() + " insert");
                     int responseRowId = SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
                     System.out.println(responseRowId + "responseRowId");
