@@ -16,8 +16,10 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
+import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLitePetHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -27,11 +29,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
 /**
  * @author Juergen Hoeller
@@ -83,10 +81,16 @@ class PetController {
     public String initCreationForm(Owner owner, ModelMap model, Pet pet) {
 
         if (FeatureToggles.isEnablePetAdd) {
+
             this.pet = pet;
+
             owner.addPet(pet);
             model.put("pet", pet);
+
+            //TODO change to logger info//
+                //System.out.println("Shadow Read for visits passed from controller");
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+
         }
         return null;
     }
@@ -97,16 +101,42 @@ class PetController {
             result.rejectValue("name", "duplicate", "already exists");
         }
         owner.addPet(pet);
-        if (activeProfile.equals("mysql")) {
-            if (isEnableShadowWrite) {
-                SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
-            }
-        }
+        //TODO I don't think this should be here ***
+//        if (activeProfile.equals("mysql")) {
+//            if (isEnableShadowWrite) {
+//                SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
+//
+//            }
+//            if (FeatureToggles.isEnablePetAddIR) {
+//                IncrementalReplication.addToCreateList("pets," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
+//                IncrementalReplication.incrementalReplication();
+//            }
+//        }
         if (result.hasErrors()) {
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         } else {
             this.pets.save(pet);
+            if (activeProfile.equals("mysql")) {
+                if (FeatureToggles.isEnableShadowWrite) {
+                    //System.out.println(pet.getName() + " insert");
+                    int responseRowId = SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
+                    //System.out.println(responseRowId + "responseRowId");
+                    FeatureToggles.isEnableIncrementDate = true;
+                    // call incremental consistency check
+                    boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"pets");
+                    //System.out.println(isConsistency + "result");
+                    // if incremental consistency check is not good call incremental replication
+                    if (FeatureToggles.isEnableIR && isConsistency == false) {
+                        FeatureToggles.isEnableIncrementDate = false;
+                       // System.out.println("incremental replication!!!");
+                       // System.out.println(pet.getBirthDate().toString()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        IncrementalReplication.addToCreateList("pets," + responseRowId + "," + pet.getName()+ "," + pet.getBirthDate().toString()+ "," + pet.getType().getId()+ "," + owner.getId());
+                        IncrementalReplication.incrementalReplication();
+                        FeatureToggles.isEnableIncrementDate = true;
+                    }
+                }
+        }
             return "redirect:/owners/{ownerId}";
         }
     }
@@ -130,6 +160,28 @@ class PetController {
 
         if (FeatureToggles.isEnablePetEdit) {
             Pet pet = this.pets.findById(petId);
+            //shadow read for pet
+            PetShadowRead petShadowRead = new PetShadowRead();
+            try {
+                //Shadow read return problem id
+                if (pet != null) {
+                    //this is an if filter for test since the test did not mock or setup all the details of the pet;
+                    //TODO add mocked or setup dedetails for test
+                    if (pet.getType() != null) {
+                        int inconsistency_id = petShadowRead.checkPet(pet);
+                        //if it's not good call incremental replication
+                        if (inconsistency_id > -1) {
+                            //increamental replication
+                            IncrementalReplication.addToUpdateList("pets," + inconsistency_id + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + pet.getOwner().getId());
+                            IncrementalReplication.incrementalReplication();
+                        } else {
+                            System.out.println("Shadow Read for visits passed from controller");
+                        }
+                    }
+                }
+            }catch(Exception e){
+                e.getMessage();
+            }
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
         }
@@ -145,6 +197,31 @@ class PetController {
         } else {
             owner.addPet(pet);
             this.pets.save(pet);
+
+            if (FeatureToggles.isEnableShadowWrite) {
+                SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
+                //System.out.println(pet.getName() + " update");
+                int responseRowId = SQLitePetHelper.getInstance().update(pet, owner);
+                //System.out.println(responseRowId + "responseRowId");
+                FeatureToggles.isEnableIncrementDate = true;
+                // call incremental consistency check
+                boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"pets");
+                //System.out.println(isConsistency + "result");
+                // if incremental consistency check is not good call incremental replication
+                if (FeatureToggles.isEnableIR && isConsistency == false) {
+                    FeatureToggles.isEnableIncrementDate = false;
+                    //System.out.println("incremental replication!!!");
+                    IncrementalReplication.addToUpdateList("pets," + responseRowId + "," + pet.getName()+ "," + pet.getBirthDate().toString()+ "," + pet.getType().getId()+ "," + owner.getId());
+                    IncrementalReplication.incrementalReplication();
+                    FeatureToggles.isEnableIncrementDate = true;
+                }
+            }
+
+//            if (FeatureToggles.isEnablePetEditIR) {
+//                IncrementalReplication.addToUpdateList("pets," + pet.getId() + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + owner.getId());
+//                IncrementalReplication.incrementalReplication();
+//
+//            }
             return "redirect:/owners/{ownerId}";
         }
     }

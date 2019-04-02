@@ -1,11 +1,12 @@
 package org.springframework.samples.petclinic.sqlite;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.springframework.samples.petclinic.owner.Owner;
+
+import java.sql.*;
+
 public class SQLiteOwnerHelper {
 
     private static final String INSERT_SQL = "INSERT INTO owners(first_name, last_name, address, city, telephone) VALUES(?, ?, ?, ?, ?)";
+    private static final String UPDATE_SQL = "UPDATE owners SET first_name = ?, last_name = ?, address = ?, city = ?, telephone = ?, WHERE id = ?";
     private Connection connection = (SQLiteDBConnector.getInstance()).connect(); // GET CONNECTION.
 
     private static SQLiteOwnerHelper sqLiteOwnerHelper = null;
@@ -34,7 +35,10 @@ public class SQLiteOwnerHelper {
             ps.setString(4, city);
             ps.setString(5, telephone);
             numRowsInserted = ps.executeUpdate();
-
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                numRowsInserted = rs.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -44,10 +48,30 @@ public class SQLiteOwnerHelper {
     }
 
     //update
+    public int update(Owner owner) {
+        int numRowsInserted = 0;
+        PreparedStatement statement = null;
+        try{
+            statement = this.connection.prepareStatement(UPDATE_SQL);
+            statement.setString(1, owner.getFirstName());
+            statement.setString(2, owner.getLastName());
+            statement.setString(3, owner.getAddress());
+            statement.setString(4, owner.getCity());
+            statement.setString(5, owner.getTelephone());
+            statement.setInt(6, owner.getId());
+            numRowsInserted = statement.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Exception in updating owner" + ex);
+        }
+        return numRowsInserted;
+    }
+    public void updateColById(String colName, String colValue, int id)
+    {
+        SQLiteDBConnector.getInstance().updateById("owners",colName,colValue,id);
+
+    }
 
     //delete
-
-
 
     private void close(Statement statement) {
         try {

@@ -33,4 +33,6 @@ import org.springframework.stereotype.Component;
 @Table(name = "specialties")
 public class Specialty extends NamedEntity implements Serializable {
 
+
+
 }

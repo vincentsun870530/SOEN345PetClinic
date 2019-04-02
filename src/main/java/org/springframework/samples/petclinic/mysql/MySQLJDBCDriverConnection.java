@@ -2,16 +2,17 @@ package org.springframework.samples.petclinic.mysql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class MySQLJDBCDriverConnection {
 
-    public Connection connect() {
+    public static Connection connect() {
         String url = "jdbc:mysql://127.0.0.1:3306/petclinic";
         String user = "root";
-        String password = "petclinic";
+        String password = "root";
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -22,9 +23,21 @@ public class MySQLJDBCDriverConnection {
         return connection;
     }
 
-    public ResultSet selectAll(String tableName) {
+    // Return all data
+    public static ResultSet selectAll(String tableName) {
         String query = "SELECT * FROM " + tableName;
         ResultSet resultSet = null;
+        return getResultSet(query, resultSet);
+    }
+
+    // Return all data ASC
+    public static ResultSet selectAll(String tableName, String column1) {
+        String query = "SELECT * FROM " + tableName + " ORDER BY " + column1 + " ASC;";
+        ResultSet resultSet = null;
+        return getResultSet(query, resultSet);
+    }
+
+    private static ResultSet getResultSet(String query, ResultSet resultSet) {
         try {
             Connection connection = connect();
             Statement statement = connection.createStatement();
@@ -44,18 +57,33 @@ public class MySQLJDBCDriverConnection {
     }
 
     //select one item 
-    public ResultSet selectById(String tableName, int id){
+    public static ResultSet selectById(String tableName, int id){
+        return getResultSet(tableName, id, connect());
+    }
+
+    public static ResultSet getResultSet(String tableName, int id, Connection connect) {
         String query = "SELECT * FROM " + tableName + " WHERE id = " + id;
         ResultSet resultSet = null;
         try  {
-            Connection connection = connect();
+            Connection connection = connect;
             Statement stmt = connection.createStatement();
-            
+
             resultSet = stmt.executeQuery(query);
-           
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return resultSet;
     }
+
+    // public static void updateRow(int id, String tableName, String columnName, String data) {
+    //     String query = "UPDATE " + tableName + " SET " + columnName + "=" + data + " WHERE id=" + id;
+    //         try {
+    //             Connection connection = connect();
+    //             PreparedStatement pStatement = connection.prepareStatement(query);
+    //             pStatement.executeUpdate();
+    //         } catch (SQLException exception) {
+    //             System.out.println("MySQLJDBCDriverConnection/updateRowFor" + tableName + ":" + exception);
+    //         }
+    // }
 }
