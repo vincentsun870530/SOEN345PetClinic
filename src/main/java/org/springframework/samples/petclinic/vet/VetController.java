@@ -17,12 +17,14 @@ package org.springframework.samples.petclinic.vet;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+import org.springframework.samples.petclinic.shadowRead.SpecialtyShadowRead;
 import org.springframework.samples.petclinic.shadowRead.VetShadowRead;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,6 +66,7 @@ class VetController {
             if(FeatureToggles.isEnableShadowRead)
             {
                 VetShadowRead vetShadowReader = new VetShadowRead();
+                SpecialtyShadowRead specialtyShadowRead = new SpecialtyShadowRead();
                 //Collection<Vet> vetShadowList = this.vetrepository.findAll();
                 try {
                     int inconsistencyShadowReadCounter = 0;
@@ -71,6 +74,16 @@ class VetController {
                     for (Vet vet : vetList) {
                         //TODO change to logger debug
                         System.out.println(vet.getFirstName() + " from controller");
+                        //Shadow read return problem id | shadow read for specialty first
+                        List<Specialty> specialtyList = vet.getSpecialties();
+                        for(Specialty specialty : specialtyList) {
+                            int specialty_inconsistency_id = specialtyShadowRead.checkSpecialty(specialty);
+                            if (specialty_inconsistency_id > -1) {
+                                String updateQuery = "specialties," + specialty_inconsistency_id + "," + specialty.getName();
+                                IncrementalReplication.addToUpdateList(updateQuery);
+                                IncrementalReplication.incrementalReplication();
+                            }
+                        }
 
                         //Shadow read return problem id
                         int inconsistency_id = vetShadowReader.checkVet(vet);
