@@ -44,6 +44,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowRead;
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
 /**
@@ -162,16 +163,17 @@ class OwnerController {
                 owner = results.iterator().next();
 
                 //shadow read for owner
-                OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
-                log.trace(owner.getId() + " Owner Id from controller");
-                //Shadow read return problem id
-                int inconsistency_id = ownerShadowReader.checkOwner(owner);
-                //if it's not good call incremental replication
-                if (inconsistency_id > -1) {
-                    IncrementalReplication.addToUpdateList("owners" + "," + owner.getId() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
-                    IncrementalReplication.incrementalReplication();
+                if(isEnableShadowRead == true) {
+                    OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
+                    log.trace(owner.getId() + " Owner Id from controller");
+                    //Shadow read return problem id
+                    int inconsistency_id = ownerShadowReader.checkOwner(owner);
+                    //if it's not good call incremental replication
+                    if (inconsistency_id > -1) {
+                        IncrementalReplication.addToUpdateList("owners" + "," + owner.getId() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                        IncrementalReplication.incrementalReplication();
+                    }
                 }
-
                 return "redirect:/owners/" + owner.getId();
             } else {
                 // multiple owners found
