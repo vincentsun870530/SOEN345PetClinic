@@ -104,6 +104,10 @@ public class SQLiteIncrementalReplicationHelper {
             case "vets":
                 query = "UPDATE vets SET first_name = \'" + dataArray[2] + "\', last_name = \'" + dataArray[3] + "\' WHERE id = " + dataArray[1];
                 break;
+            case "vet_specialties":
+                query = "UPDATE vet_specialties SET vet_id = \'" + dataArray[1] + "\', specialty_id = \'" + dataArray[2] + "\' WHERE vet_id = \'" + dataArray[1] + "\' AND specialty_id = \'" + dataArray[3] +"\'";
+                System.out.println("\n"+query+"\n");
+                break;
             case "visits":
                 query = "UPDATE visits SET pet_id = \'" + dataArray[2] + "\', visit_date = \'" + dataArray[3] + "\', description = \'" + dataArray[4] +
                         "\' WHERE id = " + dataArray[1];
