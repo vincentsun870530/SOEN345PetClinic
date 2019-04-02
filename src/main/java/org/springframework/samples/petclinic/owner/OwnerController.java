@@ -22,6 +22,7 @@ import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.stereotype.Component;
@@ -100,15 +101,25 @@ class OwnerController {
         } else {
             this.owners.save(owner);
             //Shadow write
-            if (isEnableShadowWrite) {
-                SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
-                
+            if (FeatureToggles.isEnableShadowWrite) {
+                //To make db difference
+                System.out.println(owner.getFirstName() + " " + owner.getLastName() + " insert");
+                int responseRowId = SQLiteOwnerHelper.getInstance().insert(owner.getFirstName(), owner.getLastName(), owner.getAddress(), owner.getCity(), owner.getTelephone());
+                System.out.println(responseRowId + "responseRowId");
+                FeatureToggles.isEnableIncrementDate = true;
+                // call incremental consistency check
+                boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"owners");
+                System.out.println(isConsistency+"result");
+                // if incremental consistency check is not good call incremental replication
+                if (FeatureToggles.isEnableIR && isConsistency == false) {
+                    FeatureToggles.isEnableIncrementDate = false;
+                    //System.out.println("incremental replication!!!");
+                    IncrementalReplication.addToCreateList("owners," + responseRowId + "," + owner.getFirstName()+ "," + owner.getLastName()+ "," + owner.getAddress()+ "," + owner.getCity()+ "," + owner.getTelephone());
+                    IncrementalReplication.incrementalReplication();
+                    FeatureToggles.isEnableIncrementDate = true;
+                }
             }
-            
-            if(FeatureToggles.isEnableOwnerCreateIR == true) {
-                IncrementalReplication.addToCreateList("owners," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
-                IncrementalReplication.incrementalReplication();
-            }
+
             return "redirect:/owners/" + owner.getId();
         }
     }
@@ -216,6 +227,26 @@ class OwnerController {
                 IncrementalReplication.addToUpdateList("owners" + "," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
                 IncrementalReplication.incrementalReplication();
             }
+//            if (FeatureToggles.isEnableShadowWrite) {
+//                //To make db difference
+//                System.out.println(owner.getFirstName() + " " + owner.getLastName() + " update");
+//                // Implement an update Form
+//                int responseRowId = SQLiteOwnerHelper.getInstance().update(owner);
+//                System.out.println(responseRowId + "responseRowId");
+//                FeatureToggles.isEnableIncrementDate = true;
+//                // call incremental consistency check
+//                boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"visits");
+//                System.out.println(isConsistency+"result");
+//                // if incremental consistency check is not good call incremental replication
+//                if (FeatureToggles.isEnableIR && isConsistency == false) {
+//                    FeatureToggles.isEnableIncrementDate = false;
+//                    //System.out.println("incremental replication!!!");
+//                    IncrementalReplication.addToUpdateList("owners," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+//                    IncrementalReplication.incrementalReplication();
+//                    FeatureToggles.isEnableIncrementDate = true;
+//                }
+//            }
+
             return "redirect:/owners/{ownerId}";
         }
     }

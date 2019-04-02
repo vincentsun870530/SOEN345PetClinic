@@ -33,6 +33,7 @@ public class IncrementalReplicationChecker {
                     Pet oldPet = petRSet(oldDatabase);
                     Pet newPet = petRSet(newDatabase);
                     isInconsistency = new PetConsistencyChecker().petCheckConsistency(oldPet, newPet);
+                    System.out.println("IN SWITCH isInconsistency:" + isInconsistency);
                     break;
                 case "visits":
                     Visit oldVisit = visitRSet(oldDatabase);

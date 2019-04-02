@@ -29,8 +29,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.samples.petclinic.sqlite.SQLiteVisitHelper;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 import javax.validation.Valid;
 import java.util.List;

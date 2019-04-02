@@ -89,6 +89,7 @@ public class PetControllerTests {
 
     @Test
     public void testProcessCreationFormSuccess() throws Exception {
+        FeatureToggles.isEnableShadowWrite = false;
         mockMvc.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID)
             .param("name", "Betty")
             .param("type", "hamster")
@@ -100,6 +101,7 @@ public class PetControllerTests {
 
     @Test
     public void testProcessCreationFormHasErrors() throws Exception {
+        FeatureToggles.isEnableShadowWrite = false;
         mockMvc.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID)
             .param("name", "Betty")
             .param("birthDate", "2015-02-12")
@@ -114,6 +116,7 @@ public class PetControllerTests {
     
     @Test
     public void test_mockito_ProcessCreationFormSuccess() throws Exception{
+        FeatureToggles.isEnableShadowWrite = false;
     	Owner owner = mock(Owner.class);
     	ModelMap model = mock(ModelMap.class);
     	Pet pet = mock(Pet.class);
@@ -139,6 +142,7 @@ public class PetControllerTests {
     
     @Test
     public void test_mockito_ProcessCreationFormHasErrors() throws Exception{
+        FeatureToggles.isEnableShadowWrite = false;
     	Owner owner = mock(Owner.class);
     	ModelMap model = mock(ModelMap.class);
     	Pet pet = mock(Pet.class);
@@ -178,6 +182,7 @@ public class PetControllerTests {
 
     @Test
     public void testProcessUpdateFormSuccess() throws Exception {
+        FeatureToggles.isEnableShadowWrite = false;
         mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
             .param("name", "Betty")
             .param("type", "hamster")
@@ -189,6 +194,7 @@ public class PetControllerTests {
 
     @Test
     public void testProcessUpdateFormHasErrors() throws Exception {
+        FeatureToggles.isEnableShadowWrite = false;
         //switch off Date incremental, keep original test
         FeatureToggles.isEnableIncrementDate = false;
         mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
