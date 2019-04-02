@@ -55,7 +55,6 @@ public class IncrementalReplication {
             for(int index=0; index<updateArray.size(); index++) {
                     data = updateArray.get(index);
                     splittedData = data.split(",");
-
                     int id = Integer.parseInt(splittedData[1].replace(" ", ""));
                     SQLiteIncrementalReplicationHelper.getInstance().updateRow(splittedData);
                     IncrementalReplicationChecker.isConsistency(id, splittedData[0]);
@@ -72,8 +71,8 @@ public class IncrementalReplication {
                 splittedData = data.split(",");
                 String tableName = splittedData[0];
                 int primaryKey = Integer.parseInt(splittedData[1]);
-                /*for(int k =0  ; k<splittedData.length;k++){
-                    System.out.println(splittedData[k]+k);
+            /*    for(int k =0  ; k<splittedData.length;k++){
+                    System.out.println(splittedData[k]+k+"!!!!!!!!!!!!!!!@@@@######");
                 }*/
                 //System.out.println(splittedData.length+"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 boolean isSuccess = SQLiteIncrementalReplicationHelper.getInstance().updateRow(splittedData);

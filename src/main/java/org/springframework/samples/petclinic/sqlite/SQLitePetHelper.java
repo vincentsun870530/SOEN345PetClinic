@@ -38,7 +38,10 @@ public class SQLitePetHelper {
             ps.setInt(3, type_id);
             ps.setInt(4, owner_id);
             numRowsInserted = ps.executeUpdate();
-
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                numRowsInserted = rs.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

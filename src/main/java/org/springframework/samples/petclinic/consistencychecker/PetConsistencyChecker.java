@@ -68,16 +68,34 @@ public class PetConsistencyChecker implements InConsistencyChecker {
             if (oldPet.getId() == newPet.getId()) {
                 int atID = newPet.getId();
                 if (!oldPet.getName().equals(newPet.getName())) {
+                    System.out.println("old pet"+oldPet.getName());
+                    System.out.println("new pet"+newPet.getName());
                     checkNewAndOldData(atID, oldPet.getName(), newPet.getName(), "name");
                     inconsistency++;
+                    System.out.println(inconsistency+" rate@");
                 }
                 if (!oldPet.getBirthDate().equals(newPet.getBirthDate())) {
+                    System.out.println("old pet"+oldPet.getBirthDate().toString());
+                    System.out.println("new pet"+newPet.getBirthDate().toString());
                     checkDateNewAndOldData(atID, oldPet.getBirthDate(), newPet.getBirthDate(), "birth_date");
                     inconsistency++;
+                    System.out.println(inconsistency+" rate@");
                 }
-                if (!oldPet.getType().equals(newPet.getType())) {
-                    checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
+                if (!oldPet.getType().getId().equals(newPet.getType().getId())) {
+
+                    //System.out.println("old pet"+oldPet.getType());
+                    //System.out.println("new pet"+newPet.getType());
+                    checkNewAndOldData(atID, oldPet.getType().getId().toString(), newPet.getType().getId().toString(), "type_id");
                     inconsistency++;
+                    //System.out.println(inconsistency+" rate@");
+                }
+                if (!oldPet.getOwner().getId().equals(newPet.getOwner().getId())) {
+
+                    //System.out.println("old pet"+oldPet.getOwner());
+                    //System.out.println("new pet"+newPet.getOwner());
+                    checkNewAndOldData(atID, oldPet.getOwner().getId().toString(), newPet.getOwner().getId().toString(), "owner_id");
+                    inconsistency++;
+                    //System.out.println(inconsistency+" rate@");
                 }
             } else {
                 System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldPet.getId() + " != " + newPet.getId());

@@ -88,7 +88,7 @@ class PetController {
             model.put("pet", pet);
 
             //TODO change to logger info//
-                System.out.println("Shadow Read for visits passed from controller");
+                //System.out.println("Shadow Read for visits passed from controller");
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
 
         }
@@ -119,17 +119,18 @@ class PetController {
             this.pets.save(pet);
             if (activeProfile.equals("mysql")) {
                 if (FeatureToggles.isEnableShadowWrite) {
-                    System.out.println(pet.getName() + " insert");
+                    //System.out.println(pet.getName() + " insert");
                     int responseRowId = SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
-                    System.out.println(responseRowId + "responseRowId");
+                    //System.out.println(responseRowId + "responseRowId");
                     FeatureToggles.isEnableIncrementDate = true;
                     // call incremental consistency check
                     boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"pets");
-                    System.out.println(isConsistency + "result");
+                    //System.out.println(isConsistency + "result");
                     // if incremental consistency check is not good call incremental replication
                     if (FeatureToggles.isEnableIR && isConsistency == false) {
                         FeatureToggles.isEnableIncrementDate = false;
-                        //System.out.println("incremental replication!!!");
+                       // System.out.println("incremental replication!!!");
+                       // System.out.println(pet.getBirthDate().toString()+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                         IncrementalReplication.addToCreateList("pets," + responseRowId + "," + pet.getName()+ "," + pet.getBirthDate().toString()+ "," + pet.getType().getId()+ "," + owner.getId());
                         IncrementalReplication.incrementalReplication();
                         FeatureToggles.isEnableIncrementDate = true;
@@ -199,13 +200,13 @@ class PetController {
 
             if (FeatureToggles.isEnableShadowWrite) {
                 SQLitePetHelper.getInstance().insert(pet.getName(), pet.getBirthDate().toString(), pet.getType().getId(), owner.getId());
-                System.out.println(pet.getName() + " update");
+                //System.out.println(pet.getName() + " update");
                 int responseRowId = SQLitePetHelper.getInstance().update(pet, owner);
-                System.out.println(responseRowId + "responseRowId");
+                //System.out.println(responseRowId + "responseRowId");
                 FeatureToggles.isEnableIncrementDate = true;
                 // call incremental consistency check
                 boolean isConsistency = IncrementalReplicationChecker.isConsistency(responseRowId,"pets");
-                System.out.println(isConsistency + "result");
+                //System.out.println(isConsistency + "result");
                 // if incremental consistency check is not good call incremental replication
                 if (FeatureToggles.isEnableIR && isConsistency == false) {
                     FeatureToggles.isEnableIncrementDate = false;

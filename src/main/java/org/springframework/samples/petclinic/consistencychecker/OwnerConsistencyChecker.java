@@ -83,7 +83,7 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
                 //need the number of columns (use hardcoded number or dynamically check the number of columns)
                 //for Owner, 5 columns
                 if (oldOwner.getId() != newOwner.getId()) {
-                    System.out.println("\t" + oldOwner.getId() + "!=" + newOwner.getId());
+                    //System.out.println("\t" + oldOwner.getId() + "!=" + newOwner.getId());
                     inconsistency++;
                 }
                 if (!oldOwner.getFirstName().equals(newOwner.getFirstName())) {

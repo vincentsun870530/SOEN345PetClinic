@@ -1,10 +1,8 @@
 package org.springframework.samples.petclinic.sqlite;
 import org.springframework.samples.petclinic.owner.Owner;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+
 public class SQLiteOwnerHelper {
 
     private static final String INSERT_SQL = "INSERT INTO owners(first_name, last_name, address, city, telephone) VALUES(?, ?, ?, ?, ?)";
@@ -37,7 +35,10 @@ public class SQLiteOwnerHelper {
             ps.setString(4, city);
             ps.setString(5, telephone);
             numRowsInserted = ps.executeUpdate();
-
+            ResultSet rs = ps.getGeneratedKeys();
+            if(rs.next()){
+                numRowsInserted = rs.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

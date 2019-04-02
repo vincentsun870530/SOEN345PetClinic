@@ -50,6 +50,7 @@ public class SQLiteIncrementalReplicationHelper {
              *  the rest of dataArray is the the value of the columns
              * */
             query = returnUpdateQuery(dataArray);
+            System.out.println(query+" @@@@@@@@@@@@@@@@@@@@@@@@@+@@@@@@@@@@@@@@@@@@");
             stmt.executeUpdate(query);
             close(stmt);
             return true;
