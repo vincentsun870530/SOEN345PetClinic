@@ -17,6 +17,9 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+
+//import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
+
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.shadowRead.VisitShadowRead;
 import org.springframework.samples.petclinic.visit.Visit;
@@ -30,7 +33,8 @@ import org.springframework.samples.petclinic.sqlite.SQLiteVisitHelper;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Juergen Hoeller
@@ -44,6 +48,7 @@ class VisitController {
 
     private final VisitRepository visits;
     private final PetRepository pets;
+    private static Logger log = LoggerFactory.getLogger(VisitController.class);
     Visit visit;
 
 
@@ -92,24 +97,32 @@ class VisitController {
                 if(FeatureToggles.isEnableShadowRead)
                 {
                     VisitShadowRead visitShadowReader = new VisitShadowRead();
-                    List<Visit> visitList = this.visits.findByPetId(petId);
-                    int inconsistencyShadowReadCounter = 0;
-                    for (Visit visit : visitList) {
-                        System.out.println(visit.getPetId() + "from controller");
+                    try {
+                        List<Visit> visitList = this.visits.findByPetId(petId);
+                        int inconsistencyShadowReadCounter = 0;
+                        for (Visit visit : visitList) {
+                            System.out.println(visit.getPetId() + "from controller");
 
-                        //Shadow read return problem id
-                        int inconsistency_id = visitShadowReader.checkVisit(visit);
+                            //Shadow read return problem id
+                            int inconsistency_id = visitShadowReader.checkVisit(visit);
 
-                        //if it's not good call incremental replication
-                        if(inconsistency_id>-1){
-                            //TODO adapt the Increamental Replication
-                            inconsistencyShadowReadCounter++;
+                            //if it's not good call incremental replication
+                            if (inconsistency_id > -1) {
+                                // Incremental Replication
+                                FeatureToggles.isEnableIncrementDate = false;
+                                //System.out.println("incremental replication!!!");
+                                IncrementalReplication.addToUpdateList("visits," + inconsistency_id + "," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                                IncrementalReplication.incrementalReplication();
+                                FeatureToggles.isEnableIncrementDate = true;
+                                inconsistencyShadowReadCounter++;
+                            }
                         }
-                    }
 
-                    if(inconsistencyShadowReadCounter == 0){
-                        //TODO change to logger info
-                        System.out.println("Shadow Read for visits passed from controller");
+                        if (inconsistencyShadowReadCounter == 0) {
+                            log.info("Shadow Read for visits passed from controller");
+                        }
+                    }catch(Exception e){
+                        e.getMessage();
                     }
                 }
             return "pets/createOrUpdateVisitForm";
@@ -126,8 +139,9 @@ class VisitController {
             this.visits.save(visit);
             // shadow write
             if (FeatureToggles.isEnableShadowWrite) {
-                //To make db difference
-                //FeatureToggles.isEnableIncrementDate = false;
+
+                //To make db difference comment out the isEnableIncrementDate toggle
+                FeatureToggles.isEnableIncrementDate = false;
                 System.out.println(visit.getDate() + " insert");
                 int responseRowId = SQLiteVisitHelper.getInstance().insert(visit.getPetId(), visit.getDate().toString(), visit.getDescription());
                 System.out.println(responseRowId+"responseRowId");
@@ -143,6 +157,7 @@ class VisitController {
                     IncrementalReplication.incrementalReplication();
                     FeatureToggles.isEnableIncrementDate = true;
                 }
+
             }
             return "redirect:/owners/{ownerId}";
         }

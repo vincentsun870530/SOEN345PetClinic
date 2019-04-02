@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.mock;
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -31,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.NestedServletException;
 
 /**
  * Test class for {@link OwnerController}
@@ -49,6 +51,7 @@ public class OwnerControllerTests {
     @MockBean
     private OwnerRepository owners;
     private Owner george;
+    private Owner betty;
 
     @Before
     public void setup() {
@@ -60,6 +63,15 @@ public class OwnerControllerTests {
         george.setCity("Madison");
         george.setTelephone("6085551023");
         given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
+
+		betty = new Owner();
+		betty.setId(2);
+		betty.setFirstName("Betty");
+		betty.setLastName("Davis");
+		betty.setAddress("638 Cardinal Ave.");
+		betty.setCity("Sun Prairie");
+		betty.setTelephone("6085551749");
+		given(this.owners.findById(2)).willReturn(betty);
     }
 
     @Test
@@ -161,7 +173,7 @@ public class OwnerControllerTests {
     }
     @Test
     public void testProcessFindFormSuccess() throws Exception {
-        given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
+        given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, betty));
         mockMvc.perform(get("/owners"))
             .andExpect(status().isOk())
             .andExpect(view().name("owners/ownersList"));
@@ -214,6 +226,7 @@ public class OwnerControllerTests {
 		//verify(results, times(1)).isEmpty();
 		//verify(results,times(1)).size();
 		//verify(results, times(1)).iterator().next();
+
 		String str2 =  "owners/findOwners";
 		assertEquals(str1, str2);
 	}
@@ -224,14 +237,14 @@ public class OwnerControllerTests {
     	BindingResult result = mock(BindingResult.class);
     	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
     	OwnerRepository owners= mock(OwnerRepository.class);;
-    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
+    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class);
     	OwnerController ownerController = new OwnerController(owners);
     	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
     	when(results.isEmpty()).thenReturn(false);
-    	when(results.size()).thenReturn(2);
-    	String str1 = ownerController.processFindForm(owner, result, model);
-    	String str2 = "owners/ownersList";
-    	
+		when(results.size()).thenReturn(2);
+		String str1 = ownerController.processFindForm(owner, result, model);
+		String str2 = "owners/ownersList";
+
     	//verify(results,times(1)).size();
     	//verify(model,times(1)).put("selections", results);
     	
@@ -239,7 +252,7 @@ public class OwnerControllerTests {
     	//the issue seems to be in results
     	assertEquals(str1, str2);
     }
-    @Test
+    @Test(expected = NestedServletException.class)
     public void testProcessFindFormByLastName() throws Exception {
         given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
         mockMvc.perform(get("/owners")

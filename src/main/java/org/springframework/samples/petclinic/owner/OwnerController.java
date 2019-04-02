@@ -18,11 +18,13 @@ package org.springframework.samples.petclinic.owner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
+import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,8 +37,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
@@ -53,6 +59,7 @@ class OwnerController {
     private final OwnerRepository owners;
     private Owner owner;
     private Collection<Owner> results;
+    private static Logger log = LoggerFactory.getLogger(OwnerController.class);
 
     @Autowired
    public OwnerController(OwnerRepository clinicService) {
@@ -135,7 +142,6 @@ class OwnerController {
 
     @GetMapping("/owners")
     public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
-
         if (FeatureToggles.isEnableOwnerFind) {
             // allow parameterless GET request for /owners to return all records
             if (owner.getLastName() == null) {
@@ -146,6 +152,7 @@ class OwnerController {
             //this.results = this.owners.findByLastName(owner.getLastName());
             setResults(owner);
             System.out.println(results.toString());
+
             if (results.isEmpty()) {
                 // no owners found
                 result.rejectValue("lastName", "notFound", "not found");
@@ -153,13 +160,43 @@ class OwnerController {
             } else if (results.size() == 1) {
                 // 1 owner found
                 owner = results.iterator().next();
+
+                //shadow read for owner
+                OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
+                log.trace(owner.getId() + " Owner Id from controller");
+                //Shadow read return problem id
+                int inconsistency_id = ownerShadowReader.checkOwner(owner);
+                //if it's not good call incremental replication
+                if (inconsistency_id > -1) {
+                    IncrementalReplication.addToUpdateList("owners" + "," + owner.getId() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                    IncrementalReplication.incrementalReplication();
+                }
+
                 return "redirect:/owners/" + owner.getId();
             } else {
                 // multiple owners found
-                model.put("selections", results);
-                return "owners/ownersList";
-            }
+                    if (FeatureToggles.isEnableShadowRead) {
+                        OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
+                        try {
+                            //shadow read for owner
+                            for (Owner own : results) {
+                                log.trace(own.getId() + " Owner Id from controller");
+                                //Shadow read return problem id
+                                int inconsistency_id = ownerShadowReader.checkOwner(own);
+                                //if it's not good call incremental replication
+                                if (inconsistency_id > -1) {
+                                    IncrementalReplication.addToUpdateList("owners" + "," + owner.getId() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                                    IncrementalReplication.incrementalReplication();
+                                }
+                            }
+                        }catch(Exception e){
+                            e.getMessage();
+                        }
+                    }
+                        model.put("selections", results);
+                        return "owners/ownersList";
 
+            }
         }
         return null;
     }
@@ -169,7 +206,7 @@ class OwnerController {
     }
 
     @GetMapping("/owners/{ownerId}/edit")
-    public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
+    public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
 
         if (FeatureToggles.isEnableOwnerEdit) {
             Owner owner = this.owners.findById(ownerId);
@@ -187,7 +224,7 @@ class OwnerController {
             owner.setId(ownerId);
             this.owners.save(owner);
             if (FeatureToggles.isEnableOwnerEditIR) {
-                IncrementalReplication.addToUpdateList("owners," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                IncrementalReplication.addToUpdateList("owners" + "," + (owner.getId()).toString() + "," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
                 IncrementalReplication.incrementalReplication();
             }
 //            if (FeatureToggles.isEnableShadowWrite) {

@@ -16,7 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConsistencyChecker {
-    public static void ownerConsCheck() {
+    // public static void main(String[] args) {
+    //     System.out.println("Owner Consistency Check");
+    //     ownerConsCheck();
+    //     System.out.println("\nPet Consistency Check");
+    //     petConsCheck();
+    //     System.out.println("\nSpecialty Consistency Check");
+    //     specialtyConsCheck();
+    //     System.out.println("\nType Consistency Check");
+    //     typeConsCheck();
+    //     System.out.println("\nVet Consistency Check");
+    //     vetConsCheck();
+    //     System.out.println("\nVisit Consistency Check");
+    //     visitConsCheck();
+    // }
+
+    public static int ownerConsCheck() {
         // START OF CONSISTENCY CHECKER FOR OWNER
         ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("owners", "id");
         List<Owner> ownersListNew = new ArrayList<Owner>();
@@ -37,8 +52,9 @@ public class ConsistencyChecker {
         } catch (SQLException exception) {
             System.out.println(exception);
         }
-
-        System.out.println("Number(s) of inconsistencies: " + new OwnerConsistencyChecker().consistencyChecker());
+        int numberOfInconsistencies = new OwnerConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + numberOfInconsistencies);
+        return numberOfInconsistencies;
         //END OF CONSISTENCY CHECKER FOR OWNER
     }
 
@@ -64,7 +80,11 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void petConsCheck() {
+    public static int numberOfOwnerRows() {
+        return new OwnerConsistencyChecker().numberOfRows();
+    }
+
+    public static int petConsCheck() {
         ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("pets", "id");
         List<Pet> petsListNew = new ArrayList<Pet>();
         Pet petNew;
@@ -87,7 +107,9 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        System.out.println("Number(s) of inconsistencies: " + new PetConsistencyChecker().consistencyChecker());
+        int numberOfInconsistencies = new PetConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + numberOfInconsistencies);
+        return numberOfInconsistencies;
     }
 
     private static void petRSet(ResultSet rs, List<Pet> petsList) throws SQLException {
@@ -117,7 +139,11 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void specialtyConsCheck() {
+    public static int numberOfPetRows() {
+        return new PetConsistencyChecker().numberOfRows();
+    }
+
+    public static int specialtyConsCheck() {
         ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("specialties", "id");
         List<Specialty> specialtiesListNew = new ArrayList<Specialty>();
         Specialty specialtyNew;
@@ -138,7 +164,9 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        System.out.println("Number(s) of inconsistencies: " + new SpecialityConsistencyChecker().consistencyChecker());
+        int numberOfInconsistencies = new SpecialityConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + numberOfInconsistencies);
+        return numberOfInconsistencies;
     }
 
     private static void specialtyRSet(ResultSet rs, List<Specialty> specialtiesList) throws SQLException {
@@ -155,7 +183,11 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void typeConsCheck() {
+    public static int numberOfSpecialityRows() {
+        return new SpecialityConsistencyChecker().numberOfRows();
+    }
+
+    public static int typeConsCheck() {
         ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("types", "id");
         List<PetType> typeListNew = new ArrayList<PetType>();
         PetType typeNew;
@@ -176,7 +208,9 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        System.out.println("Number(s) of inconsistencies: " + new TypeConsistencyChecker().consistencyChecker());
+        int numberOfInconsistencies = new TypeConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + numberOfInconsistencies);
+        return numberOfInconsistencies;
     }
 
     private static void typeRSet(ResultSet rs, List<PetType> typeList) throws SQLException {
@@ -194,7 +228,11 @@ public class ConsistencyChecker {
         }
     }
 
-    public static void vetConsCheck() {
+    public static int numberOfTypeRows() {
+        return new TypeConsistencyChecker().numberOfRows();
+    }
+
+    public static int vetConsCheck() {
         ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("vets", "id");
         List<Vet> vetListNew = new ArrayList<Vet>();
         Vet vetNew;
@@ -215,7 +253,9 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        System.out.println("Number(s) of inconsistencies: " + new VetConsistencyChecker().consistencyChecker());
+        int numberOfInconsistencies = new VetConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + numberOfInconsistencies);
+        return numberOfInconsistencies;
     }
 
     private static void vetRSet(ResultSet rs, List<Vet> vetList) throws SQLException {
@@ -235,8 +275,12 @@ public class ConsistencyChecker {
         }
     }
 
+    public static int numberOfVetRows() {
+        return new VetConsistencyChecker().numberOfRows();
+    }
 
-    public static void visitConsCheck() {
+
+    public static int visitConsCheck() {
         ResultSet rsNew = SQLiteDBConnector.getInstance().selectAllASC("visits", "id");
         List<Visit> visitListNew = new ArrayList<Visit>();
         Visit visitNew;
@@ -257,7 +301,9 @@ public class ConsistencyChecker {
             System.out.println(exception);
         }
 
-        System.out.println("Number(s) of inconsistencies: " + new VisitConsistencyChecker().consistencyChecker());
+        int numberOfInconsistencies = new VisitConsistencyChecker().consistencyChecker();
+        System.out.println("Number(s) of inconsistencies: " + numberOfInconsistencies);
+        return numberOfInconsistencies;
     }
 
     private static void visitRSet(ResultSet rs, List<Visit> visitList) throws SQLException {
@@ -277,5 +323,14 @@ public class ConsistencyChecker {
 
             visitList.add(visit);
         }
+    }
+
+    public static int numberOfVisitRows() {
+        return new VisitConsistencyChecker().numberOfRows();
+    }
+    
+    public static double calculateTotalConsistency(int inconsistencies, int rows) {
+        double consistency = (1 - ((double)inconsistencies/(double)rows))*100;
+        return Double.parseDouble(String.format("%.2f", consistency));
     }
 }

@@ -81,24 +81,6 @@ class PetController {
     public String initCreationForm(Owner owner, ModelMap model, Pet pet) {
 
         if (FeatureToggles.isEnablePetAdd) {
-            // Pet Shadow Read
-            PetShadowRead petShadowRead = new PetShadowRead();
-            //Shadow read return problem id
-            if(pet != null) {
-                //this is an if filter for test since the test did not mock or setup all the details of the pet;
-                //TODO add mocked or setup dedetails for test
-                if(pet.getType() !=null) {
-                    int inconsistency_id = petShadowRead.checkPet(pet);
-                    //if it's not good call incremental replication
-                    if (inconsistency_id > -1) {
-                        //TODO adapt increamental replication
-
-                        return null;
-                    } else {
-                        System.out.println("Shadow Read for visits passed from controller");
-                    }
-                }
-            }
 
             this.pet = pet;
 
@@ -180,21 +162,25 @@ class PetController {
             Pet pet = this.pets.findById(petId);
             //shadow read for pet
             PetShadowRead petShadowRead = new PetShadowRead();
-            //Shadow read return problem id
-            if(pet != null) {
-                //this is an if filter for test since the test did not mock or setup all the details of the pet;
-                //TODO add mocked or setup dedetails for test
-                if(pet.getType() !=null) {
-                    int inconsistency_id = petShadowRead.checkPet(pet);
-                    //if it's not good call incremental replication
-                    if (inconsistency_id > -1) {
-                        //TODO adapt increamental replication
-
-                        return null;
-                    } else {
-                        System.out.println("Shadow Read for visits passed from controller");
+            try {
+                //Shadow read return problem id
+                if (pet != null) {
+                    //this is an if filter for test since the test did not mock or setup all the details of the pet;
+                    //TODO add mocked or setup dedetails for test
+                    if (pet.getType() != null) {
+                        int inconsistency_id = petShadowRead.checkPet(pet);
+                        //if it's not good call incremental replication
+                        if (inconsistency_id > -1) {
+                            //increamental replication
+                            IncrementalReplication.addToUpdateList("pets," + inconsistency_id + "," + pet.getName() + "," + pet.getBirthDate().toString() + "," + pet.getType().getId() + "," + pet.getOwner().getId());
+                            IncrementalReplication.incrementalReplication();
+                        } else {
+                            System.out.println("Shadow Read for visits passed from controller");
+                        }
                     }
                 }
+            }catch(Exception e){
+                e.getMessage();
             }
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;

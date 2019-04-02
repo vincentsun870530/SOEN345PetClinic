@@ -103,6 +103,10 @@ public class VisitConsistencyChecker implements InConsistencyChecker {
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
+    public int numberOfRows() {
+        return oldVisitsData.size();
+    }
+
     private void checkNewAndOldData(int id, String oldData, String newData, String columnName){
         checkNewAndOldData(id,oldData,newData,columnName,"visits");
     }

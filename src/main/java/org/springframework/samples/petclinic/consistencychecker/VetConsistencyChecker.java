@@ -60,6 +60,10 @@ public class VetConsistencyChecker implements InConsistencyChecker {
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
+    public int numberOfRows() {
+        return oldVetsData.size();
+    }
+
     private void checkNewAndOldData(int id, String oldData, String newData, String columnName){
         checkNewAndOldData(id,oldData,newData,columnName,"vets");
     }
