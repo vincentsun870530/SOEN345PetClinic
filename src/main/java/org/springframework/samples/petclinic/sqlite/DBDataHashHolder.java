@@ -34,7 +34,7 @@ public class DBDataHashHolder {
 
     public void setDataHolder(ResultSet resultSet) {
         ResultSetMetaData rsmd;
-
+        this.dataHolder = new ArrayList<HashMap<String,String>>();
         try {
             //temp store the table's col names
             rsmd = resultSet.getMetaData();

@@ -4,6 +4,8 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.samples.petclinic.vet.Specialty;
 import org.springframework.samples.petclinic.vet.Vet;
 
 public class SQLiteVetHelper {
@@ -74,6 +76,28 @@ public class SQLiteVetHelper {
             System.out.println(e.getMessage() + " Retrieve Error From Vet Helper");
         }
         return vetList;
+    }
+
+    public List<Specialty> getSpecialtyModelList(ResultSet rs){
+        ArrayList<Specialty> specialtyList = new ArrayList<Specialty>();
+
+        try{
+            while(rs.next()){
+                Specialty specialty = new Specialty();
+                System.out.println(rs.getInt("id"));
+                specialty.setId(rs.getInt("id"));
+
+                System.out.println(rs.getString("name"));
+
+                specialty.setName(rs.getString("name"));
+
+                specialtyList.add(specialty);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            System.out.println(e.getMessage() + " Retrieve Error From Vet Helper");
+        }
+        return specialtyList;
     }
 
 

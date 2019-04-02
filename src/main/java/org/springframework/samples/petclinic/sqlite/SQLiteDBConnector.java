@@ -80,6 +80,12 @@ public class SQLiteDBConnector {
         return getResultSet(sql, rs);
     }
 
+    public ResultSet selectVetSpecialtyById(String tableName, int id){
+        String sql = "SELECT * FROM " + tableName + " WHERE vet_id = " + id;
+        ResultSet rs = null;
+        return getResultSet(sql, rs);
+    }
+
     private ResultSet getResultSet(String sql, ResultSet rs) {
         Connection conn = connect();
         try  {
@@ -119,6 +125,32 @@ public class SQLiteDBConnector {
             System.out.println(" Update Failed: " + e.getMessage());
         }
         
+        //return;
+    }
+
+    public void updateVetSpecialty(String tableName, String colName, int old_specialty_id, int vet_id, int specialty_id){
+        //String sql = "UPDATE " + tableName + " SET " + colName + " = \'" + colValue + "\' WHERE id = " + id;
+        Connection conn = connect();
+        String sql = "UPDATE " + tableName + " SET " + colName + " = ? WHERE vet_id = ? AND specialty_id = ?";
+        PreparedStatement  stmt =null;
+
+
+        try  {
+            if(conn.isClosed())
+                System.out.println("conn closed: " + sql);
+            stmt = conn.prepareStatement(sql);
+            //stmt.setString(1,tableName);
+            //stmt.setString(1,colName);
+            stmt.setInt(1,old_specialty_id);
+            stmt.setInt(2,vet_id);
+            stmt.setInt(3,specialty_id);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(" Update Failed: " + e.getMessage());
+        }
+
         //return;
     }
 

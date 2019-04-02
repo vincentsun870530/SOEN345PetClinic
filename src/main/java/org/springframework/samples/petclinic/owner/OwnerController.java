@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
+import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
+import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
@@ -267,7 +269,41 @@ class OwnerController {
 
     public ModelAndView showOwner(@PathVariable("ownerId") int ownerId , ModelAndView modelAndView) {
         ModelAndView mav = modelAndView;
-        mav.addObject(this.owners.findById(ownerId));
+
+        Owner owner = this.owners.findById(ownerId);
+        List<Pet> pets = owner.getPets();
+
+        //shadow read for pet
+        PetShadowRead petShadowRead = new PetShadowRead();
+        PetTypeShadowRead petTypeShadowRead = new PetTypeShadowRead();
+        try {
+            for(Pet pet: pets) {
+                if (pet != null) {
+                    PetType petType = pet.getType();
+                    if(petType != null) {
+                        //region shadow read for pet type
+                        int petType_inconsistency_id = petTypeShadowRead.checkPetType(petType);
+                        if (petType_inconsistency_id > -1) {
+                            petTypeShadowRead.incrementalReplicationAdapter(petType);
+                        }
+                        //endregion shadow read for pet type end
+
+                        int pet_inconsistency_id = petShadowRead.checkPet(pet);
+                        if (pet_inconsistency_id > -1) {
+                            //increamental replication
+                            IncrementalReplication.addToUpdateList("pets," + pet_inconsistency_id
+                                    + "," + pet.getName() + "," + pet.getBirthDate().toString()
+                                    + "," + pet.getType().getId() + "," + pet.getOwner().getId());
+                            IncrementalReplication.incrementalReplication();
+                        }
+                    }
+                }
+            }
+        }catch(Exception e){
+            e.getMessage();
+        }
+
+        mav.addObject(owner);
         return mav;
     }
 
