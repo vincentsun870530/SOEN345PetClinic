@@ -82,7 +82,27 @@ public class SQLitePetHelper {
         return petList;
     }
 
+    public List<PetType> getPetTypeModelList(ResultSet rs){
+        ArrayList<PetType> petTypeList = new ArrayList<PetType>();
 
+        try{
+            while(rs.next()){
+                PetType petType = new PetType();
+                System.out.println(rs.getInt("id"));
+                petType.setId(rs.getInt("id"));
+
+                System.out.println(rs.getString("name"));
+
+                petType.setName(rs.getString("name"));
+
+                petTypeList.add(petType);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+            System.out.println(e.getMessage() + " Retrieve Error From Pet Helper");
+        }
+        return petTypeList;
+    }
 
     private void close(Statement statement) {
         try {

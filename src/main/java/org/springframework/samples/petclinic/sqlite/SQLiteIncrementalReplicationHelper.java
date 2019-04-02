@@ -98,6 +98,9 @@ public class SQLiteIncrementalReplicationHelper {
             case "specialties":
                 query = "UPDATE specialties SET name = \'" + dataArray[2] + "\' WHERE id = " + dataArray[1];
                 break;
+            case "types":
+                query = "UPDATE types SET name = \'" + dataArray[2] + "\' WHERE id = " + dataArray[1];
+                break;
             case "vets":
                 query = "UPDATE vets SET first_name = \'" + dataArray[2] + "\', last_name = \'" + dataArray[3] + "\' WHERE id = " + dataArray[1];
                 break;
