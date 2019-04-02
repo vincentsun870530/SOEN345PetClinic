@@ -252,8 +252,9 @@ public class OwnerControllerTests {
     	//the issue seems to be in results
     	assertEquals(str1, str2);
     }
-    @Test(expected = NestedServletException.class)
+    @Test
     public void testProcessFindFormByLastName() throws Exception {
+		isEnableShadowRead = false;
         given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
         mockMvc.perform(get("/owners")
             .param("lastName", "Franklin")
