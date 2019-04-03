@@ -99,7 +99,7 @@ public class VisitConsistencyChecker implements InConsistencyChecker {
 
     public double calculateConsistencyChecker(int inconsistency) {
         int sizeOfVisits = oldVisitsData.size();
-        double consistency = (1 - (inconsistency/sizeOfVisits))*100;
+        double consistency = (1 - ((double)inconsistency/(double)sizeOfVisits))*100;
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
