@@ -16,7 +16,7 @@ public class DataMigration {
         // Run Forklift
         try {
             ProcessBuilder builder = new ProcessBuilder(
-                    "cmd.exe", "/c", "\"src\\main\\resources\\db\\sqlite\\forklift_step.sh\"");
+                    "cmd.exe", "/c", "cd \"src\\main\\resources\\db\\sqlite\" && forklift_step.sh");
             builder.redirectErrorStream(true);
             Process p = builder.start();
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
