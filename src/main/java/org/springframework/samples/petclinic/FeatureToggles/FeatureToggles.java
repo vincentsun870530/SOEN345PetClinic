@@ -33,4 +33,7 @@ public class FeatureToggles {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
+    // Welcome Page
+    public static boolean isEnabledLegacyWelcomePage = true;
+
 }
