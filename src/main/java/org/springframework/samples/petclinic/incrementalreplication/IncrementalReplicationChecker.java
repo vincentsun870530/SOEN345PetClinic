@@ -22,14 +22,8 @@ public class IncrementalReplicationChecker {
 
     public static boolean isConsistency(int id, String tableName) {
         try {
-            ResultSet oldDatabase = null;
-            ResultSet newDatabase = null;
-            if(tableName.equals("vet_specialties")) {
-
-            } else {
-                oldDatabase = MySQLJDBCDriverConnection.selectById(tableName, id);
-                newDatabase = SQLiteDBConnector.getInstance().selectById(tableName, id);
-            }
+            ResultSet oldDatabase = MySQLJDBCDriverConnection.selectById(tableName, id);
+            ResultSet newDatabase = SQLiteDBConnector.getInstance().selectById(tableName, id);
             int isInconsistency = 0;
             System.out.println("TEST ID:" + id);
             switch(tableName) {
@@ -52,13 +46,15 @@ public class IncrementalReplicationChecker {
                     System.out.println("IN SWITCH isInconsistency:" + isInconsistency);
                     break;
                 case "vet_specialties":
+                    System.out.println("inside case vet specialities");
                     VetSpecialityConsistencyChecker vetSpecialityCS = new VetSpecialityConsistencyChecker();
-                    List<int[]> oldData = Arrays.asList(new int[]{ oldDatabase.getInt("vet_id"), oldDatabase.getInt("specialty_id")});
-                    List<int[]> newData = Arrays.asList(new int[]{ newDatabase.getInt("vet_id"), newDatabase.getInt("specialty_id")});
-                    vetSpecialityCS.setOldData(oldData);
-                    vetSpecialityCS.setNewData(newData);
-                    isInconsistency = vetSpecialityCS.consistencyChecker();
-                    System.out.println("IN SWITCH isInconsistency:" + isInconsistency);
+                    if(oldDatabase.next() && newDatabase.next()) {
+                        List<int[]> oldData = Arrays.asList(new int[]{ oldDatabase.getInt("vet_id"), oldDatabase.getInt("specialty_id")});
+                        List<int[]> newData = Arrays.asList(new int[]{ newDatabase.getInt("vet_id"), newDatabase.getInt("specialty_id")});
+                        vetSpecialityCS.setOldData(oldData);
+                        vetSpecialityCS.setNewData(newData);
+                        isInconsistency = vetSpecialityCS.consistencyChecker();
+                    }
                     break;
             }
             if(isInconsistency != 0) {
