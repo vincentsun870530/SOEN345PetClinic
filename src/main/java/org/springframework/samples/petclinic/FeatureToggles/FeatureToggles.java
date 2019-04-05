@@ -36,4 +36,9 @@ public class FeatureToggles {
     // Welcome Page
     public static boolean isEnabledLegacyWelcomePage = true;
 
+
+
+    // Remove Find Owner Button
+    public static boolean isEnabledLegacyFindOwnerButton = true;
+
 }

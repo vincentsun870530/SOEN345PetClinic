@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
@@ -135,10 +136,12 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
-
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnabledLegacyFindOwnerButton = rndToggle.randomToggle(0.50f);
         if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);
-            return "owners/findOwners";
+            if(FeatureToggles.isEnabledLegacyFindOwnerButton == true) return "owners/findOwners";
+            else return "owners/findOwners-V2";
         }
         return null;
     }
@@ -156,10 +159,13 @@ class OwnerController {
             setResults(owner);
             System.out.println(results.toString());
 
+            RandomToggle rndToggle = new RandomToggle();
+            FeatureToggles.isEnabledLegacyFindOwnerButton = rndToggle.randomToggle(0.50f);
             if (results.isEmpty()) {
                 // no owners found
                 result.rejectValue("lastName", "notFound", "not found");
-                return "owners/findOwners";
+                if(FeatureToggles.isEnabledLegacyFindOwnerButton == true) return "owners/findOwners";
+                else return "owners/findOwners-V2";
             } else if (results.size() == 1) {
                 // 1 owner found
                 owner = results.iterator().next();
