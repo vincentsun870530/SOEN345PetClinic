@@ -20,12 +20,17 @@ class WelcomeController {
         RandomToggle rndToggle = new RandomToggle();
         // Legacy Mode 75% of the time V2 25% of the timeS
         FeatureToggles.isEnabledLegacyWelcomePage = rndToggle.randomToggle(0.25f);
+        return toggleWelcome();
+    }
+
+    private String toggleWelcome() {
         if(FeatureToggles.isEnabledLegacyWelcomePage == false) {
             analytics.info("Version 2 of welcome page started ");
             return "welcome-v2";
         }
         else {
             analytics.info("Version 1 of welcome page started ");
+
             return "welcome";
         }
     }
