@@ -75,7 +75,12 @@ public class SQLiteDBConnector {
     
     //select one item 
     public ResultSet selectById(String tableName, int id){
-        String sql = "SELECT * FROM " + tableName + " WHERE id = " + id;
+        String sql = "";
+        if(tableName.equals("vet_specialties")) {
+            sql = "SELECT * FROM " + tableName + " WHERE vet_id = " + id;
+        } else {
+            sql = "SELECT * FROM " + tableName + " WHERE id = " + id;
+        }
         ResultSet rs = null;
         return getResultSet(sql, rs);
     }
