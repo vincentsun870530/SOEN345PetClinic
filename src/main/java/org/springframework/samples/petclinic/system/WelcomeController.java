@@ -14,11 +14,14 @@ class WelcomeController {
     public String welcome() {
         RandomToggle rndToggle = new RandomToggle();
         FeatureToggles.isEnabledLegacyWelcomePage = rndToggle.randomToggle(0.25f);
+        return toggleWelcome();
+    }
+
+    private String toggleWelcome() {
         if(FeatureToggles.isEnabledLegacyWelcomePage == false) {
             System.out.println("Running welcome V2");
             return "welcome-v2";
-        }
-        else {
+        } else {
             System.out.println("Running welcome V1");
             return "welcome";
         }
