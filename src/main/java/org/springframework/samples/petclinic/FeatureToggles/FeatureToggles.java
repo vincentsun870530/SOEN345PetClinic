@@ -1,6 +1,14 @@
 package org.springframework.samples.petclinic.FeatureToggles;
 
-public class FeatureToggles {
+import org.springframework.web.bind.annotation.GetMapping;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class FeatureToggles extends HttpServlet {
 
     // For package owner
     public static boolean isEnableOwnerPage = true;
@@ -32,5 +40,39 @@ public class FeatureToggles {
 
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
+
+    @GetMapping("/featureToggle.html")
+    public String initFeatureToggleTable() {
+
+
+        return null;
+
+    }
+
+    /**
+     * public void changeToggles() {
+     * document.getI
+     * }
+     **/
+
+    //reference: https://stackoverflow.com/questions/31543454/how-to-take-an-html-value-and-make-it-a-java-variable
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html;charset=UTF-8");
+
+        String value = "Enable";
+
+        isEnableOwnerPage = value.equals(request.getParameter("ownerPage"));
+        //objFeatureToggles.setIsEnableOwnerPage(isEnableOwnerPage);
+        isEnableOwnerCreate = value.equals(request.getParameter("ownerCreate"));
+        //setIsEnableOwnerCreate(isEnableOwnerCreate);
+        isEnableOwnerFind = value.equals(request.getParameter("ownerFind"));
+        //setIsEnableOwnerFind(isEnableOwnerFind);
+
+        //System.out.println(isEnableOwnerPage);
+
+    }
 
 }

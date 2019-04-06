@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'featureToggle')}">
+
+<body>
+<!-- Toggle switch reference: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_switch -->
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+    .rowHead {
+        width: 200px;
+        text-align: center  ;
+    }
+
+    th {
+        heigh: 50px;
+    }
+</style>
+<!--<table align="center">
+    <tr>
+        <th class="rowHead">Features</th>
+        <th class="rowHead">Toggles</th>
+    </tr>
+    <tr>
+        <td>test 1</td>
+        <td align="center"><label class="switch">
+            <input type="checkbox" id="switch1">
+            <span class="slider round"></span>
+        </label></td>
+    </tr>
+    <tr>
+        <td>test 2</td>
+        <td align="center"><label class="switch">
+            <input type="checkbox" id="switch2">
+            <span class="slider round"></span>
+        </label></td>
+    </tr>
+    <tr>
+        <td>test </td>
+        <td align="center"><label class="switch">
+            <input type="checkbox" id="switch">
+            <span class="slider round"></span>
+        </label></td>
+    </tr>
+</table>
+
+<table align="center">
+    <tr>
+        <th class="rowHead">Features</th>
+    </tr>
+    <tr>
+        <td>Access to Owner page</td>
+    </tr>
+    <tr>
+        <td>Access to Owner creation page</td>
+    </tr>
+    <tr>
+        <td>Function of finding owner</td>
+    </tr>
+    <tr>
+        <td>Function of editing owner</td>
+    </tr>
+</table>
+<table align="center">
+    <tr>
+        <th class="rowHead">Features</th>
+    </tr>
+    <tr>
+        <td>Access to Owner page</td>
+    </tr>
+    <tr>
+        <td>Access to Owner creation page</td>
+    </tr>
+    <tr>
+        <td>Function of finding owner</td>
+    </tr>
+    <tr>
+        <td>Function of editing owner</td>
+    </tr>
+</table> -->
+
+<table align="center">
+    <form action="FeatureToggle" method="post">
+        <tr>
+            <th>
+                Features
+            </th>
+            <th>
+                Toggle
+            </th>
+        </tr>
+        <tr>
+            <td>Access owner page</td>
+            <td>
+                <label>
+                    <select id='selected' name="ownerPage">
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Owner creation</td>
+            <td>
+                <label>
+                    <select name="ownerCreate">
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Owner find</td>
+            <td>
+                <label>
+                    <select name="ownerFind">
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Owner edit</td>
+            <td>
+                <label>
+                    <select name="ownerEdit">
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>TESTING</td>
+            <td>
+                <label>
+                    <select name="">
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label>
+                    <select>
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label>
+                    <select>
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label>
+                    <select>
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label>
+                    <select>
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label>
+                    <select>
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label>
+                    <select>
+                        <option value=""></option>
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <input type="Submit" value="Submit"/>
+                <script>
+                    function changeToggles() {
+                        /**var toggles = [];
+                         toggles.push(document.getElementById("ownerPage").value);
+                         toggles.push(document.getElementById("ownerCreate").value);
+                         toggles.push(document.getElementById("ownerFind").value);
+                         toggles.push(document.getElementById("ownerEdit").value);**/
+
+                        // Package.org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.doPost();
+                    }
+                </script>
+            </td>
+        </tr>
+    </form>
+</table>
+</body>
+
+</html>
