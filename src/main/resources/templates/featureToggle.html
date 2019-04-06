@@ -137,7 +137,7 @@
     </tr>
 </table> -->
 
-<table align="center">
+<table align="center" cellpadding="10dp">
     <form action="featureToggle" method="post">
         <tr>
             <th>
@@ -152,7 +152,6 @@
             <td>
                 <label>
                     <select id='selected' name="ownerPage">
-                        <option value=""></option>
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -160,11 +159,10 @@
             </td>
         </tr>
         <tr>
-            <td>Owner creation</td>
+            <td>Owner add</td>
             <td>
                 <label>
                     <select name="ownerCreate">
-                        <option value=""></option>
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -176,7 +174,6 @@
             <td>
                 <label>
                     <select name="ownerFind">
-                        <option value=""></option>
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -188,7 +185,6 @@
             <td>
                 <label>
                     <select name="ownerEdit">
-                        <option value=""></option>
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -196,11 +192,10 @@
             </td>
         </tr>
         <tr>
-            <td>TESTING</td>
+            <td>Pet add</td>
             <td>
                 <label>
-                    <select name="">
-                        <option value=""></option>
+                    <select name="petAdd">
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -208,11 +203,10 @@
             </td>
         </tr>
         <tr>
-            <td></td>
+            <td>Pet edit</td>
             <td>
                 <label>
-                    <select>
-                        <option value=""></option>
+                    <select name="petEdit">
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -220,11 +214,10 @@
             </td>
         </tr>
         <tr>
-            <td></td>
+            <td>Pet visit</td>
             <td>
                 <label>
-                    <select>
-                        <option value=""></option>
+                    <select name="petVisit">
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -232,11 +225,10 @@
             </td>
         </tr>
         <tr>
-            <td></td>
+            <td>General Incremental Replication</td>
             <td>
                 <label>
-                    <select>
-                        <option value=""></option>
+                    <select name="incrementalReplication">
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -244,11 +236,10 @@
             </td>
         </tr>
         <tr>
-            <td></td>
+            <td>Owner create IR</td>
             <td>
                 <label>
-                    <select>
-                        <option value=""></option>
+                    <select name="ownerCreateIR">
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -256,11 +247,10 @@
             </td>
         </tr>
         <tr>
-            <td></td>
+            <td>Owner edit IR</td>
             <td>
                 <label>
-                    <select>
-                        <option value=""></option>
+                    <select name="ownerEditIR">
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -268,11 +258,87 @@
             </td>
         </tr>
         <tr>
-            <td></td>
+            <td>Pet add IR</td>
             <td>
                 <label>
-                    <select>
-                        <option value=""></option>
+                    <select name="petAddIR">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Pet edit IR</td>
+            <td>
+                <label>
+                    <select name="petEditIR">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Pet visit IR</td>
+            <td>
+                <label>
+                    <select name="petVisitIR">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Date incremental</td>
+            <td>
+                <label>
+                    <select name="incrementDate">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Vet Page</td>
+            <td>
+                <label>
+                    <select name="vetPage">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Shadow write</td>
+            <td>
+                <label>
+                    <select name="shadowWrite">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Shadow read</td>
+            <td>
+                <label>
+                    <select name="shadowRead">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>Debugging system out print</td>
+            <td>
+                <label>
+                    <select name="debuggingSystemOutPrint">
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
@@ -281,17 +347,22 @@
         </tr>
         <tr>
             <td align="center">
-                <input type="Submit" value="Submit"/>
+                <input id="submitButton" type="Submit" value="Submit"/>
                 <script>
+
+                    /**document.getElementById("submitButton").onclick = function () {
+                        location.href = "/home";
+                    };
+
                     function changeToggles() {
-                        /**var toggles = [];
+                        var toggles = [];
                          toggles.push(document.getElementById("ownerPage").value);
                          toggles.push(document.getElementById("ownerCreate").value);
                          toggles.push(document.getElementById("ownerFind").value);
-                         toggles.push(document.getElementById("ownerEdit").value);**/
+                         toggles.push(document.getElementById("ownerEdit").value);
 
                         // Package.org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.doPost();
-                    }
+                    } **/
                 </script>
             </td>
         </tr>
