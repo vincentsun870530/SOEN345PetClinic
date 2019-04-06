@@ -1,13 +1,17 @@
 package org.springframework.samples.petclinic.FeatureToggles;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Controller
+@WebServlet(urlPatterns = {"/featureToggle"})
 public class FeatureToggles extends HttpServlet {
 
     // For package owner
@@ -41,7 +45,7 @@ public class FeatureToggles extends HttpServlet {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
-    @GetMapping("/featureToggle.html")
+    @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
 
 
