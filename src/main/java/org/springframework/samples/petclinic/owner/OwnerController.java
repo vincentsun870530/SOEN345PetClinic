@@ -16,18 +16,14 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.ABTest.HomeBtnHelper;
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
-import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
-import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
-import org.springframework.samples.petclinic.visit.Visit;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,10 +36,11 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.*;
+
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.*;
 
 /**
  * @author Juergen Hoeller
@@ -58,7 +55,7 @@ class OwnerController {
     private final OwnerRepository owners;
     private Owner owner;
     private Collection<Owner> results;
-    private static Logger log = LoggerFactory.getLogger(OwnerController.class);
+    private static Logger log = LogManager.getLogger(OwnerController.class);
 
     @Autowired
    public OwnerController(OwnerRepository clinicService) {
@@ -161,7 +158,7 @@ class OwnerController {
                 owner = results.iterator().next();
 
                 //shadow read for owner
-                if(isEnableShadowRead == true) {
+                if(FeatureToggles.isEnableShadowRead == true) {
                     OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
                     log.trace(owner.getId() + " Owner Id from controller");
                     //Shadow read return problem id
@@ -303,10 +300,37 @@ class OwnerController {
         return mav;
     }
 
+    /*public void homeBtnLoggers() {
+        if (isEnableHomeBtn == true) {
+            logVersionOneHomeBtn.info("Version 1 of home button");
+            System.out.println("Version 1 of home button");
+        }
+
+        else {
+            logVersionTwoHomeBtn.info("Version 2 of home button");
+            System.out.println("Version 2 of home button");
+        }
+    }
+    */
     // Passes the toggle variable to the layout for A/B testing
     @ModelAttribute("isEnableHomeBtn")
     public boolean isEnableHomeBtn() {
         return FeatureToggles.isEnableHomeBtn;
     }
+    /*
+    @ModelAttribute("logVersionsHomeBtn")
+    public void logsHomeBtn() {
+        homeBtnLoggers();
+    }
+    */
 
+    @ModelAttribute("HomeBtnOneHelper")
+    public int btnOneClickCount() {
+        return HomeBtnHelper.homeBtnOneClickCount();
+    }
+
+    @ModelAttribute("HomeBtnTwoHelper")
+    public int btnTwoClickCount() {
+        return HomeBtnHelper.homeBtnTwoClickCount();
+    }
 }

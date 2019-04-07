@@ -19,4 +19,5 @@ class WelcomeController {
     public boolean isEnableHomeBtn() {
         return FeatureToggles.isEnableHomeBtn;
     }
+
 }
