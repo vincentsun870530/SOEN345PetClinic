@@ -32,10 +32,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -46,8 +43,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowRead;
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.*;
 
 /**
  * @author Juergen Hoeller
@@ -305,6 +301,12 @@ class OwnerController {
 
         mav.addObject(owner);
         return mav;
+    }
+
+    // Passes the toggle variable to the layout for A/B testing
+    @ModelAttribute("isEnableHomeBtn")
+    public boolean isEnableHomeBtn() {
+        return FeatureToggles.isEnableHomeBtn;
     }
 
 }

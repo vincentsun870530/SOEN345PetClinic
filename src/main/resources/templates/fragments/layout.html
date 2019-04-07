@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="layout (template, menu)">
+<html th:fragment="layout (template, menu)" xmlns:th="http://www.w3.org/1999/xhtml">
 
   <head>
 
@@ -77,9 +77,20 @@
         <br/>
         <div class="container">
           <div class="row">
-            <div class="col-12 text-center">
-              <img src="../static/resources/images/spring-pivotal-logo.png" th:src="@{/resources/images/spring-pivotal-logo.png}"
-                alt="Sponsored by Pivotal"/></div>
+            <div th:if="${isEnableHomeBtn} == true" class="col-12 text-center">
+                <a  href="/">
+                    <img src="../static/resources/images/spring-pivotal-logo.png" th:src="@{/resources/images/spring-pivotal-logo.png}"
+                         alt="Sponsored by Pivotal"/></div>
+                </a>
+
+            </div>
+
+            <div th:if="${isEnableHomeBtn} == false" class="col-12 text-center">
+                    <img src="../static/resources/images/spring-pivotal-logo.png" th:src="@{/resources/images/spring-pivotal-logo.png}"
+                         alt="Sponsored by Pivotal"/></div>
+
+        </div>
+
           </div>
         </div>
       </div>
