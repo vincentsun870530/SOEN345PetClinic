@@ -163,18 +163,8 @@ class VisitController {
         }
     }
 
-    //
-//    @RequestMapping(value = "/delete_visit", method = RequestMethod.POST)
-//    public String handleDeleteUser(@ModelAttribute("visits") Visit visit) {
-//        System.out.println(user.getPersonId());
-//        System.out.println("test");
-//        return "redirect:/external";
-//    }
 
-
-    // @RequestMapping(value = "/delete_visitor/{visitId}", method = RequestMethod.DELETE)
-    // @DeleteMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-    @DeleteMapping("/owners/{ownerId}/pets/{petId}/visits/new/delete/{id}")
+    @PostMapping("/{visitId}/delete")
     public String handleDeleteVisitor(@Valid Visit visit) {
        // @ModelAttribute("visit") Visit visit
        // Visit visit = this.visits.findById(Integer.parseInt(id));
@@ -183,7 +173,7 @@ class VisitController {
 
        // System.out.println(id);
         System.out.println("test");
-        return "redirect:/external";
+        return null;
     }
 
 }

@@ -54,36 +54,6 @@
     <tr th:if="${!visit['new']}" th:each="visit : ${pet.visits}">
       <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}" /></td>
       <td th:text=" ${visit.description}" /></td>
-      <td>
-<!--        <form th:action="@{/delete_visit/${visit.id}}"  th:method="delete"  th:object="${visit}">-->
-<!--          <input type="hidden" name="_method" value="delete" />-->
-<!--          <button class="btn btn-default" type="submit">Delete Visit</button>-->
-<!--        </form>-->
-
-
-
-
-
-
-
-        <form th:action="@{{ownerId}/pets/{petId}/visits/new/delete/{visitId}(ownerId=${owner.id},petId=${pet.id},visitId=${visit.id})}" th:object="${visit}" class="form-horizontal" method="delete">
-
-
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <input type="hidden" name="visitId" th:value="${visit.id}" />
-              <button class="btn btn-default" type="submit">Delete Visit</button>
-            </div>
-          </div>
-        </form>
-
-
-
-
-      </td>
-<!--      <td>-->
-<!--        <a th:href="@{/delete_visit/${visit.id}}" class="btn btn-danger">Delete</a>-->
-<!--      </td>-->
     </tr>
   </table>
 
