@@ -69,8 +69,13 @@
                 th:href="@{{ownerId}/pets/{petId}/edit(ownerId=${owner.id},petId=${pet.id})}">Edit
                   Pet</a></td>
               <td><a
-                th:href="@{{ownerId}/pets/{petId}/visits/new(ownerId=${owner.id},petId=${pet.id})}">Add
+                th:href="@{{ownerId}/pets/{petId}/visits/new(ownerId=${owner.id},petId=${pet.id})}">Add or delete
                   Visit</a></td>
+              <td>
+<!--                <a -->
+<!--                        th:href="@{{ownerId}/pets/{petId}/visits/delete(ownerId=${owner.id},petId=${pet.id})}">Delete-->
+<!--                  Visit</a>-->
+              </td>
             </tr>
           </table>
         </td>

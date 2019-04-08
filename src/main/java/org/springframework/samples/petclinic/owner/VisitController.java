@@ -163,4 +163,23 @@ class VisitController {
         }
     }
 
+    //
+//    @RequestMapping(value = "/delete_visit", method = RequestMethod.POST)
+//    public String handleDeleteUser(@ModelAttribute("visits") Visit visit) {
+//        System.out.println(user.getPersonId());
+//        System.out.println("test");
+//        return "redirect:/external";
+//    }
+
+
+    @RequestMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new/delete_visitor", method = RequestMethod.DELETE)
+    public String handleDeleteVisitor(@RequestParam(name="id")String id) {
+        Visit visit = this.visits.findById(Integer.parseInt(id));
+        this.visits.delete(visit);
+
+        System.out.println(id);
+        System.out.println("test");
+        return "redirect:/external";
+    }
+
 }

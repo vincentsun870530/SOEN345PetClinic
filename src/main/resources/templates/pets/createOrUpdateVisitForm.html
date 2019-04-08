@@ -54,6 +54,11 @@
     <tr th:if="${!visit['new']}" th:each="visit : ${pet.visits}">
       <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}" /></td>
       <td th:text=" ${visit.description}" /></td>
+      <td>
+        <form th:action="@{{ownerId}/pets/{petId}/edit(ownerId=${owner.id},petId=${pet.id})/delete_visit}" method="delete" th:object="${visit}">
+          <button class="btn btn-default" type="submit">Delete Visit</button>
+        </form>
+      </td>
     </tr>
   </table>
 

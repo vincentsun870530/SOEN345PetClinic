@@ -18,8 +18,11 @@ package org.springframework.samples.petclinic.visit;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Repository class for <code>Visit</code> domain objects All method names are compliant with Spring Data naming
@@ -41,5 +44,20 @@ public interface VisitRepository extends Repository<Visit, Integer> {
     void save(Visit visit) throws DataAccessException;
 
     List<Visit> findByPetId(Integer petId);
+
+    /**
+     * Retrieve an {@link Visit} from the data store by id.
+     * @param id the id to search for
+     * @return the {@link Visit} if found
+     */
+    @Query("SELECT visit FROM Visit visit left join fetch owner.pets WHERE visit.id =:id")
+    @Transactional(readOnly = true)
+    Visit findById(@Param("id") Integer id);
+
+    /**
+     * Delete a {@link Visit} to the data store, deleting it.
+     * @param visit the {@link Visit} to delete
+     */
+    void delete(Visit visit)throws DataAccessException;
 
 }
