@@ -172,7 +172,7 @@ class VisitController {
 //    }
 
 
-    @RequestMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new/delete_visitor", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete_visitor/{visitId}", method = RequestMethod.DELETE)
     public String handleDeleteVisitor(@ModelAttribute("visit") Visit visit) {
        // Visit visit = this.visits.findById(Integer.parseInt(id));
         //@RequestParam(name="id")String id
