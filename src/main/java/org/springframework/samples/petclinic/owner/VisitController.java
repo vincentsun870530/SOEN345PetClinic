@@ -29,6 +29,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.samples.petclinic.sqlite.SQLiteVisitHelper;
+import java.sql.SQLException;
+import org.springframework.ui.Model;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -163,17 +165,16 @@ class VisitController {
         }
     }
 
+    @GetMapping("/owners/{visitId}/deleteVisit")
+    public String handleDeleteVisit(@PathVariable("visitId") int visitId, Model model) throws SQLException  {
 
-    @PostMapping("/{visitId}/delete")
-    public String handleDeleteVisitor(@Valid Visit visit) {
-       // @ModelAttribute("visit") Visit visit
-       // Visit visit = this.visits.findById(Integer.parseInt(id));
-        //@RequestParam(name="id")String id
-        this.visits.delete(visit);
+            Visit visit = this.visits.findById(visitId);
+            this.visits.deleteById(visit.getId());
+            model.addAttribute(visit);
 
-       // System.out.println(id);
-        System.out.println("test");
-        return null;
+            return "owners/deletVisit";
+
     }
+
 
 }

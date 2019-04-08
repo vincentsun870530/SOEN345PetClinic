@@ -65,16 +65,17 @@
               <td th:text="${visit?.description}"></td>
               <td>
 
-                <form th:action="@{{visitId}/delete(visitId=${visit.id})}" th:object="${visit}" class="form-horizontal" method="post">
+<!--                <form th:action="@{pets/{petId}/delete/{visitId}(visitId=${visit.id},petId=${pet.id})}" th:object="${visit}" class="form-horizontal" method="post">-->
 
-                  <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                      <input type="hidden" name="visitId" th:value="${visit.id}" />
-                      <button class="btn btn-default" type="submit">Delete Visit</button>
-                    </div>
-                  </div>
-                </form>
-
+<!--                  <div class="form-group">-->
+<!--                    <div class="col-sm-offset-2 col-sm-10">-->
+<!--                      <input type="hidden" name="visitId" th:value="${visit.id}" />-->
+<!--                      <button class="btn btn-default" type="submit">Delete Visit</button>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </form>-->
+                <a th:href="@{{id}/deleteVisit(id=${visit.id})}" class="btn btn-default">Delete
+                  Visit</a>
               </td>
             </tr>
             <tr>

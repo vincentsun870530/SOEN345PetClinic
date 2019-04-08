@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.visit;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -60,4 +61,9 @@ public interface VisitRepository extends Repository<Visit, Integer> {
      */
     void delete(Visit visit)throws DataAccessException;
 
+    @Modifying
+    @Query("DELETE FROM Visist visit WHERE visit.id =:id")
+    @Transactional(readOnly = false)
+    void deleteById(@Param("id") Integer id);
 }
+
