@@ -16,7 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.ABTest.HomeBtnHelper;
+import org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
@@ -39,8 +39,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.*;
+import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnOne;
+import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
 
 /**
  * @author Juergen Hoeller
@@ -53,6 +53,7 @@ class OwnerController {
 
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
     private final OwnerRepository owners;
+    private final PetRepository pets = null;
     private Owner owner;
     private Collection<Owner> results;
     private static Logger log = LogManager.getLogger(OwnerController.class);
@@ -300,37 +301,41 @@ class OwnerController {
         return mav;
     }
 
-    /*public void homeBtnLoggers() {
-        if (isEnableHomeBtn == true) {
-            logVersionOneHomeBtn.info("Version 1 of home button");
-            System.out.println("Version 1 of home button");
-        }
-
-        else {
-            logVersionTwoHomeBtn.info("Version 2 of home button");
-            System.out.println("Version 2 of home button");
-        }
-    }
-    */
-    // Passes the toggle variable to the layout for A/B testing
     @ModelAttribute("isEnableHomeBtn")
     public boolean isEnableHomeBtn() {
         return FeatureToggles.isEnableHomeBtn;
     }
-    /*
-    @ModelAttribute("logVersionsHomeBtn")
-    public void logsHomeBtn() {
-        homeBtnLoggers();
-    }
-    */
 
-    @ModelAttribute("HomeBtnOneHelper")
-    public int btnOneClickCount() {
-        return HomeBtnHelper.homeBtnOneClickCount();
+    // Delete owner that doesn't have pets version One
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @GetMapping("/owners/{ownerId}/deleteBtnVersionOne")
+    public String DeleteOwnerOne(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
+        if (FeatureToggles.isEnableDeleteOwner) {
+            Owner owner = this.owners.findById(ownerId);
+            this.owners.deleteById(owner.getId());
+            model.addAttribute(owner);
+            countDeleteOwnerBtnOne();
+            return "owners/deleteBtnVersionOne";
+        }
+        return "owners/findOwners";
     }
 
-    @ModelAttribute("HomeBtnTwoHelper")
-    public int btnTwoClickCount() {
-        return HomeBtnHelper.homeBtnTwoClickCount();
+    // Delete owner that doesn't have pets version Two
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @GetMapping("/owners/{ownerId}/deleteBtnVersionTwo")
+    public String DeleteOwnerTwo(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
+        if (FeatureToggles.isEnableDeleteOwner) {
+            Owner owner = this.owners.findById(ownerId);
+            this.owners.deleteById(owner.getId());
+            model.addAttribute(owner);
+            countDeleteOwnerBtnTwo();
+            return "owners/deleteBtnVersionTwo";
+        }
+        return "owners/findOwners";
     }
+
+
+
 }

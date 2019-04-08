@@ -34,5 +34,5 @@ public class FeatureToggles {
     public static boolean isEnableDebuggingSystemOutPrint = true;
     // A/B testing toggle
     public static boolean isEnableHomeBtn = true;
-
+    public static boolean isEnableDeleteOwner = true;
 }

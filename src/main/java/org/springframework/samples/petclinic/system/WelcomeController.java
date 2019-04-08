@@ -13,11 +13,4 @@ class WelcomeController {
     public String welcome() {
         return "welcome";
     }
-
-    // Passes the toggle variable to the layout for A/B testing
-    @ModelAttribute("isEnableHomeBtn")
-    public boolean isEnableHomeBtn() {
-        return FeatureToggles.isEnableHomeBtn;
-    }
-
 }

@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.owner;
 
 import java.util.Collection;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -52,6 +53,14 @@ public interface OwnerRepository extends Repository<Owner, Integer> {
     @Query("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id =:id")
     @Transactional(readOnly = true)
     Owner findById(@Param("id") Integer id);
+
+    // Delete an owner by owner id
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @Modifying
+    @Query("DELETE FROM Owner owner WHERE owner.id =:id")
+    @Transactional(readOnly = false)
+    void deleteById(@Param("id") Integer id);
 
     /**
      * Save an {@link Owner} to the data store, either inserting or updating it.
