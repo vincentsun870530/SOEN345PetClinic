@@ -39,4 +39,7 @@ public class FeatureToggles {
     // No Home Button
     public static String hasHomeButton = "T";
 
+    // Remove Find Owner Button
+    public static boolean isEnabledLegacyFindOwnerButton = true;
+
 }
