@@ -36,4 +36,7 @@ public class FeatureToggles {
     // Welcome Page
     public static boolean isEnabledLegacyWelcomePage = true;
 
+    // No Home Button
+    public static String hasHomeButton = "T";
+
 }

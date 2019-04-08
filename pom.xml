@@ -58,6 +58,11 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.thymeleaf</groupId>
+      <artifactId>thymeleaf</artifactId>
+      <version>3.0.9.RELEASE</version>
+    </dependency>
 
     <!-- Databases - Uses HSQL by default -->
     <dependency>
