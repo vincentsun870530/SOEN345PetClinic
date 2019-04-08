@@ -173,11 +173,12 @@ class VisitController {
 
 
     @RequestMapping(value = "/owners/{ownerId}/pets/{petId}/visits/new/delete_visitor", method = RequestMethod.DELETE)
-    public String handleDeleteVisitor(@RequestParam(name="id")String id) {
-        Visit visit = this.visits.findById(Integer.parseInt(id));
+    public String handleDeleteVisitor(@ModelAttribute("visit") Visit visit) {
+       // Visit visit = this.visits.findById(Integer.parseInt(id));
+        //@RequestParam(name="id")String id
         this.visits.delete(visit);
 
-        System.out.println(id);
+       // System.out.println(id);
         System.out.println("test");
         return "redirect:/external";
     }

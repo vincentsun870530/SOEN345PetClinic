@@ -50,7 +50,7 @@ public interface VisitRepository extends Repository<Visit, Integer> {
      * @param id the id to search for
      * @return the {@link Visit} if found
      */
-    @Query("SELECT visit FROM Visit visit left join fetch owner.pets WHERE visit.id =:id")
+    @Query("SELECT visit FROM Visit visit WHERE visit.id =:id")
     @Transactional(readOnly = true)
     Visit findById(@Param("id") Integer id);
 
