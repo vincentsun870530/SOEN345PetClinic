@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 
 //import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
@@ -85,7 +86,7 @@ class VisitController {
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
         this.visit = visit;
-        pet.addVisit(visit);
+       // pet.addVisit(visit);
         return visit;
     }
 
@@ -165,17 +166,34 @@ class VisitController {
         }
     }
 
-    @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisit")
-    public String handleDeleteVisit(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
+    @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitGreen")
+    public String handleDeleteVisitGreen(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
             System.out.println(visitId);
             Visit visit = this.visits.findById(visitId);
             System.out.println(visit);
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
 
-            return "owners/deleteVisit";
+            return "deleteVisitGreen";
 
     }
 
+    @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitBlack")
+    public String handleDeleteVisitBlack(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
+        System.out.println(visitId);
+        Visit visit = this.visits.findById(visitId);
+        System.out.println(visit);
+        this.visits.deleteById(visit.getId());
+        model.addAttribute(visit);
 
+        return "deleteVisitBlack";
+
+    }
+
+    @ModelAttribute("isEnableGreenBtn")
+    public boolean isEnableGreenBtn(){
+        RandomToggle rndToggle =new RandomToggle();
+        FeatureToggles.isEnableDeleteVisit = rndToggle.randomToggle(0.50f);
+        return FeatureToggles.isEnableDeleteVisit;
+    }
 }

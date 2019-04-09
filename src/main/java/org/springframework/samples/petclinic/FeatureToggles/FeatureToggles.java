@@ -33,4 +33,6 @@ public class FeatureToggles {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
+    //For enable different delete Visit button
+    public static boolean isEnableDeleteVisit = true;
 }
