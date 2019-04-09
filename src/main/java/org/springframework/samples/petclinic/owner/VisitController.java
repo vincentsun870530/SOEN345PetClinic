@@ -172,7 +172,7 @@ class VisitController {
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
 
-            return "owners/deletVisit";
+            return "owners/deleteVisit";
 
     }
 
