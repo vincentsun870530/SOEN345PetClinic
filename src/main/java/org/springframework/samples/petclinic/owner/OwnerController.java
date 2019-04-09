@@ -25,6 +25,7 @@ import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
+import org.springframework.samples.petclinic.loghelper.OwnerLogHelper;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.stereotype.Component;
@@ -34,10 +35,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -128,16 +131,21 @@ class OwnerController {
     }
 
 
-    public String initFindForm(Map<String, Object> model) {
-       return this.initFindForm(model, new Owner());
+    public String initFindForm(Map<String, Object> model, HttpServletRequest request) {
+       return this.initFindForm(model, new Owner(), request);
     }
 
     // dependency injection
     @GetMapping("/owners/find")
-    public String initFindForm(Map<String, Object> model , Owner owner) {
+    public String initFindForm(Map<String, Object> model , Owner owner, HttpServletRequest request) {
 
         if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);
+            if(FeatureToggles.isEnableTabOwnerChange == true) {
+                OwnerLogHelper.countOwnerTabOne();
+            } else {
+                OwnerLogHelper.countOwnerTabTwo();
+            }
             return "owners/findOwners";
         }
         return null;
@@ -305,6 +313,12 @@ class OwnerController {
 
         mav.addObject(owner);
         return mav;
+    }
+
+    
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
     }
 
 }

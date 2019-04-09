@@ -33,4 +33,7 @@ public class FeatureToggles {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
+    // For a/b test on the Find Owners in the navbar
+    public static boolean isEnableTabOwnerChange = true;
+
 }

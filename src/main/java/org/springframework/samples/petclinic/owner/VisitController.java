@@ -163,4 +163,10 @@ class VisitController {
         }
     }
 
+    
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
+    }
+
 }

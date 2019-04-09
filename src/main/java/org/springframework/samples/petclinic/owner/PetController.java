@@ -226,4 +226,10 @@ class PetController {
         }
     }
 
+    
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
+    }
+
 }
