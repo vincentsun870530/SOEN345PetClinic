@@ -5,8 +5,8 @@ import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.scheduling.annotation.Async;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class OwnerShadowRead {
 		
@@ -15,7 +15,7 @@ public class OwnerShadowRead {
 		SQLiteDBConnector sqLiteDbConnector = SQLiteDBConnector.getInstance();
 		SQLiteOwnerHelper sqLiteOwnerHelper = SQLiteOwnerHelper.getInstance();
 		UpdateOwner updateOwner = new UpdateOwner();
-        private static Logger log = LoggerFactory.getLogger(OwnerShadowRead.class);
+        private static Logger log = LogManager.getLogger(OwnerShadowRead.class);
 
 		@Async
 		public int checkOwner(Owner owner){
