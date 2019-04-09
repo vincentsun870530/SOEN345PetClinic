@@ -15,9 +15,11 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
+import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
@@ -64,6 +66,7 @@ class OwnerController {
     private Owner owner;
     private Collection<Owner> results;
     private static Logger log = LoggerFactory.getLogger(OwnerController.class);
+    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("Time spent on welcome ");
 
     @Autowired
    public OwnerController(OwnerRepository clinicService) {
@@ -136,13 +139,13 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
-        RandomToggle rndToggle = new RandomToggle();
-        FeatureToggles.isEnabledLegacyFindOwnerButton = rndToggle.randomToggle(0.50f);
+        timeAnalytics.endTime = System.nanoTime();
+        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
+        timeAnalytics.resetTimeAnalystics();
         if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);
-            if(FeatureToggles.isEnabledLegacyFindOwnerButton == true) return "owners/findOwners";
-            else return "owners/findOwners-V2";
-        }
+            return "owners/findOwners";
+            }
         return null;
     }
 
