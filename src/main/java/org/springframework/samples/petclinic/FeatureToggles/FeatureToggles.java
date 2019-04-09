@@ -33,6 +33,5 @@ public class FeatureToggles {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
     // A/B testing toggle
-    public static boolean isEnableHomeBtn = true;
     public static boolean isEnableDeleteOwner = true;
 }

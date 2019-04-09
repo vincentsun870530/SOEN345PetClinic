@@ -18,7 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
-//import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
@@ -302,11 +302,12 @@ class OwnerController {
         return mav;
     }
 
+    // Pass the toggle to the layout
     @ModelAttribute("isEnableDeleteOwner")
     public boolean isEnableDeleteOwner() {
-        //RandomToggle rndToggle = new RandomToggle();
-        //FeatureToggles.isEnableDeleteOwner = rndToggle.randomToggle(0.50f);
-        return FeatureToggles.isEnableDeleteOwner;
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteOwner = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwner;
     }
 
     // Delete owner that doesn't have pets version One
