@@ -18,7 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
-import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
+//import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
