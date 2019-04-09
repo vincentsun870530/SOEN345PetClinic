@@ -19,7 +19,7 @@
 </Appenders>
 <Loggers>
     <Root level="info" additivity="false">
-        <AppenderRef ref="csvFile" level="info"/>
+        <AppenderRef ref="csvFileDeleteOwnerV1" level="info"/>
     </Root>
     <Logger name = "logVersionOneHomeBtn" level = "info" additivity = "false">
         <AppenderRef ref= "csvFileDeleteOwnerV1"/>
