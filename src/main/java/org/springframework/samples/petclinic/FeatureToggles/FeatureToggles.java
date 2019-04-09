@@ -36,4 +36,6 @@ public class FeatureToggles {
     // For a/b test on the Find Owners in the navbar
     public static boolean isEnableTabOwnerChange = true;
 
+    // A/B testing toggle
+    public static boolean isEnableDeleteOwner = true;
 }
