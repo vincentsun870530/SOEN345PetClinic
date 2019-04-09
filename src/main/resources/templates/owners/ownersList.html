@@ -29,7 +29,7 @@
               <td><span th:each="pet : ${owner.pets}" th:text="${pet.name} "/></td>
               <td>
                   <!--/*@thymesVar id="owner" type="org.springframework.samples.petclinic.owner.Owner"*/-->
-                  <a th:if="${isEnableDeleteOwner} == false" th:href="@{owners/{id}/deleteBtnVersionTwo(id=${owner.getId()})}" class="btn btn-default">Delete
+                  <a th:if="${isEnableDeleteOwner} == true" th:href="@{owners/{id}/deleteBtnVersionTwo(id=${owner.getId()})}" class="btn btn-default">Delete
                       Owner</a></td>
           </tr>
         </tbody>
