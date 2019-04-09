@@ -22,6 +22,7 @@ import org.springframework.samples.petclinic.shadowRead.VetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.VetSpecialtyShadowRead;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 
@@ -167,6 +168,12 @@ class VetController {
             }
         }
         return vets;
+    }
+
+    // Passes the toggle variable to the layout for A/B testing
+    @ModelAttribute("isEnableHomeBtn")
+    public boolean isEnableHomeBtn() {
+        return FeatureToggles.isEnableHomeBtn;
     }
 
 }

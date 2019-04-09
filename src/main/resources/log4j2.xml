@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="TRACE" monitorInterval="30">
-    <Properties>
-        <Property name="LOG_PATTERN">
-            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
-        </Property>
-    </Properties>
-    <Appenders>
-        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Logger name="com.example.log4j2demo" level="trace" additivity="false">
-            <AppenderRef ref="ConsoleAppender" />
-        </Logger>
 
-        <Root level="trace">
-            <AppenderRef ref="ConsoleAppender" />
-        </Root>
-    </Loggers>
+<Configuration status="INFO">
+<Properties>
+    <Property name="csvLog.fileName">deleteOwnerBtnLog</Property>
+    <Property name="file-header">Time-Nanos, Time-Millis, Level, Thread ID, Thread Name, Thread Priority, Message, Logger-FQCN, Logger-Name, Marker, Thrown-Proxy, Source, Context-Map, Context-Stack</Property>
+</Properties>
+<Appenders>
+    <RollingFile name="csvFileDeleteOwnerV1"
+                 fileName="logs/${csvLog.fileName}.csv"
+                 filePattern="${csvLog.filename}-%d{MM-dd-yyyy}-%i.csv" >
+        <CsvLogEventLayout delimiter="," header="${file-header}\n"/>
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <SizeBasedTriggeringPolicy size="10 MB" />
+        </Policies>
+        <DefaultRolloverStrategy max="200" />
+    </RollingFile>
+</Appenders>
+<Loggers>
+    <Root level="info" additivity="false">
+        <AppenderRef ref="csvFileDeleteOwnerV1" level="info"/>
+    </Root>
+    <Logger name = "logVersionOneHomeBtn" level = "info" additivity = "false">
+        <AppenderRef ref= "csvFileDeleteOwnerV1"/>
+    </Logger>
+</Loggers>
 </Configuration>
