@@ -74,7 +74,7 @@
 <!--                    </div>-->
 <!--                  </div>-->
 <!--                </form>-->
-                <a th:href="@{{id}/deleteVisit(id=${visit.id})}" class="btn btn-default">Delete
+                <a th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisit(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}">Delete
                   Visit</a>
               </td>
             </tr>

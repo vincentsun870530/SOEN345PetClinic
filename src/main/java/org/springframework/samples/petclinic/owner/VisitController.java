@@ -165,10 +165,11 @@ class VisitController {
         }
     }
 
-    @GetMapping("/owners/{visitId}/deleteVisit")
-    public String handleDeleteVisit(@PathVariable("visitId") int visitId, Model model) throws SQLException  {
-
+    @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisit")
+    public String handleDeleteVisit(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
+            System.out.println(visitId);
             Visit visit = this.visits.findById(visitId);
+            System.out.println(visit);
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
 
