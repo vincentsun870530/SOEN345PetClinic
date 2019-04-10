@@ -66,6 +66,8 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnabledLegacyWelcomePage = true;
     // Welcome Page Toggle Value
     public static boolean welcomePageToggle = true;
+    // Randomizer Toggle
+    public static boolean randomizer = false;
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
