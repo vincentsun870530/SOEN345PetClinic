@@ -33,14 +33,21 @@ public class FeatureToggles {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
-    // Welcome Page
-    public static boolean isEnabledLegacyWelcomePage = true;
-
     // No Home Button
     public static boolean hasHomeButton = false;
 
     // Remove Find Owner Button
     public static boolean isEnabledLegacyFindOwnerButton = true;
-    // A/B testing toggle
+
+    // A/B Testing Toggle
+
+    // Delete Owner Enabler (For Rollback Purpose)
     public static boolean isEnableDeleteOwner = true;
+    // Delete Owner Toggle Value
+    public static boolean deleteOwnerToggle = true;
+
+    // Welcome Page Enabler (For Rollback Purpose)
+    public static boolean isEnabledLegacyWelcomePage = true;
+    // Welcome Page Toggle Value
+    public static boolean welcomePageToggle = true;
 }
