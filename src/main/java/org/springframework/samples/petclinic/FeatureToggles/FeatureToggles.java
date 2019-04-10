@@ -37,7 +37,7 @@ public class FeatureToggles {
     public static boolean isEnabledLegacyWelcomePage = true;
 
     // No Home Button
-    public static String hasHomeButton = "T";
+    public static boolean hasHomeButton = false;
 
     // Remove Find Owner Button
     public static boolean isEnabledLegacyFindOwnerButton = true;

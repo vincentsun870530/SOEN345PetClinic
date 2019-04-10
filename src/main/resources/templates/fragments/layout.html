@@ -44,12 +44,10 @@
                       </a>
                   </li>
 
-                  <div th:if="user.hasHomeButton == 'T' ">
-                      <li th:replace="::menuItem ('/','home','home page','home','Home')">
-                          <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-                          <span>Home</span>
-                      </li>
-                  </div>
+                  <li th:if="${hasHomeButton} == true" th:replace="::menuItem ('/','home','home page','home','Home')">
+                      <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+                      <span>Home</span>
+                  </li>
 
                   <li th:replace="::menuItem ('/owners/find','owners','find owners','search','Find owners')">
                       <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
