@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.system;
 
 
+import javafx.scene.control.Toggle;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,7 @@ class WelcomeController {
 
         RandomToggle rndToggle = new RandomToggle();
         // Legacy Mode 75% of the time V2 25% of the timeS
-        FeatureToggles.isEnabledLegacyWelcomePage = rndToggle.randomToggle(0.30f);
+        FeatureToggles.welcomePageToggle = rndToggle.randomToggle(0.30f);
         return toggleWelcome();
     }
 
@@ -34,13 +35,16 @@ class WelcomeController {
         //Start Time stamp to test ms spent on welcome page
         timeAnalytics.resetTimeAnalystics();
         timeAnalytics.startTime = System.nanoTime();
-
-        if(FeatureToggles.isEnabledLegacyWelcomePage == false) {
-            analytics.info("Welcome Page Version 2");
-            return "welcome-v2";
-        }
-        else {
-            analytics.info("Welcome Page Version 1");
+        if (FeatureToggles.isEnabledLegacyWelcomePage) {
+            if (FeatureToggles.welcomePageToggle == false) {
+                analytics.info("Welcome Page Version 2");
+                return "welcome-v2";
+            } else {
+                analytics.info("Welcome Page Version 1");
+                return "welcome";
+            }
+        } else {
+            analytics.info("Default Welcome Page (Toggle Disabled");
             return "welcome";
         }
     }
