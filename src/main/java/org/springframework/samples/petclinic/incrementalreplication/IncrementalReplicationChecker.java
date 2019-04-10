@@ -2,15 +2,11 @@ package org.springframework.samples.petclinic.incrementalreplication;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.consistencychecker.OwnerConsistencyChecker;
 import org.springframework.samples.petclinic.consistencychecker.PetConsistencyChecker;
-import org.springframework.samples.petclinic.consistencychecker.VetSpecialityConsistencyChecker;
 import org.springframework.samples.petclinic.consistencychecker.VisitConsistencyChecker;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.owner.Owner;
@@ -44,18 +40,6 @@ public class IncrementalReplicationChecker {
                     Visit newVisit = visitRSet(newDatabase);
                     isInconsistency = new VisitConsistencyChecker().visitCheckConsistency(oldVisit, newVisit);
                     System.out.println("IN SWITCH isInconsistency:" + isInconsistency);
-                    break;
-                case "vet_specialties":
-                    System.out.println("inside case vet specialities");
-                    VetSpecialityConsistencyChecker vetSpecialityCS = new VetSpecialityConsistencyChecker();
-                    if(oldDatabase.next() && newDatabase.next()) {
-                        List<int[]> oldData = Arrays.asList(new int[]{ oldDatabase.getInt("vet_id"), oldDatabase.getInt("specialty_id")});
-                        List<int[]> newData = Arrays.asList(new int[]{ newDatabase.getInt("vet_id"), newDatabase.getInt("specialty_id")});
-                        vetSpecialityCS.setOldData(oldData);
-                        vetSpecialityCS.setNewData(newData);
-                        isInconsistency = vetSpecialityCS.consistencyChecker();
-                    }
-                    break;
             }
             if(isInconsistency != 0) {
                 System.out.println("isInconsistency:" + isInconsistency);

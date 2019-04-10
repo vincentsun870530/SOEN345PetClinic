@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="layout (template, menu)" xmlns:th="http://www.w3.org/1999/xhtml">
+<html th:fragment="layout (template, menu)">
 
   <head>
 
@@ -63,10 +63,6 @@
                       <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
                       <span>Error</span>
                   </li>
-                  <li th:replace="::menuItem ('/featureToggle','featureToggle','featureToggle','featureToggle','Feature toggle')">
-                      <span class="glyphicon glyphicon-featureToggle" aria-hidden="true"></span>
-                      <span>Feature toggle</span>
-                  </li>
   
               </ul>
           </div>
@@ -82,12 +78,8 @@
         <div class="container">
           <div class="row">
             <div class="col-12 text-center">
-                    <img src="../static/resources/images/spring-pivotal-logo.png" th:src="@{/resources/images/spring-pivotal-logo.png}"
-                         alt="Sponsored by Pivotal"/></a>
-            </div>
-        </div>
-        </div>
-
+              <img src="../static/resources/images/spring-pivotal-logo.png" th:src="@{/resources/images/spring-pivotal-logo.png}"
+                alt="Sponsored by Pivotal"/></div>
           </div>
         </div>
       </div>
