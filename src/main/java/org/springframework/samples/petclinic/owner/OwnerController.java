@@ -40,6 +40,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.*;
 import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnOne;
 import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
 
@@ -84,7 +85,7 @@ class OwnerController {
     @GetMapping("/owners/new")
     public String initCreationForm(Map<String, Object> model , Owner owner) {
 
-        if(FeatureToggles.isEnableOwnerCreate == true) {
+        if(FeatureToggles.isEnableOwnerCreate) {
             this.owner = owner;
             model.put("owner", owner);
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
@@ -131,7 +132,7 @@ class OwnerController {
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
 
-        if (FeatureToggles.isEnableOwnerPage) {
+        if (isEnableOwnerPage) {
             model.put("owner", owner);
             return "owners/findOwners";
         }
@@ -160,7 +161,7 @@ class OwnerController {
                 owner = results.iterator().next();
 
                 //shadow read for owner
-                if(FeatureToggles.isEnableShadowRead == true) {
+                if(isEnableShadowRead) {
                     OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
                     log.trace(owner.getId() + " Owner Id from controller");
                     //Shadow read return problem id
