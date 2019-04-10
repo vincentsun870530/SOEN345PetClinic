@@ -118,7 +118,7 @@ public class OwnerConsistencyChecker implements InConsistencyChecker {
 
     public double calculateConsistencyChecker(int inconsistency) {
         int sizeOfOwners = oldOwnersData.size();
-        double consistency = (1 - (inconsistency/sizeOfOwners))*100;
+        double consistency = (1 - ((double)inconsistency/(double)sizeOfOwners))*100;
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
