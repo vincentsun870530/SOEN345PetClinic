@@ -77,11 +77,11 @@
 <!--                  </div>-->
 <!--                </form>-->
                 
-                <!--/*@thymesVar id="isEnableGreenBtn" type="org.springframework.samples.petclinic.owner.VisitController"*/-->
-                <a th:if="${isEnableGreenBtn}==true"
+                <!--/*@thymesVar id="isEnableDeleteVisit" type="org.springframework.samples.petclinic.owner.VisitController"*/-->
+                <a th:if="${isEnableDeleteVisit}==true"
                         th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisitGreen(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}">Delete
                   Visit</a>
-                <a th:if="${isEnableGreenBtn}==false"
+                <a th:if="${isEnableDeleteVisit}==false"
                         th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisitBlack(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}" class="btn btn-default">Delete
                   Visit</a>
               </td>
