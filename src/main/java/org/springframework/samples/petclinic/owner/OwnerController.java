@@ -318,9 +318,15 @@ class OwnerController {
     // Pass the toggle to the layout
     @ModelAttribute("isEnableDeleteOwner")
     public boolean isEnableDeleteOwner() {
-        RandomToggle rndToggle = new RandomToggle();
-        FeatureToggles.isEnableDeleteOwner = rndToggle.randomToggle(0.50f);
-        return  FeatureToggles.isEnableDeleteOwner;
+        Logger analytics = LogManager.getLogger("Owner Delete Toggle");
+        if (FeatureToggles.isEnableDeleteOwner) {
+            RandomToggle rndToggle = new RandomToggle();
+            FeatureToggles.deleteOwnerToggle = rndToggle.randomToggle(0.50f);
+            return FeatureToggles.deleteOwnerToggle;
+        } else {
+            analytics.info("Default Delete Owner (Toggle Disabled");
+            return false;
+        }
     }
 
     // Delete owner that doesn't have pets version One
@@ -328,7 +334,7 @@ class OwnerController {
     // then you can delete the owner to conserve the database integrity (child-parent)
     @GetMapping("/owners/{ownerId}/deleteBtnVersionOne")
     public String DeleteOwnerOne(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
-        if (FeatureToggles.isEnableDeleteOwner) {
+        if (FeatureToggles.deleteOwnerToggle) {
             Owner owner = this.owners.findById(ownerId);
             this.owners.deleteById(owner.getId());
             model.addAttribute(owner);
@@ -343,7 +349,7 @@ class OwnerController {
     // then you can delete the owner to conserve the database integrity (child-parent)
     @GetMapping("/owners/{ownerId}/deleteBtnVersionTwo")
     public String DeleteOwnerTwo(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
-        if (FeatureToggles.isEnableDeleteOwner) {
+        if (FeatureToggles.deleteOwnerToggle) {
             Owner owner = this.owners.findById(ownerId);
             this.owners.deleteById(owner.getId());
             model.addAttribute(owner);
