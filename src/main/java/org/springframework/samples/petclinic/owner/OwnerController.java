@@ -16,7 +16,6 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
@@ -40,8 +39,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnOne;
-import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
+import static org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper.countDeleteOwnerBtnOne;
+import static org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
 
 /**
  * @author Juergen Hoeller
@@ -302,12 +301,19 @@ class OwnerController {
         return mav;
     }
 
-    // Pass the toggle to the layout
+    // Pass the toggle to the layout to show/hide the button Version 2
     @ModelAttribute("isEnableDeleteOwner")
     public boolean isEnableDeleteOwner() {
         RandomToggle rndToggle = new RandomToggle();
         FeatureToggles.isEnableDeleteOwner = rndToggle.randomToggle(0.50f);
         return  FeatureToggles.isEnableDeleteOwner;
+    }
+
+
+    // Pass the toggle isDisableDeleteOwner to the layout to turn off the whole feature
+    @ModelAttribute("isDisableDeleteOwner")
+    public boolean isDisableDeleteOwner() {
+        return  FeatureToggles.isDisableDeleteOwner;
     }
 
     // Delete owner that doesn't have pets version One
