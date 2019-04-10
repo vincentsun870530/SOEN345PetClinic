@@ -12,7 +12,7 @@ public class MySQLJDBCDriverConnection {
     public static Connection connect() {
         String url = "jdbc:mysql://127.0.0.1:3306/petclinic";
         String user = "root";
-        String password = "petclinic";
+        String password = "root";
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(url, user, password);

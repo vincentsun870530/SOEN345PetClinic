@@ -25,7 +25,7 @@ public class RollbackDeleteOwnerTest {
     Owner owner;
     DeleteOwnerBtnHelper deleteOwnerBtnHelper;
     private static final int TEST_OWNER_ID = 2;
-
+    /*
     @Before
     public void setUp() {
 
@@ -66,10 +66,11 @@ public class RollbackDeleteOwnerTest {
         }
         //turn off the feature, no discount
     }
+    */
     @Test
     public void rollbacktest(){
-        FeatureToggles.isEnableDeleteOwner = false;
-        if(FeatureToggles.isEnableDeleteOwner ==false){
+        FeatureToggles.isEnableDeleteOwnerRandom = true;
+        if(!FeatureToggles.isEnableDeleteOwner){
             DeleteOwnerBtnHelper.countDeleteOwnerBtnOne();
         }else{
             DeleteOwnerBtnHelper.countDeleteOwnerBtnTwo();
