@@ -525,6 +525,25 @@
                 </label>
             </td>
         </tr>
+        <tr>
+            <td>Delete Owner</td>
+            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteOwner()}">
+                <label>
+                    <select name="ownerDelete">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+            <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteOwner()}">
+                <label>
+                    <select name="ownerDelete">
+                        <option value="Disable">Disable</option>
+                        <option value="Enable">Enable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
         <tr align="center">
             <td>
                 <input id="submitButton" type="Submit" value="Submit"/>

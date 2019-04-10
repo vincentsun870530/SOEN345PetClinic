@@ -49,6 +49,9 @@ public class FeatureToggles extends HttpServlet {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
+    // A/B testing toggle
+    public static boolean isEnableDeleteOwner = true;
+
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
 
@@ -105,6 +108,9 @@ public class FeatureToggles extends HttpServlet {
 
         //For temp debugging system.out.print
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
+
+        // A/B testing toggle
+        isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
 
         // redirect page
         response.sendRedirect("");
@@ -184,6 +190,8 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isIsEnableDebuggingSystemOutPrint() {
         return isEnableDebuggingSystemOutPrint;
     }
-    // A/B testing toggle
-    public static boolean isEnableDeleteOwner = true;
+
+    public static boolean isIsEnableDeleteOwner() {
+        return isEnableDeleteOwner;
+    }
 }
