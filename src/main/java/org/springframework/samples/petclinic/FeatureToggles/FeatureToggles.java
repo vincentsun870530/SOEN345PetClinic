@@ -113,6 +113,75 @@ public class FeatureToggles extends HttpServlet {
 
     }
 
+    public static boolean isIsEnableOwnerPage() {
+        return isEnableOwnerPage;
+    }
 
+    public static boolean isIsEnableOwnerCreate() {
+        return isEnableOwnerCreate;
+    }
 
+    public static boolean isIsEnableOwnerFind() {
+        return isEnableOwnerFind;
+    }
+
+    public static boolean isIsEnableOwnerEdit() {
+        return isEnableOwnerEdit;
+    }
+
+    public static boolean isIsEnablePetAdd() {
+        return isEnablePetAdd;
+    }
+
+    public static boolean isIsEnablePetEdit() {
+        return isEnablePetEdit;
+    }
+
+    public static boolean isIsEnablePetVisit() {
+        return isEnablePetVisit;
+    }
+
+    public static boolean isIsEnableIR() {
+        return isEnableIR;
+    }
+
+    public static boolean isIsEnableOwnerCreateIR() {
+        return isEnableOwnerCreateIR;
+    }
+
+    public static boolean isIsEnableOwnerEditIR() {
+        return isEnableOwnerEditIR;
+    }
+
+    public static boolean isIsEnablePetAddIR() {
+        return isEnablePetAddIR;
+    }
+
+    public static boolean isIsEnablePetEditIR() {
+        return isEnablePetEditIR;
+    }
+
+    public static boolean isIsEnablePetVisitIR() {
+        return isEnablePetVisitIR;
+    }
+
+    public static boolean isIsEnableIncrementDate() {
+        return isEnableIncrementDate;
+    }
+
+    public static boolean isIsEnableVetPage() {
+        return isEnableVetPage;
+    }
+
+    public static boolean isIsEnableShadowWrite() {
+        return isEnableShadowWrite;
+    }
+
+    public static boolean isIsEnableShadowRead() {
+        return isEnableShadowRead;
+    }
+
+    public static boolean isIsEnableDebuggingSystemOutPrint() {
+        return isEnableDebuggingSystemOutPrint;
+    }
 }
