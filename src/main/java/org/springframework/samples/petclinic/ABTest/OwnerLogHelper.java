@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.loghelper;
+package org.springframework.samples.petclinic.ABTest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

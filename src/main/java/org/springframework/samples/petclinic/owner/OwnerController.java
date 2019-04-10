@@ -27,7 +27,7 @@ import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
-import org.springframework.samples.petclinic.loghelper.OwnerLogHelper;
+import org.springframework.samples.petclinic.ABTest.OwnerLogHelper;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -317,7 +317,6 @@ class OwnerController {
         return mav;
     }
 
-    
     @ModelAttribute("isEnableTabOwnerChange")
     public boolean isEnableTabOwnerChange() {
         return FeatureToggles.isEnableTabOwnerChange;

@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
@@ -225,7 +226,6 @@ class PetController {
             return "redirect:/owners/{ownerId}";
         }
     }
-
     
     @ModelAttribute("isEnableTabOwnerChange")
     public boolean isEnableTabOwnerChange() {

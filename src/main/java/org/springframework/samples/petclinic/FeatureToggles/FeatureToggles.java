@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.FeatureToggles;
 
-public class FeatureToggles {
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,6 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnableOwnerPage = true;
     public static boolean isEnableOwnerCreate = true;
     public static boolean isEnableOwnerFind = true ;
-    public static boolean isEnableOwnerFind = true;
     public static boolean isEnableOwnerEdit = true;
     public static boolean isEnablePetAdd = true;
     public static boolean isEnablePetEdit = true;
@@ -53,6 +51,7 @@ public class FeatureToggles extends HttpServlet {
 
     // For a/b test on the Find Owners in the navbar
     public static boolean isEnableTabOwnerChange = true;
+    public static boolean isEnableTabOwnerChangeRandom = true;
 
     // A/B testing toggle
     public static boolean isEnableDeleteOwnerRandom = true;

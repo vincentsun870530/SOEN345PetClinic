@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 
 //import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
@@ -162,7 +163,6 @@ class VisitController {
         }
     }
 
-    
     @ModelAttribute("isEnableTabOwnerChange")
     public boolean isEnableTabOwnerChange() {
         return FeatureToggles.isEnableTabOwnerChange;

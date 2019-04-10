@@ -49,13 +49,13 @@
                       <span>Home</span>
                   </li>
   
-                  <li th:if="${isEnableTabOwnerChange} == true">
+                  <li th:if="${isEnableTabOwnerChangeRandom} == true and ${isEnableTabOwnerChange} == true">
                     <span th:replace="::menuItem ('/owners/find','owners','owners','user','Owners')"></span>
                       <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                       <span>Owners</span>
                   </li>
 
-                  <li th:if="${isEnableTabOwnerChange} == false">
+                  <li th:if="${isEnableTabOwnerChangeRandom} == false or ${isEnableTabOwnerChange} == false">
                     <span th:replace="::menuItem ('/owners/find','owners','find owners','search','Find owners')">
                     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                     <span>Find owners</span>
