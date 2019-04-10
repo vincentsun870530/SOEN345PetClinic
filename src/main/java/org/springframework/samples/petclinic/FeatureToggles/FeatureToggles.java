@@ -33,6 +33,10 @@ public class FeatureToggles {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
-    //For enable different delete Visit button
+
+    // A/B testing toggle
+    public static boolean isEnableDeleteOwner = true;
+
+    //For enable different delete Visit button A/B testing
     public static boolean isEnableDeleteVisit = true;
 }

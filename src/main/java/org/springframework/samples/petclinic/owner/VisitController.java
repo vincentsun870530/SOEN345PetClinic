@@ -36,9 +36,8 @@ import org.springframework.ui.Model;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -51,7 +50,7 @@ class VisitController {
 
     private final VisitRepository visits;
     private final PetRepository pets;
-    private static Logger log = LoggerFactory.getLogger(VisitController.class);
+    private static Logger log = LogManager.getLogger(VisitController.class);
     Visit visit;
 
 
@@ -196,4 +195,5 @@ class VisitController {
         FeatureToggles.isEnableDeleteVisit = rndToggle.randomToggle(0.50f);
         return FeatureToggles.isEnableDeleteVisit;
     }
+
 }

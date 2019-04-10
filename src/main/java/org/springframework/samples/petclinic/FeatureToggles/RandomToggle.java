@@ -1,9 +1,10 @@
 package org.springframework.samples.petclinic.FeatureToggles;
 
 import java.util.concurrent.ThreadLocalRandom;
-/*
-Class created by Dave and not merged into master on the day that I am using. Borrow from his branch,will delete it after test
- */
+
+// Class created by : Dave Bhardwaj
+// Credit to @Dave Bhardwaj
+
 public class RandomToggle {
 
     public boolean randomToggle (float percent){
