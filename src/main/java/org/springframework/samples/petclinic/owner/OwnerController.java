@@ -323,7 +323,7 @@ class OwnerController {
     // then you can delete the owner to conserve the database integrity (child-parent)
     @GetMapping("/owners/{ownerId}/deleteBtnVersionOne")
     public String DeleteOwnerOne(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
-        if (FeatureToggles.isEnableDeleteOwnerRandom) {
+        if (FeatureToggles.isEnableDeleteOwner) {
             Owner owner = this.owners.findById(ownerId);
             this.owners.deleteById(owner.getId());
             model.addAttribute(owner);
@@ -338,7 +338,7 @@ class OwnerController {
     // then you can delete the owner to conserve the database integrity (child-parent)
     @GetMapping("/owners/{ownerId}/deleteBtnVersionTwo")
     public String DeleteOwnerTwo(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
-        if (FeatureToggles.isEnableDeleteOwnerRandom) {
+        if (FeatureToggles.isEnableDeleteOwner) {
             Owner owner = this.owners.findById(ownerId);
             this.owners.deleteById(owner.getId());
             model.addAttribute(owner);
