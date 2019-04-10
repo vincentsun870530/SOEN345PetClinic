@@ -184,4 +184,6 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isIsEnableDebuggingSystemOutPrint() {
         return isEnableDebuggingSystemOutPrint;
     }
+    // A/B testing toggle
+    public static boolean isEnableDeleteOwner = true;
 }
