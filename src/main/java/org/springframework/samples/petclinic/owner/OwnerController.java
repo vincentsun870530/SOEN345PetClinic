@@ -16,29 +16,26 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.apache.logging.log4j.LogManager;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper;
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
-import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
-import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
-import org.springframework.samples.petclinic.visit.Visit;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -46,11 +43,11 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowRead;
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
+import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnOne;
+import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
 
 /**
  * @author Juergen Hoeller
@@ -63,9 +60,11 @@ class OwnerController {
 
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
     private final OwnerRepository owners;
+    private final PetRepository pets = null;
     private Owner owner;
     private Collection<Owner> results;
-    private static Logger log = LoggerFactory.getLogger(OwnerController.class);
+    //private static Logger log = LoggerFactory.getLogger(OwnerController.class);
+    private static Logger log = LogManager.getLogger(OwnerController.class);
     private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("Time spent on welcome ");
 
     @Autowired
@@ -174,7 +173,7 @@ class OwnerController {
                 owner = results.iterator().next();
 
                 //shadow read for owner
-                if(isEnableShadowRead == true) {
+                if(FeatureToggles.isEnableShadowRead == true) {
                     OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
                     log.trace(owner.getId() + " Owner Id from controller");
                     //Shadow read return problem id
@@ -315,5 +314,45 @@ class OwnerController {
         mav.addObject(owner);
         return mav;
     }
+
+    // Pass the toggle to the layout
+    @ModelAttribute("isEnableDeleteOwner")
+    public boolean isEnableDeleteOwner() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteOwner = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwner;
+    }
+
+    // Delete owner that doesn't have pets version One
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @GetMapping("/owners/{ownerId}/deleteBtnVersionOne")
+    public String DeleteOwnerOne(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
+        if (FeatureToggles.isEnableDeleteOwner) {
+            Owner owner = this.owners.findById(ownerId);
+            this.owners.deleteById(owner.getId());
+            model.addAttribute(owner);
+            countDeleteOwnerBtnOne();
+            return "owners/deleteBtnVersionOne";
+        }
+        return "owners/findOwners";
+    }
+
+    // Delete owner that doesn't have pets version Two
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @GetMapping("/owners/{ownerId}/deleteBtnVersionTwo")
+    public String DeleteOwnerTwo(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
+        if (FeatureToggles.isEnableDeleteOwner) {
+            Owner owner = this.owners.findById(ownerId);
+            this.owners.deleteById(owner.getId());
+            model.addAttribute(owner);
+            countDeleteOwnerBtnTwo();
+            return "owners/deleteBtnVersionTwo";
+        }
+        return "owners/findOwners";
+    }
+
+
 
 }

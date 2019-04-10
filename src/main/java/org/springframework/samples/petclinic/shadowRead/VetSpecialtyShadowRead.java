@@ -102,15 +102,15 @@ public class VetSpecialtyShadowRead {
                             + "," + inconsistentData.get(i).get("new_data");
                     System.out.println(str +" -------- From Vet Specialty Shadow Read");
                     //TODO solve the bug to implament IncrementalReplication
-                    //IncrementalReplication.addToUpdateList(str);
-                    sqLiteDbConnector.updateVetSpecialty("vet_specialties","specialty_id",
-                            Integer.parseInt(inconsistentData.get(i).get("old_data")), Integer.parseInt(id),
-                            Integer.parseInt(inconsistentData.get(i).get("new_data")));
+                    IncrementalReplication.addToUpdateList(str);
+                    // sqLiteDbConnector.updateVetSpecialty("vet_specialties","specialty_id",
+                    //         Integer.parseInt(inconsistentData.get(i).get("old_data")), Integer.parseInt(id),
+                    //         Integer.parseInt(inconsistentData.get(i).get("new_data")));
                 }
             }
 
 
-            //IncrementalReplication.incrementalReplication();
+            IncrementalReplication.incrementalReplication();
         }
 
     }

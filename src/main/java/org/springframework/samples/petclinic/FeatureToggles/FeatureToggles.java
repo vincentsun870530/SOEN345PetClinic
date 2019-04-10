@@ -41,5 +41,6 @@ public class FeatureToggles {
 
     // Remove Find Owner Button
     public static boolean isEnabledLegacyFindOwnerButton = true;
-
+    // A/B testing toggle
+    public static boolean isEnableDeleteOwner = true;
 }
