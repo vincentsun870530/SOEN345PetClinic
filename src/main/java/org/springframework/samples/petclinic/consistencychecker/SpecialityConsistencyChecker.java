@@ -47,7 +47,7 @@ public class SpecialityConsistencyChecker implements InConsistencyChecker{
 
     public double calculateConsistencyChecker(int inconsistency) {
         int sizeOfSpecialty = oldSpecialityData.size();
-        double consistency = (1 - (inconsistency/sizeOfSpecialty))*100;
+        double consistency = (1 - ((double)inconsistency/(double)sizeOfSpecialty))*100;
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
