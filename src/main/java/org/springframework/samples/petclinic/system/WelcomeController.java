@@ -26,7 +26,7 @@ class WelcomeController {
 
         RandomToggle rndToggle = new RandomToggle();
         // Legacy Mode 75% of the time V2 25% of the timeS
-        FeatureToggles.isEnabledLegacyWelcomePage = rndToggle.randomToggle(0.99f);
+        FeatureToggles.isEnabledLegacyWelcomePage = rndToggle.randomToggle(0.30f);
         return toggleWelcome();
     }
 
