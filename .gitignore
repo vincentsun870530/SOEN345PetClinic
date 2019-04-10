@@ -7,3 +7,4 @@ petclinic.sqlite3
 bin/
 dump.sql
 spring-petclinic.iml
+logs/

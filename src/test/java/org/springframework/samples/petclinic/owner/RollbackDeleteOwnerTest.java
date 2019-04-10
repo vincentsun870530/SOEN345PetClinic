@@ -64,9 +64,17 @@ public class RollbackDeleteOwnerTest {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
         //turn off the feature, no discount
+    }
+    @Test
+    public void rollbacktest(){
+        FeatureToggles.isEnableDeleteOwner = false;
+        if(FeatureToggles.isEnableDeleteOwner ==false){
+            DeleteOwnerBtnHelper.countDeleteOwnerBtnOne();
+        }else{
+            DeleteOwnerBtnHelper.countDeleteOwnerBtnTwo();
+        }
 
     }
+
 }
