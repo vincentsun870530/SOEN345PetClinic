@@ -14,6 +14,8 @@
             <th>City</th>
             <th style="width: 120px">Telephone</th>
             <th>Pets</th>
+            <th></th>
+
         </tr>
         </thead>
         <tbody>
@@ -25,6 +27,10 @@
               <td th:text="${owner.city}"/>
               <td th:text="${owner.telephone}"/>
               <td><span th:each="pet : ${owner.pets}" th:text="${pet.name} "/></td>
+              <td>
+                  <!--/*@thymesVar id="owner" type="org.springframework.samples.petclinic.owner.Owner"*/-->
+                  <a th:if="${isEnableDeleteOwnerRandom} == true and ${isEnableDeleteOwner} == true" th:href="@{owners/{id}/deleteBtnVersionTwo(id=${owner.getId()})}" class="btn btn-default">Delete
+                      Owner</a></td>
           </tr>
         </tbody>
     </table>

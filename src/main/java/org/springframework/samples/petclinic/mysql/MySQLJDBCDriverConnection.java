@@ -58,11 +58,30 @@ public class MySQLJDBCDriverConnection {
 
     //select one item 
     public static ResultSet selectById(String tableName, int id){
-        return getResultSet(tableName, id, connect());
+        if(tableName.equals("vet_specialties")) {
+            return getVetSpecialitiesResultSet(tableName, id, connect());
+        } else {
+            return getResultSet(tableName, id, connect());
+        }
     }
 
     public static ResultSet getResultSet(String tableName, int id, Connection connect) {
         String query = "SELECT * FROM " + tableName + " WHERE id = " + id;
+        ResultSet resultSet = null;
+        try  {
+            Connection connection = connect;
+            Statement stmt = connection.createStatement();
+
+            resultSet = stmt.executeQuery(query);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return resultSet;
+    }
+
+    public static ResultSet getVetSpecialitiesResultSet(String tableName, int id, Connection connect) {
+        String query = "SELECT * FROM " + tableName + " WHERE vet_id = " + id;
         ResultSet resultSet = null;
         try  {
             Connection connection = connect;
