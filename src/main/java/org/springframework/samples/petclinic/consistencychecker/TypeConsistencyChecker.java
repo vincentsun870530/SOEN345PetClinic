@@ -47,7 +47,7 @@ public class TypeConsistencyChecker implements InConsistencyChecker{
 
     public double calculateConsistencyChecker(int inconsistency) {
         int sizeOfPetType = oldPetTypeData.size();
-        double consistency = (1 - (inconsistency/sizeOfPetType))*100;
+        double consistency = (1 - ((double)inconsistency/(double)sizeOfPetType))*100;
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 

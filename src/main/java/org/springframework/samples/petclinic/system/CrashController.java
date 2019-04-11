@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.system;
 
+import org.apache.logging.log4j.LogManager;
+import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,11 +31,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  */
 @Controller
 class CrashController {
-
+    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("Time spent on welcome ");
     @GetMapping("/oups")
     public String triggerException() {
+        timeAnalytics.endTime = System.nanoTime();
+        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
+        timeAnalytics.resetTimeAnalystics();
         throw new RuntimeException("Expected: controller used to showcase what "
                 + "happens when an exception is thrown");
+    }
+
+    
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
     }
 
 }
