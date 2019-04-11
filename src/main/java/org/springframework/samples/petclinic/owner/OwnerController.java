@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
-import org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper;
 import org.apache.logging.log4j.Logger;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
