@@ -168,7 +168,7 @@ class VisitController {
             return "redirect:/owners/{ownerId}";
         }
     }
-
+    @ModelAttribute("isEnableDeleteVisit")
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitGreen")
     public String handleDeleteVisitGreen(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
         if(FeatureToggles.isEnableDeleteVisit){
@@ -182,7 +182,7 @@ class VisitController {
         }
         return "ownerDetails";
     }
-
+    @ModelAttribute("isEnableDeleteVisit")
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitBlack")
     public String handleDeleteVisitBlack(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
         if(FeatureToggles.isEnableDeleteVisit){
@@ -198,11 +198,5 @@ class VisitController {
 
     }
 
-    @ModelAttribute("isEnableDeleteVisit")
-    public boolean isEnableDeleteVisit(){
-        RandomToggle rndToggle =new RandomToggle();
-        FeatureToggles.isEnableDeleteVisit = rndToggle.randomToggle(0.50f);
-        return FeatureToggles.isEnableDeleteVisit;
-    }
 
 }

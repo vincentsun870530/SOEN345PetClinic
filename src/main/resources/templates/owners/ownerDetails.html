@@ -67,15 +67,13 @@
               <td th:text="${visit?.description}"></td>
               <td>
 
-                
-                <!--/*@thymesVar id="isEnableDeleteVisit" type="org.springframework.samples.petclinic.owner.VisitController"*/-->
-                <a th:if="${isEnableDeleteVisit}==true"
-                        th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisitGreen(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}">Delete
+
+                <a th:if="${isEnableDeleteVisit} == true" th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisitGreen(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}">Delete
                   Visit</a>
-                <!--/*@thymesVar id="isEnableDeleteVisit" type="org.springframework.samples.petclinic.owner.VisitController"*/-->
-                <a th:if="${isEnableDeleteVisit}==false"
-                        th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisitBlack(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}" class="btn btn-default">Delete
+
+                <a th:if="${isEnableDeleteVisit} == false" th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisitBlack(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}" class="btn btn-default">Delete
                   Visit</a>
+
               </td>
             </tr>
             <tr>
