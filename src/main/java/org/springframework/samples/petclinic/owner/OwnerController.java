@@ -140,7 +140,7 @@ class OwnerController {
     }
 
 
-    public String initFindForm(Map<String, Object> model, Owner owner2) {
+    public String initFindForm(Map<String, Object> model) {
        return this.initFindForm(model, new Owner());
     }
 
