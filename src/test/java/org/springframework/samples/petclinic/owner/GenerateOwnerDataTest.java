@@ -15,10 +15,10 @@ public class GenerateOwnerDataTest {
 
         while (count < 1000) {
             int rnd = RandomUtils.nextInt(0, 2);
-            if (rnd == 0 && FeatureToggles.isEnableDeleteOwnerRandom1) {
+            if (rnd == 0) {
                 DeleteOwnerBtnHelper.countDeleteOwnerBtnOne();
             }
-            else if (rnd == 1 && FeatureToggles.isEnableDeleteOwnerRandom2){
+            else if (rnd == 1){
                 DeleteOwnerBtnHelper.countDeleteOwnerBtnTwo();
             }
             count++;
