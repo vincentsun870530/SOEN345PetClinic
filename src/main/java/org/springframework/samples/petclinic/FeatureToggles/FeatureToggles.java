@@ -21,7 +21,7 @@ public class FeatureToggles extends HttpServlet {
     // For package owner
     public static boolean isEnableOwnerPage = true;
     public static boolean isEnableOwnerCreate = true;
-    public static boolean isEnableOwnerFind = true;
+    public static boolean isEnableOwnerFind = true ;
     public static boolean isEnableOwnerEdit = true;
     public static boolean isEnablePetAdd = true;
     public static boolean isEnablePetEdit = true;
@@ -49,6 +49,10 @@ public class FeatureToggles extends HttpServlet {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
+    // For a/b test on the Find Owners in the navbar
+    public static boolean isEnableTabOwnerChange = true;
+    public static boolean isEnableTabOwnerChangeRandom = true;
+
 
     // No Home Button
     public static boolean hasHomeButton = false;
@@ -69,6 +73,8 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnabledLegacyWelcomePage = false;
     // Welcome Page Toggle Value
     public static boolean welcomePageToggle = true;
+    // Randomizer Toggle
+    public static boolean randomizer = true;
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
@@ -130,6 +136,9 @@ public class FeatureToggles extends HttpServlet {
         // A/B testing toggle
         isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
         isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
+
+        // A/B testing toggle for owner tab
+        isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
 
         // redirect page
         response.sendRedirect("");
@@ -214,6 +223,10 @@ public class FeatureToggles extends HttpServlet {
         return isEnableDeleteOwner;
     }
 
+    public static boolean isIsEnableTabOwnerChange() {
+        return isEnableTabOwnerChange;
+    }
+    
     public static boolean isEnabledLegacyWelcomePage() {
         return isEnabledLegacyWelcomePage;
     }

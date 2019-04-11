@@ -545,6 +545,25 @@
             </td>
         </tr>
         <tr>
+            <td>Tab Owner Change</td>
+            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableTabOwnerChange()}">
+                <label>
+                    <select name="ownerTab">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+            <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableTabOwnerChange()}">
+                <label>
+                    <select name="ownerTab">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr></tr>
             <td>New Welcome Page</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isEnabledLegacyWelcomePage()}">
                 <label>

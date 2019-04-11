@@ -41,4 +41,10 @@ class CrashController {
                 + "happens when an exception is thrown");
     }
 
+    
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
+    }
+
 }
