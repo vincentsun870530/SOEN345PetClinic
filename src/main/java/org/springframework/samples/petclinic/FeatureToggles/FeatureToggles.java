@@ -70,7 +70,7 @@ public class FeatureToggles extends HttpServlet {
     public static boolean deleteOwnerToggle = true;
 
     // Welcome Page Enabler (For Rollback Purpose)
-    public static boolean isEnabledLegacyWelcomePage = true;
+    public static boolean isEnabledLegacyWelcomePage = false;
     // Welcome Page Toggle Value
     public static boolean welcomePageToggle = true;
     // Randomizer Toggle
@@ -135,6 +135,7 @@ public class FeatureToggles extends HttpServlet {
 
         // A/B testing toggle
         isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
+        isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
 
         // A/B testing toggle for owner tab
         isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
@@ -224,5 +225,9 @@ public class FeatureToggles extends HttpServlet {
 
     public static boolean isIsEnableTabOwnerChange() {
         return isEnableTabOwnerChange;
+    }
+    
+    public static boolean isEnabledLegacyWelcomePage() {
+        return isEnabledLegacyWelcomePage;
     }
 }
