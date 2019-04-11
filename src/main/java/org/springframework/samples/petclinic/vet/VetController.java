@@ -45,7 +45,7 @@ class VetController {
 
     private final VetRepository vetrepository;
     Vets vets;
-    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("Time spent on welcome ");
+    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
 
     public VetController(VetRepository clinicService) {
         this.vetrepository = clinicService;
