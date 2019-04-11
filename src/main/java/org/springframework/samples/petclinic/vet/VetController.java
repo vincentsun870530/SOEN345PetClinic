@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.vet;
 
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.shadowRead.SpecialtyShadowRead;
 import org.springframework.samples.petclinic.shadowRead.VetShadowRead;
@@ -170,6 +171,13 @@ class VetController {
         return vets;
     }
 
+    // To simulate different users using the new tab feature
+    @ModelAttribute("isEnableTabOwnerChangeRandom")
+    public boolean isEnableTabOwnerChangeRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableTabOwnerChangeRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableTabOwnerChangeRandom;
+    }
     
     @ModelAttribute("isEnableTabOwnerChange")
     public boolean isEnableTabOwnerChange() {

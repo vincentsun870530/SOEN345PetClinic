@@ -133,8 +133,8 @@ class OwnerController {
     }
 
 
-    public String initFindForm(Map<String, Object> model, HttpServletRequest request) {
-       return this.initFindForm(model, new Owner(), request);
+    public String initFindForm(Map<String, Object> model, Owner owner2) {
+       return this.initFindForm(model, new Owner());
     }
 
     // dependency injection
@@ -143,7 +143,7 @@ class OwnerController {
 
         if (isEnableOwnerPage) {
             model.put("owner", owner);
-            if(FeatureToggles.isEnableTabOwnerChange == true) {
+            if(FeatureToggles.isEnableTabOwnerChange == true && FeatureToggles.isEnableTabOwnerChangeRandom == true) {
                 OwnerLogHelper.countOwnerTabOne();
             } else {
                 OwnerLogHelper.countOwnerTabTwo();
@@ -315,6 +315,14 @@ class OwnerController {
 
         mav.addObject(owner);
         return mav;
+    }
+
+    // To simulate different users using the new tab feature
+    @ModelAttribute("isEnableTabOwnerChangeRandom")
+    public boolean isEnableTabOwnerChangeRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableTabOwnerChangeRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
 
     @ModelAttribute("isEnableTabOwnerChange")

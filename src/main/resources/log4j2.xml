@@ -4,6 +4,8 @@
 
     <Properties>
         <Property name="csvLog1.fileName">deleteOwnerBtnLog</Property>
+        <!-- <Property name="csvLog2.fileName">ownerTabChangeLog</Property>
+        <Property name="csvLog3.fileName">welcomePageLog</Property> -->
         <Property name="file-header">"%-5p [%t]: %m%n"</Property>
     </Properties>
 
@@ -28,6 +30,48 @@
 
     </Appenders>
 
+    <!-- <Appenders>
+
+        <Console name="STDIO" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </Console>
+
+        <RollingFile name="csvLog2.fileName"
+                     fileName="logs/${csvLog2.fileName}.csv"
+                     filePattern="${csvLog2.filename}-%d{MM-dd-yyyy}-%i.csv">
+            <CsvLogEventLayout delimiter="," header="${file-header}\n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="200"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Appenders>
+
+        <Console name="STDIO" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+            </PatternLayout>
+        </Console>
+
+        <RollingFile name="csvLog3.fileName"
+                     fileName="logs/${csvLog3.fileName}.csv"
+                     filePattern="${csvLog3.filename}-%d{MM-dd-yyyy}-%i.csv">
+            <CsvLogEventLayout delimiter="," header="${file-header}\n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="200"/>
+        </RollingFile>
+
+    </Appenders> -->
+
     <Loggers>
 
         <Root level="all">
@@ -41,6 +85,22 @@
         <Logger name="logVersionTwoHomeBtn" level="info" additivity="false">
             <AppenderRef ref="csvLog1.fileName"/>
         </Logger>
+<!-- 
+        <Logger name="logOwnerTabVerOneOwner" level="info" additivity="false">
+            <AppenderRef ref="csvLog2.fileName"/>
+        </Logger>
+
+        <Logger name="logOwnerTabVerTwoOwner" level="info" additivity="false">
+            <AppenderRef ref="csvLog2.fileName"/>
+        </Logger>
+
+        <Logger name="logOwnerTabVerOneWelcome" level="info" additivity="false">
+            <AppenderRef ref="csvLog3.fileName"/>
+        </Logger>
+
+        <Logger name="logOwnerTabVerTwoWelcome" level="info" additivity="false">
+            <AppenderRef ref="csvLog3.fileName"/>
+        </Logger> -->
 
     </Loggers>
 </Configuration>

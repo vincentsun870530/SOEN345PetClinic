@@ -118,6 +118,9 @@ public class FeatureToggles extends HttpServlet {
         // A/B testing toggle
         isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
 
+        // A/B testing toggle for owner tab
+        isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
+
         // redirect page
         response.sendRedirect("");
 
@@ -199,5 +202,9 @@ public class FeatureToggles extends HttpServlet {
 
     public static boolean isIsEnableDeleteOwner() {
         return isEnableDeleteOwner;
+    }
+
+    public static boolean isIsEnableTabOwnerChange() {
+        return isEnableTabOwnerChange;
     }
 }

@@ -12,7 +12,7 @@ class WelcomeController {
 
     @GetMapping("/")
     public String welcome() {
-        if(FeatureToggles.isEnableTabOwnerChange == true) {
+        if(FeatureToggles.isEnableTabOwnerChange == true && FeatureToggles.isEnableTabOwnerChangeRandom == true) {
             WelcomeLogHelper.countUserVerOne();
         } else {
             WelcomeLogHelper.countUserVerTwo();
