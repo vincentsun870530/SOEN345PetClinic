@@ -63,11 +63,9 @@ public class FeatureToggles extends HttpServlet {
     public static boolean deleteOwnerToggle = true;
 
     // Welcome Page Enabler (For Rollback Purpose)
-    public static boolean isEnabledLegacyWelcomePage = true;
+    public static boolean isEnabledLegacyWelcomePage = false;
     // Welcome Page Toggle Value
     public static boolean welcomePageToggle = true;
-    // Randomizer Toggle
-    public static boolean randomizer = false;
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
@@ -128,6 +126,7 @@ public class FeatureToggles extends HttpServlet {
 
         // A/B testing toggle
         isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
+        isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
 
         // redirect page
         response.sendRedirect("");
@@ -210,5 +209,9 @@ public class FeatureToggles extends HttpServlet {
 
     public static boolean isIsEnableDeleteOwner() {
         return isEnableDeleteOwner;
+    }
+
+    public static boolean isEnabledLegacyWelcomePage() {
+        return isEnabledLegacyWelcomePage;
     }
 }
