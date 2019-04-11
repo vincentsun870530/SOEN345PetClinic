@@ -309,13 +309,18 @@ class OwnerController {
         FeatureToggles.isEnableDeleteOwner = rndToggle.randomToggle(0.50f);
         return  FeatureToggles.isEnableDeleteOwner;
     }
+
     @ModelAttribute("isEnableDeleteVisit")
     public boolean isEnableDeleteVisit(){
-        RandomToggle rndToggle =new RandomToggle();
-        FeatureToggles.isEnableDeleteVisit = rndToggle.randomToggle(0.50f);
         return FeatureToggles.isEnableDeleteVisit;
     }
 
+    @ModelAttribute("isEnableDeleteVisitRandom")
+    public boolean isEnableDeleteVisitRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteVisitRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteVisitRandom;
+    }
 
     // Delete owner that doesn't have pets version One
     // if the owner has pets then the pets should be deleted first

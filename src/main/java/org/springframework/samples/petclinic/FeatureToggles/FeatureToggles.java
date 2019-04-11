@@ -39,4 +39,9 @@ public class FeatureToggles {
 
     //For enable different delete Visit button A/B testing
     public static boolean isEnableDeleteVisit = true;
+
+    public static boolean isEnableDeleteVisitRandom = true;
+    public static boolean isEnableDeleteVisit() {
+        return isEnableDeleteVisit;
+    }
 }
