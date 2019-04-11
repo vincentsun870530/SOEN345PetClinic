@@ -543,6 +543,17 @@
                     </select>
                 </label>
             </td>
+        </tr>
+        <tr>
+            <td>Delete Visit</td>
+            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isISEnableDeleteVisit()}">
+                <label>
+                    <select name="visitDelete">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
             <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isISEnableDeleteVisit()}">
                 <label>
                     <select name="visitDelete">
