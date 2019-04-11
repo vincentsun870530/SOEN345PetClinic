@@ -49,15 +49,18 @@ public class FeatureToggles extends HttpServlet {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
+
     // No Home Button
     public static boolean hasHomeButton = false;
 
     // Remove Find Owner Button
     public static boolean isEnabledLegacyFindOwnerButton = true;
 
-    // A/B Testing Toggle
 
     // Delete Owner Enabler (For Rollback Purpose)
+    // A/B testing toggle
+    public static boolean isEnableDeleteOwnerRandom = true;
+  
     public static boolean isEnableDeleteOwner = true;
     // Delete Owner Toggle Value
     public static boolean deleteOwnerToggle = true;
