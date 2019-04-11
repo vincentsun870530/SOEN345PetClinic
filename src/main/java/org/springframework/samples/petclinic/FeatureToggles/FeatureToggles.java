@@ -63,8 +63,8 @@ public class FeatureToggles extends HttpServlet {
 
     // Delete Owner Enabler (For Rollback Purpose)
     // A/B testing toggle
-    public static boolean isEnableDeleteOwnerRandom = true;
-  
+    public static boolean isEnableDeleteOwnerRandom1 = true;
+    public static boolean isEnableDeleteOwnerRandom2 = true;
     public static boolean isEnableDeleteOwner = true;
     // Delete Owner Toggle Value
     public static boolean deleteOwnerToggle = true;
@@ -226,7 +226,7 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isIsEnableTabOwnerChange() {
         return isEnableTabOwnerChange;
     }
-    
+
     public static boolean isEnabledLegacyWelcomePage() {
         return isEnabledLegacyWelcomePage;
     }
