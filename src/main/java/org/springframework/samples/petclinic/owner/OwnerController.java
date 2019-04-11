@@ -22,14 +22,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
-import org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper;
+import org.apache.logging.log4j.Logger;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
-import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
-import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,12 +43,11 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.*;
-import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnOne;
-import static org.springframework.samples.petclinic.ABTest.deleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
+import static org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper.countDeleteOwnerBtnOne;
+import static org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableOwnerPage;
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowRead;
 
 /**
  * @author Juergen Hoeller
@@ -316,18 +315,19 @@ class OwnerController {
         return mav;
     }
 
-    // Pass the toggle to the layout
+    // Pass the toggle to the layout to show/hide the button Version 2
+    @ModelAttribute("isEnableDeleteOwnerRandom")
+    public boolean isEnableDeleteOwnerRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteOwnerRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwnerRandom;
+    }
+
+
+    // Pass the toggle isDisableDeleteOwner to the layout to turn off the whole feature
     @ModelAttribute("isEnableDeleteOwner")
     public boolean isEnableDeleteOwner() {
-        Logger analytics = LogManager.getLogger("Owner Delete Toggle");
-        if (FeatureToggles.isEnableDeleteOwner) {
-            RandomToggle rndToggle = new RandomToggle();
-            FeatureToggles.deleteOwnerToggle = rndToggle.randomToggle(0.50f);
-            return FeatureToggles.deleteOwnerToggle;
-        } else {
-            analytics.info("Default Delete Owner (Toggle Disabled");
-            return false;
-        }
+        return  FeatureToggles.isEnableDeleteOwner;
     }
 
     // Delete owner that doesn't have pets version One
