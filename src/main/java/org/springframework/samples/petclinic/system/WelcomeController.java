@@ -1,7 +1,5 @@
 package org.springframework.samples.petclinic.system;
 
-
-import javafx.scene.control.Toggle;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.stereotype.Controller;
