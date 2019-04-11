@@ -328,15 +328,6 @@ class OwnerController {
     // Pass the toggle isDisableDeleteOwner to the layout to turn off the whole feature
     @ModelAttribute("isEnableDeleteOwner")
     public boolean isEnableDeleteOwner() {
-        Logger analytics = LogManager.getLogger("Owner Delete Toggle");
-        if (FeatureToggles.isEnableDeleteOwner) {
-            RandomToggle rndToggle = new RandomToggle();
-            FeatureToggles.deleteOwnerToggle = rndToggle.randomToggle(0.50f);
-            return FeatureToggles.deleteOwnerToggle;
-        } else {
-            analytics.info("Default Delete Owner (Toggle Disabled");
-            return false;
-        }
         return  FeatureToggles.isEnableDeleteOwner;
     }
 
