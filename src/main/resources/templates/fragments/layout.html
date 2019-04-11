@@ -43,12 +43,12 @@
                         <span th:text="${text}">Template</span>
                       </a>
                   </li>
-  
-                  <li th:replace="::menuItem ('/','home','home page','home','Home')">
+
+                  <li th:if="${hasHomeButton} == true" th:replace="::menuItem ('/','home','home page','home','Home')">
                       <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                       <span>Home</span>
                   </li>
-  
+
                   <li th:replace="::menuItem ('/owners/find','owners','find owners','search','Find owners')">
                       <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                       <span>Find owners</span>
@@ -62,6 +62,10 @@
                   <li th:replace="::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','warning-sign','Error')">
                       <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
                       <span>Error</span>
+                  </li>
+                  <li th:replace="::menuItem ('/featureToggle','featureToggle','featureToggle','featureToggle','Feature toggle')">
+                      <span class="glyphicon glyphicon-featureToggle" aria-hidden="true"></span>
+                      <span>Feature toggle</span>
                   </li>
   
               </ul>

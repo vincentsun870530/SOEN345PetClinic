@@ -3,9 +3,9 @@ package org.springframework.samples.petclinic.ABTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class deleteOwnerBtnHelper {
-    private static int countDeleteOwnerBtnOne = 0;
-    private static int countDeleteOwnerBtnTwo = 0;
+public class DeleteOwnerBtnHelper {
+    public static int countDeleteOwnerBtnOne = 0;
+    public static int countDeleteOwnerBtnTwo = 0;
     private static Logger logVersionOneHomeBtn = LogManager.getLogger("logVersionOneHomeBtn");
     private static Logger logVersionTwoHomeBtn = LogManager.getLogger("logVersionTwoHomeBtn");
 
