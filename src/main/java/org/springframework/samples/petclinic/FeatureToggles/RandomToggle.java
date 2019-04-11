@@ -10,7 +10,6 @@ public class RandomToggle {
 
     public boolean randomToggle (float percent){
         float rnd = ThreadLocalRandom.current().nextFloat();
-        if(FeatureToggles.randomizer) {
             if(rnd <= percent) {
                 analytics.info("False");
                 return false;
@@ -19,9 +18,6 @@ public class RandomToggle {
                 analytics.info("True");
                 return true;
             }
-        } else {
-            return true;
-        }
 
     }
 }
