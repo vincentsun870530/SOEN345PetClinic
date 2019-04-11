@@ -49,10 +49,28 @@ public class FeatureToggles extends HttpServlet {
     //For temp debugging system.out.print
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
+
+    // No Home Button
+    public static boolean hasHomeButton = false;
+
+    // Remove Find Owner Button
+    public static boolean isEnabledLegacyFindOwnerButton = true;
+
+
+    // Delete Owner Enabler (For Rollback Purpose)
     // A/B testing toggle
     public static boolean isEnableDeleteOwnerRandom = true;
-
+  
     public static boolean isEnableDeleteOwner = true;
+    // Delete Owner Toggle Value
+    public static boolean deleteOwnerToggle = true;
+
+    // Welcome Page Enabler (For Rollback Purpose)
+    public static boolean isEnabledLegacyWelcomePage = true;
+    // Welcome Page Toggle Value
+    public static boolean welcomePageToggle = true;
+    // Randomizer Toggle
+    public static boolean randomizer = false;
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {

@@ -16,8 +16,13 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
+import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
+import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.apache.logging.log4j.Logger;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
@@ -58,7 +63,9 @@ class OwnerController {
     private final PetRepository pets = null;
     private Owner owner;
     private Collection<Owner> results;
+    //private static Logger log = LoggerFactory.getLogger(OwnerController.class);
     private static Logger log = LogManager.getLogger(OwnerController.class);
+    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("Time spent on welcome ");
 
     @Autowired
    public OwnerController(OwnerRepository clinicService) {
@@ -131,11 +138,13 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
-
-        if (isEnableOwnerPage) {
+        timeAnalytics.endTime = System.nanoTime();
+        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
+        timeAnalytics.resetTimeAnalystics();
+        if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);
             return "owners/findOwners";
-        }
+            }
         return null;
     }
 
@@ -152,10 +161,13 @@ class OwnerController {
             setResults(owner);
             System.out.println(results.toString());
 
+            RandomToggle rndToggle = new RandomToggle();
+            FeatureToggles.isEnabledLegacyFindOwnerButton = rndToggle.randomToggle(0.50f);
             if (results.isEmpty()) {
                 // no owners found
                 result.rejectValue("lastName", "notFound", "not found");
-                return "owners/findOwners";
+                if(FeatureToggles.isEnabledLegacyFindOwnerButton == true) return "owners/findOwners";
+                else return "owners/findOwners-V2";
             } else if (results.size() == 1) {
                 // 1 owner found
                 owner = results.iterator().next();
@@ -323,7 +335,7 @@ class OwnerController {
     // then you can delete the owner to conserve the database integrity (child-parent)
     @GetMapping("/owners/{ownerId}/deleteBtnVersionOne")
     public String DeleteOwnerOne(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
-        if (FeatureToggles.isEnableDeleteOwner) {
+        if (FeatureToggles.deleteOwnerToggle) {
             Owner owner = this.owners.findById(ownerId);
             this.owners.deleteById(owner.getId());
             model.addAttribute(owner);
@@ -338,7 +350,7 @@ class OwnerController {
     // then you can delete the owner to conserve the database integrity (child-parent)
     @GetMapping("/owners/{ownerId}/deleteBtnVersionTwo")
     public String DeleteOwnerTwo(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
-        if (FeatureToggles.isEnableDeleteOwner) {
+        if (FeatureToggles.deleteOwnerToggle) {
             Owner owner = this.owners.findById(ownerId);
             this.owners.deleteById(owner.getId());
             model.addAttribute(owner);
