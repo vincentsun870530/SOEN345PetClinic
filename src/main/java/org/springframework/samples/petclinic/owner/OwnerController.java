@@ -303,12 +303,19 @@ class OwnerController {
         return mav;
     }
 
-    // Pass the toggle to the layout to show/hide the button Version 2
-    @ModelAttribute("isEnableDeleteOwnerRandom")
-    public boolean isEnableDeleteOwnerRandom() {
+    // Pass the toggle to the layout to show/hide the button Version 1
+    @ModelAttribute("isEnableDeleteOwnerRandom1")
+    public boolean isEnableDeleteOwnerRandom1() {
         RandomToggle rndToggle = new RandomToggle();
-        FeatureToggles.isEnableDeleteOwnerRandom = rndToggle.randomToggle(0.50f);
-        return  FeatureToggles.isEnableDeleteOwnerRandom;
+        FeatureToggles.isEnableDeleteOwnerRandom1 = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwnerRandom1;
+    }
+
+    @ModelAttribute("isEnableDeleteOwnerRandom2")
+    public boolean isEnableDeleteOwnerRandom2() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteOwnerRandom2 = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwnerRandom2;
     }
 
 

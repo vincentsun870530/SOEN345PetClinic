@@ -50,7 +50,8 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnableDebuggingSystemOutPrint = true;
 
     // A/B testing toggle
-    public static boolean isEnableDeleteOwnerRandom = true;
+    public static boolean isEnableDeleteOwnerRandom1 = true;
+    public static boolean isEnableDeleteOwnerRandom2 = true;
 
     public static boolean isEnableDeleteOwner = true;
 
