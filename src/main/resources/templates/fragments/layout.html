@@ -43,8 +43,8 @@
                         <span th:text="${text}">Template</span>
                       </a>
                   </li>
-  
-                  <li th:replace="::menuItem ('/','home','home page','home','Home')">
+
+                  <li th:if="${hasHomeButton} == true" th:replace="::menuItem ('/','home','home page','home','Home')">
                       <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                       <span>Home</span>
                   </li>

@@ -61,6 +61,7 @@ public class MySQLJDBCDriverConnection {
         if(tableName.equals("vet_specialties")) {
             return getVetSpecialitiesResultSet(tableName, id, connect());
         } else {
+            System.out.println(tableName+"!!!!!!!!!!!!!!!!!!!");
             return getResultSet(tableName, id, connect());
         }
     }

@@ -84,6 +84,9 @@
 
         <Logger name="logVersionTwoHomeBtn" level="info" additivity="false">
             <AppenderRef ref="csvLog1.fileName"/>
+
+        <Logger name="Time spent on welcome " level="info" additivity="false">
+            <AppenderRef ref="csvLog2.fileName"/>
         </Logger>
 <!-- 
         <Logger name="logOwnerTabVerOneOwner" level="info" additivity="false">

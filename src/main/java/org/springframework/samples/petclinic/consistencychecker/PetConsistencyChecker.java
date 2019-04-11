@@ -109,7 +109,7 @@ public class PetConsistencyChecker implements InConsistencyChecker {
 
     public double calculateConsistencyChecker(int inconsistency) {
         int sizeOfPets = oldPetsData.size();
-        double consistency = (1 - (inconsistency/sizeOfPets))*100;
+        double consistency = (1 - ((double)inconsistency/(double)sizeOfPets))*100;
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 

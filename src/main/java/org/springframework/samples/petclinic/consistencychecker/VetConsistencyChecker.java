@@ -45,6 +45,7 @@ public class VetConsistencyChecker implements InConsistencyChecker {
                     }
                 } else {
                     System.out.println("Very inconsistent table (ID sequence not matching), please contact your DB admin: " + oldVet.getId() + " != " + newVet.getId());
+                    inconsistency++;
                 }
             }
         } else {
@@ -56,7 +57,7 @@ public class VetConsistencyChecker implements InConsistencyChecker {
 
     public double calculateConsistencyChecker(int inconsistency) {
         int sizeOfVets = oldVetsData.size();
-        double consistency = (1 - (inconsistency/sizeOfVets))*100;
+        double consistency = (1 - ((double)inconsistency/(double)sizeOfVets))*100;
         return Double.parseDouble(String.format("%.2f", consistency));
     }
 
