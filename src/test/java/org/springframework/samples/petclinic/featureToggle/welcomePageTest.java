@@ -21,10 +21,11 @@ public class welcomePageTest {
 
         FeatureToggles.isEnabledLegacyWelcomePage = true;
         RandomToggle rndToggle = new RandomToggle();
-        FeatureToggles.welcomePageToggle = rndToggle.randomToggle(0.30f);
+
 
         Random r = new Random();
         while(count != 0) {
+            FeatureToggles.welcomePageToggle = rndToggle.randomToggle(0.30f);
             int result = r.nextInt(high-low) + low;
             timeLogAnalytics.info("Elapsed Time (ms) : " + result + " Legacy Welcome : " + FeatureToggles.welcomePageToggle);
             count--;
