@@ -8,3 +8,8 @@ bin/
 dump.sql
 spring-petclinic.iml
 logs/
+.factorypath
+.DS_Store
+/.vscode/
+/.mvn/
+/.settings/

@@ -30,14 +30,23 @@ import org.springframework.samples.petclinic.incrementalreplication.IncrementalR
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
+import org.springframework.samples.petclinic.ABTest.OwnerLogHelper;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -143,6 +152,11 @@ class OwnerController {
         timeAnalytics.resetTimeAnalystics();
         if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);
+            if(FeatureToggles.isEnableTabOwnerChange == true && FeatureToggles.isEnableTabOwnerChangeRandom == true) {
+                OwnerLogHelper.countOwnerTabOne();
+            } else {
+                OwnerLogHelper.countOwnerTabTwo();
+            }
             return "owners/findOwners";
             }
         return null;
@@ -315,14 +329,35 @@ class OwnerController {
         return mav;
     }
 
-    // Pass the toggle to the layout to show/hide the button Version 2
-    @ModelAttribute("isEnableDeleteOwnerRandom")
-    public boolean isEnableDeleteOwnerRandom() {
+    // To simulate different users using the new tab feature
+    @ModelAttribute("isEnableTabOwnerChangeRandom")
+    public boolean isEnableTabOwnerChangeRandom() {
         RandomToggle rndToggle = new RandomToggle();
-        FeatureToggles.isEnableDeleteOwnerRandom = rndToggle.randomToggle(0.50f);
-        return  FeatureToggles.isEnableDeleteOwnerRandom;
+        FeatureToggles.isEnableTabOwnerChangeRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
 
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
+    }
+
+    // Pass the toggle to the layout to show/hide the button Version 1
+    @ModelAttribute("isEnableDeleteOwnerRandom1")
+    public boolean isEnableDeleteOwnerRandom1() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteOwnerRandom1 = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwnerRandom1;
+    }
+
+    // Pass the toggle to the layout
+    // Pass the toggle to the layout to show/hide the button Version 2
+    @ModelAttribute("isEnableDeleteOwnerRandom2")
+    public boolean isEnableDeleteOwnerRandom2() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteOwnerRandom2 = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwnerRandom2;
+    }
 
     // Pass the toggle isDisableDeleteOwner to the layout to turn off the whole feature
     @ModelAttribute("isEnableDeleteOwner")

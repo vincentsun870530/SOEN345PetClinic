@@ -168,6 +168,7 @@ class VisitController {
             return "redirect:/owners/{ownerId}";
         }
     }
+
     @ModelAttribute("isEnableDeleteVisit")
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitGreen")
     public String handleDeleteVisitGreen(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
@@ -196,6 +197,20 @@ class VisitController {
         }
        return "ownerDetails";
 
+    }
+
+
+    // To simulate different users using the new tab feature
+    @ModelAttribute("isEnableTabOwnerChangeRandom")
+    public boolean isEnableTabOwnerChangeRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableTabOwnerChangeRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableTabOwnerChangeRandom;
+    }
+
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
     }
 
 

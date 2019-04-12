@@ -205,30 +205,60 @@ public class OwnerControllerTests {
 	}
 	@Test
 	public void testProcessFindFormSuccessNoOwner_mockmvc() throws Exception {
-		//NullPointerException, test fails
-		Owner owner = mock(Owner.class);
-		BindingResult result = mock(BindingResult.class);
-		Map<String, Object> model = mock(Map.class);
-		OwnerRepository owners= mock(OwnerRepository.class);
-		given(this.owners.findByLastName("")).willReturn(Lists.newArrayList());
-		Collection<Owner> results =  this.owners.findByLastName("");
-		//Collection<Owner> results = spy(results1);
-		System.out.println(results.toString());
-		OwnerController ownerController = new OwnerController(owners,owner,results);
-		//when(owners.findByLastName(owner.getLastName())).thenReturn(results);
-		//when(results.isEmpty()).thenReturn(false);
-		//when(results.size()).thenReturn(1);
+		if (FeatureToggles.isEnabledLegacyWelcomePage) {
+			if (FeatureToggles.welcomePageToggle == true) {
+				//NullPointerException, test fails
+				Owner owner = mock(Owner.class);
+				BindingResult result = mock(BindingResult.class);
+				Map<String, Object> model = mock(Map.class);
+				OwnerRepository owners = mock(OwnerRepository.class);
+				given(this.owners.findByLastName("")).willReturn(Lists.newArrayList());
+				Collection<Owner> results = this.owners.findByLastName("");
+				//Collection<Owner> results = spy(results1);
+				System.out.println(results.toString());
+				OwnerController ownerController = new OwnerController(owners, owner, results);
+				//when(owners.findByLastName(owner.getLastName())).thenReturn(results);
+				//when(results.isEmpty()).thenReturn(false);
+				//when(results.size()).thenReturn(1);
 
-		String str1 = ownerController.processFindForm(owner, result, model);
-		System.out.println(str1);
-		//String str2 =  "redirect:/owners/" + owner.getId();
+				String str1 = ownerController.processFindForm(owner, result, model);
+				System.out.println(str1);
+				//String str2 =  "redirect:/owners/" + owner.getId();
 
-		//verify(results, times(1)).isEmpty();
-		//verify(results,times(1)).size();
-		//verify(results, times(1)).iterator().next();
+				//verify(results, times(1)).isEmpty();
+				//verify(results,times(1)).size();
+				//verify(results, times(1)).iterator().next();
 
-		String str2 =  "owners/findOwners";
-		assertEquals(str1, str2);
+				String str2 = "owners/findOwners";
+				assertEquals(str1, str2);
+			}
+			else if (FeatureToggles.welcomePageToggle == false) {
+				//NullPointerException, test fails
+				Owner owner = mock(Owner.class);
+				BindingResult result = mock(BindingResult.class);
+				Map<String, Object> model = mock(Map.class);
+				OwnerRepository owners = mock(OwnerRepository.class);
+				given(this.owners.findByLastName("")).willReturn(Lists.newArrayList());
+				Collection<Owner> results = this.owners.findByLastName("");
+				//Collection<Owner> results = spy(results1);
+				System.out.println(results.toString());
+				OwnerController ownerController = new OwnerController(owners, owner, results);
+				//when(owners.findByLastName(owner.getLastName())).thenReturn(results);
+				//when(results.isEmpty()).thenReturn(false);
+				//when(results.size()).thenReturn(1);
+
+				String str1 = ownerController.processFindForm(owner, result, model);
+				System.out.println(str1);
+				//String str2 =  "redirect:/owners/" + owner.getId();
+
+				//verify(results, times(1)).isEmpty();
+				//verify(results,times(1)).size();
+				//verify(results, times(1)).iterator().next();
+
+				String str2 = "owners/findOwners-V2";
+				assertEquals(str1, str2);
+			}
+		}
 	}
     
     @Test
@@ -252,49 +282,40 @@ public class OwnerControllerTests {
     	//the issue seems to be in results
     	assertEquals(str1, str2);
     }
-    @Test
-    public void testProcessFindFormByLastName() throws Exception {
+
+	@Test
+	public void testProcessFindFormByLastName() throws Exception {
 		isEnableShadowRead = false;
-        given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
-        mockMvc.perform(get("/owners")
-            .param("lastName", "Franklin")
-        )
-            .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
-    }
+		given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
+		mockMvc.perform(get("/owners")
+				.param("lastName", "Franklin")
+		)
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/owners/" + TEST_OWNER_ID));
+	}
 
-    @Test
-    public void testProcessFindFormNoOwnersFound() throws Exception {
-        mockMvc.perform(get("/owners")
-            .param("lastName", "Unknown Surname")
-        )
-            .andExpect(status().isOk())
-            .andExpect(model().attributeHasFieldErrors("owner", "lastName"))
-            .andExpect(model().attributeHasFieldErrorCode("owner", "lastName", "notFound"))
-            .andExpect(view().name("owners/findOwners"));
-    }
-
-    @Test
-    public void testProcessFindFormNoOwnersFound_mockito() throws Exception {
-    	Owner owner = mock(Owner.class);
-    	BindingResult result = mock(BindingResult.class);
-    	Map<String, Object> model = (Map<String, Object>) mock(Map.class);
-    	OwnerRepository owners= mock(OwnerRepository.class);;
-    	Collection<Owner> results = (Collection<Owner>) mock(Collection.class); 
-    	OwnerController ownerController = new OwnerController(owners);
-    	String str1 = ownerController.processFindForm(owner, result, model);
-    	String str2 =  "owners/findOwners";
-    	
-    	when(owners.findByLastName(owner.getLastName())).thenReturn(results);
-    	when(results.isEmpty()).thenReturn(true);
-    	when(results.size()).thenReturn(0);
-    	
-    	//verify(results, times(1)).isEmpty();
-    	//verify(results,times(1)).size();
-    	verify(result, times(1)).rejectValue("lastName", "notFound", "not found");
-    	
-    	assertEquals(str1, str2);
-    }
+	@Test
+	public void testProcessFindFormNoOwnersFound() throws Exception {
+		if (FeatureToggles.isEnabledLegacyWelcomePage) {
+			if (FeatureToggles.welcomePageToggle == true) {
+				mockMvc.perform(get("/owners")
+						.param("lastName", "Unknown Surname")
+				)
+						.andExpect(status().isOk())
+						.andExpect(model().attributeHasFieldErrors("owner", "lastName"))
+						.andExpect(model().attributeHasFieldErrorCode("owner", "lastName", "notFound"))
+						.andExpect(view().name("owners/findOwners"));
+			} else if (FeatureToggles.welcomePageToggle == false) {
+				mockMvc.perform(get("/owners")
+						.param("lastName", "Unknown Surname")
+				)
+						.andExpect(status().isOk())
+						.andExpect(model().attributeHasFieldErrors("owner", "lastName"))
+						.andExpect(model().attributeHasFieldErrorCode("owner", "lastName", "notFound"))
+						.andExpect(view().name("owners/findOwners-V2"));
+			}
+		}
+	}
     
     @Test
     public void testInitUpdateOwnerForm() throws Exception {
