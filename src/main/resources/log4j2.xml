@@ -4,10 +4,12 @@
 
     <Properties>
         <Property name="csvLog1.fileName">deleteOwnerBtnLog</Property>
+        <Property name="csvLog2.fileName">WelcomeFeature</Property>
         <Property name="csvLog3.fileName">ownerTabChangeLog</Property>
         <Property name="csvLog4.fileName">welcomePageLog</Property>
         <Property name="csvLog5.fileName">deleteVisitLog</Property>
         <!-- <Property name="csvLog3.fileName">welcomePageLog</Property>  -->
+
         <Property name="file-header">"%-5p [%t]: %m%n"</Property>
     </Properties>
 
@@ -30,7 +32,16 @@
             <DefaultRolloverStrategy max="200"/>
         </RollingFile>
 
-        
+        <RollingFile name="csvLog2.fileName"
+                     fileName="logs/${csvLog2.fileName}.csv"
+                     filePattern="${csvLog2.filename}-%d{MM-dd-yyyy}-%i.csv">
+            <CsvLogEventLayout delimiter="," header="${file-header}\n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="200"/>
+        </RollingFile>
 
         <RollingFile name="csvLog3.fileName"
                      fileName="logs/${csvLog3.fileName}.csv"
@@ -42,8 +53,6 @@
             </Policies>
             <DefaultRolloverStrategy max="200"/>
         </RollingFile>
-
-        
 
         <RollingFile name="csvLog4.fileName"
                      fileName="logs/${csvLog4.fileName}.csv"
@@ -83,6 +92,10 @@
             <AppenderRef ref="csvLog1.fileName"/>
         </Logger >
 
+        <Logger name="WelcomeFeature" level="info" additivity="false">
+            <AppenderRef ref="csvLog2.fileName"/>
+        </Logger>
+
         <Logger  name="logOwnerTabVerOneOwner" level="info" additivity="false">
             <AppenderRef ref="csvLog3.fileName"/>
         </Logger >
@@ -98,6 +111,7 @@
         <Logger  name="logOwnerTabVerTwoWelcome" level="info" additivity="false">
             <AppenderRef ref="csvLog4.fileName"/>
         </Logger >
+
 
         <Logger  name="logVersionGreenBtn" level="info" additivity="false">
             <AppenderRef ref="csvLog5.fileName"/>

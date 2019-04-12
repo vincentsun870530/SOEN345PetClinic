@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
  */
 @Controller
 class CrashController {
-    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("Time spent on welcome ");
+    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
     @GetMapping("/oups")
     public String triggerException() {
         timeAnalytics.endTime = System.nanoTime();
