@@ -31,7 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 public class VisitControllerTests {
 
     private static final int TEST_PET_ID = 1;
-
+    private static final int TEST_VISIT_ID = 1;
     @Autowired
     private MockMvc mockMvc;
 
@@ -72,6 +72,23 @@ public class VisitControllerTests {
             .andExpect(model().attributeHasErrors("visit"))
             .andExpect(status().isOk())
             .andExpect(view().name("pets/createOrUpdateVisitForm"));
+    }
+
+    @Test
+    public void testHandleDeleteVisitBlack () throws Exception {
+        FeatureToggles.isEnableDeleteVisit = false;
+        mockMvc.perform(post("/owners/*/pets/{petId}/visit/{visitId}/deleteVisitBlack", TEST_PET_ID,TEST_VISIT_ID)
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/deleteVisitBlack"));
+    }
+    @Test
+    public void testHandleDeleteVisitGreen () throws Exception {
+        FeatureToggles.isEnableDeleteVisit = false;
+        mockMvc.perform(post("/owners/*/pets/{petId}/visit/{visitId}/deleteVisitGreen", TEST_PET_ID,TEST_VISIT_ID)
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/deleteVisitGreen"));
     }
 
 }
