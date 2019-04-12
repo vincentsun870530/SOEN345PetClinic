@@ -6,6 +6,7 @@
         <Property name="csvLog1.fileName">deleteOwnerBtnLog</Property>
         <Property name="csvLog3.fileName">ownerTabChangeLog</Property>
         <Property name="csvLog4.fileName">welcomePageLog</Property>
+        <Property name="csvLog5.fileName">deleteVisitLog</Property>
         <!-- <Property name="csvLog3.fileName">welcomePageLog</Property>  -->
         <Property name="file-header">"%-5p [%t]: %m%n"</Property>
     </Properties>
@@ -55,6 +56,17 @@
             <DefaultRolloverStrategy max="200"/>
         </RollingFile>
 
+        <RollingFile name="csvLog5.fileName"
+                     fileName="logs/${csvLog5.fileName}.csv"
+                     filePattern="${csvLog5.filename}-%d{MM-dd-yyyy}-%i.csv">
+            <CsvLogEventLayout delimiter="," header="${file-header}\n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="200"/>
+        </RollingFile>
+
     </Appenders>
 
     <Loggers>
@@ -86,7 +98,16 @@
         <Logger  name="logOwnerTabVerTwoWelcome" level="info" additivity="false">
             <AppenderRef ref="csvLog4.fileName"/>
         </Logger >
-<!-- 
+
+        <Logger  name="logVersionGreenBtn" level="info" additivity="false">
+            <AppenderRef ref="csvLog5.fileName"/>
+        </Logger >
+
+        <Logger  name="logVersionBlackBtn" level="info" additivity="false">
+            <AppenderRef ref="csvLog5.fileName"/>
+        </Logger >
+
+        <!--
         <Logger name="Time spent on welcome " level="info" additivity="false">
             <AppenderRef ref="csvLog2.fileName"/>
         </Logger> -->
