@@ -18,7 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
-
+import org.springframework.samples.petclinic.ABTest.deleteVisitBtnHelper;
 //import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
@@ -30,12 +30,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.samples.petclinic.sqlite.SQLiteVisitHelper;
+import java.sql.SQLException;
+import org.springframework.ui.Model;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static org.springframework.samples.petclinic.ABTest.deleteVisitBtnHelper.countDeleteVisitBtnBlack;
+import static org.springframework.samples.petclinic.ABTest.deleteVisitBtnHelper.countDeleteVisitBtnGreen;
+
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -83,7 +89,7 @@ class VisitController {
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
         this.visit = visit;
-        pet.addVisit(visit);
+       // pet.addVisit(visit);
         return visit;
     }
 
@@ -163,6 +169,37 @@ class VisitController {
         }
     }
 
+    @ModelAttribute("isEnableDeleteVisit")
+    @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitGreen")
+    public String handleDeleteVisitGreen(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
+        if(FeatureToggles.isEnableDeleteVisit){
+            System.out.println(visitId);
+            Visit visit = this.visits.findById(visitId);
+            System.out.println(visit);
+            this.visits.deleteById(visit.getId());
+            model.addAttribute(visit);
+            countDeleteVisitBtnGreen();
+            return "deleteVisitGreen";
+        }
+        return "ownerDetails";
+    }
+    @ModelAttribute("isEnableDeleteVisit")
+    @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitBlack")
+    public String handleDeleteVisitBlack(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
+        if(FeatureToggles.isEnableDeleteVisit){
+            System.out.println(visitId);
+            Visit visit = this.visits.findById(visitId);
+            System.out.println(visit);
+            this.visits.deleteById(visit.getId());
+            model.addAttribute(visit);
+            countDeleteVisitBtnBlack();
+            return "deleteVisitBlack";
+        }
+       return "ownerDetails";
+
+    }
+
+
     // To simulate different users using the new tab feature
     @ModelAttribute("isEnableTabOwnerChangeRandom")
     public boolean isEnableTabOwnerChangeRandom() {
@@ -175,5 +212,6 @@ class VisitController {
     public boolean isEnableTabOwnerChange() {
         return FeatureToggles.isEnableTabOwnerChange;
     }
+
 
 }
