@@ -62,7 +62,7 @@ class VetController {
     public String showVetList(Map<String, Object> model , Vets vets) {
 
         timeAnalytics.endTime = System.nanoTime();
-        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
+        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS() + " Legacy Welcome : " + FeatureToggles.welcomePageToggle);
         timeAnalytics.resetTimeAnalystics();
         if (FeatureToggles.isEnableVetPage) {
             // Here we are returning an object of type 'Vets' rather than a collection of Vet

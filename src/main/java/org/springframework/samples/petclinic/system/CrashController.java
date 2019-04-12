@@ -35,7 +35,7 @@ class CrashController {
     @GetMapping("/oups")
     public String triggerException() {
         timeAnalytics.endTime = System.nanoTime();
-        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
+        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS() + " Legacy Welcome : " + FeatureToggles.welcomePageToggle);
         timeAnalytics.resetTimeAnalystics();
         throw new RuntimeException("Expected: controller used to showcase what "
                 + "happens when an exception is thrown");

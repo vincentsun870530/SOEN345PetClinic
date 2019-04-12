@@ -148,7 +148,7 @@ class OwnerController {
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
         timeAnalytics.endTime = System.nanoTime();
-        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
+        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS() + " Legacy Welcome : " + FeatureToggles.welcomePageToggle);
         timeAnalytics.resetTimeAnalystics();
         if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);
