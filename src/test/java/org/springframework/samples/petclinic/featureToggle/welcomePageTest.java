@@ -15,7 +15,7 @@ public class welcomePageTest {
 
     @Test
     public void testWelcomePage() {
-        int count =1000;
+        int count = 1000;
         int low = 1000;
         int high = 2000;
 
