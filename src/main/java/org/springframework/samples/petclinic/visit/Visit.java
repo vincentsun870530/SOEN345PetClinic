@@ -27,6 +27,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.Date.DateCorrector;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.stereotype.Component;
 
 /**
  * Simple JavaBean domain object representing a visit.
@@ -36,6 +37,7 @@ import org.springframework.samples.petclinic.model.BaseEntity;
  */
 @Entity
 @Table(name = "visits")
+@Component
 public class Visit extends BaseEntity {
 
     @Column(name = "visit_date")

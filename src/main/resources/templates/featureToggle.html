@@ -545,15 +545,43 @@
             </td>
         </tr>
         <tr>
-            <td>Tab Owner Change</td>
-            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableTabOwnerChange()}">
+
+            <td>Delete Visit</td>
+            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isISEnableDeleteVisit()}">
                 <label>
-                    <select name="ownerTab">
+                    <select name="visitDelete">
                         <option value="Enable">Enable</option>
                         <option value="Disable">Disable</option>
                     </select>
                 </label>
             </td>
+            <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isISEnableDeleteVisit()}">
+                    <label>
+                        <select name="visitDelete">
+                                <option value="Enable">Enable</option>
+                                <option value="Disable">Disable</option>
+                        </select>
+                    </label>
+            </td>
+        </tr>
+        <tr>
+
+
+            <td>Tab Owner Change</td>
+            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableTabOwnerChange()}">
+                <label>
+                    <select name="ownerTab">
+
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+
+            <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isISEnableDeleteVisit()}">
+                <label>
+                    <select name="visitDelete">
+
             <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableTabOwnerChange()}">
                 <label>
                     <select name="ownerTab">
@@ -563,7 +591,7 @@
                 </label>
             </td>
         </tr>
-        <tr></tr>
+        <tr>
             <td>New Welcome Page</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isEnabledLegacyWelcomePage()}">
                 <label>
@@ -576,6 +604,7 @@
             <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isEnabledLegacyWelcomePage()}">
                 <label>
                     <select name="newWelcomePage">
+
                         <option value="Disable">Disable</option>
                         <option value="Enable">Enable</option>
                     </select>
