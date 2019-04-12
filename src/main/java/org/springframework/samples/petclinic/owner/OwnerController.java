@@ -15,39 +15,48 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.apache.logging.log4j.LogManager;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
+import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
+import org.apache.logging.log4j.Logger;
+import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
+import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetTypeShadowRead;
-import org.springframework.samples.petclinic.sqlite.SQLiteDBConnector;
-import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplicationChecker;
+import org.springframework.samples.petclinic.ABTest.OwnerLogHelper;
 import org.springframework.samples.petclinic.sqlite.SQLiteOwnerHelper;
-import org.springframework.samples.petclinic.visit.Visit;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import static org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper.countDeleteOwnerBtnOne;
+import static org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
+import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableOwnerPage;
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowRead;
-import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
 /**
  * @author Juergen Hoeller
@@ -60,9 +69,12 @@ class OwnerController {
 
     private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
     private final OwnerRepository owners;
+    private final PetRepository pets = null;
     private Owner owner;
     private Collection<Owner> results;
-    private static Logger log = LoggerFactory.getLogger(OwnerController.class);
+    //private static Logger log = LoggerFactory.getLogger(OwnerController.class);
+    private static Logger log = LogManager.getLogger(OwnerController.class);
+    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
 
     @Autowired
    public OwnerController(OwnerRepository clinicService) {
@@ -89,7 +101,7 @@ class OwnerController {
     @GetMapping("/owners/new")
     public String initCreationForm(Map<String, Object> model , Owner owner) {
 
-        if(FeatureToggles.isEnableOwnerCreate == true) {
+        if(FeatureToggles.isEnableOwnerCreate) {
             this.owner = owner;
             model.put("owner", owner);
             return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
@@ -135,11 +147,18 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model , Owner owner) {
-
+        timeAnalytics.endTime = System.nanoTime();
+        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
+        timeAnalytics.resetTimeAnalystics();
         if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);
+            if(FeatureToggles.isEnableTabOwnerChange == true && FeatureToggles.isEnableTabOwnerChangeRandom == true) {
+                OwnerLogHelper.countOwnerTabOne();
+            } else {
+                OwnerLogHelper.countOwnerTabTwo();
+            }
             return "owners/findOwners";
-        }
+            }
         return null;
     }
 
@@ -156,16 +175,19 @@ class OwnerController {
             setResults(owner);
             System.out.println(results.toString());
 
+            RandomToggle rndToggle = new RandomToggle();
+            FeatureToggles.isEnabledLegacyFindOwnerButton = rndToggle.randomToggle(0.50f);
             if (results.isEmpty()) {
                 // no owners found
                 result.rejectValue("lastName", "notFound", "not found");
-                return "owners/findOwners";
+                if(FeatureToggles.isEnabledLegacyFindOwnerButton == true) return "owners/findOwners";
+                else return "owners/findOwners-V2";
             } else if (results.size() == 1) {
                 // 1 owner found
                 owner = results.iterator().next();
 
                 //shadow read for owner
-                if(isEnableShadowRead == true) {
+                if(isEnableShadowRead) {
                     OwnerShadowRead ownerShadowReader = new OwnerShadowRead();
                     log.trace(owner.getId() + " Owner Id from controller");
                     //Shadow read return problem id
@@ -306,5 +328,85 @@ class OwnerController {
         mav.addObject(owner);
         return mav;
     }
+
+    // To simulate different users using the new tab feature
+    @ModelAttribute("isEnableTabOwnerChangeRandom")
+    public boolean isEnableTabOwnerChangeRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableTabOwnerChangeRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableTabOwnerChangeRandom;
+    }
+
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
+    }
+
+    // Pass the toggle to the layout to show/hide the button Version 1
+    @ModelAttribute("isEnableDeleteOwnerRandom1")
+    public boolean isEnableDeleteOwnerRandom1() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteOwnerRandom1 = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwnerRandom1;
+    }
+
+    // Pass the toggle to the layout
+    // Pass the toggle to the layout to show/hide the button Version 2
+    @ModelAttribute("isEnableDeleteOwnerRandom2")
+    public boolean isEnableDeleteOwnerRandom2() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteOwnerRandom2 = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteOwnerRandom2;
+    }
+
+    // Pass the toggle isDisableDeleteOwner to the layout to turn off the whole feature
+    @ModelAttribute("isEnableDeleteOwner")
+    public boolean isEnableDeleteOwner() {
+        return  FeatureToggles.isEnableDeleteOwner;
+    }
+
+    @ModelAttribute("isEnableDeleteVisit")
+    public boolean isEnableDeleteVisit(){
+        return FeatureToggles.isEnableDeleteVisit;
+    }
+
+    @ModelAttribute("isEnableDeleteVisitRandom")
+    public boolean isEnableDeleteVisitRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteVisitRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteVisitRandom;
+    }
+
+    // Delete owner that doesn't have pets version One
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @GetMapping("/owners/{ownerId}/deleteBtnVersionOne")
+    public String DeleteOwnerOne(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
+        if (FeatureToggles.deleteOwnerToggle) {
+            Owner owner = this.owners.findById(ownerId);
+            this.owners.deleteById(owner.getId());
+            model.addAttribute(owner);
+            countDeleteOwnerBtnOne();
+            return "owners/deleteBtnVersionOne";
+        }
+        return "owners/findOwners";
+    }
+
+    // Delete owner that doesn't have pets version Two
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @GetMapping("/owners/{ownerId}/deleteBtnVersionTwo")
+    public String DeleteOwnerTwo(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
+        if (FeatureToggles.deleteOwnerToggle) {
+            Owner owner = this.owners.findById(ownerId);
+            this.owners.deleteById(owner.getId());
+            model.addAttribute(owner);
+            countDeleteOwnerBtnTwo();
+            return "owners/deleteBtnVersionTwo";
+        }
+        return "owners/findOwners";
+    }
+
+
 
 }

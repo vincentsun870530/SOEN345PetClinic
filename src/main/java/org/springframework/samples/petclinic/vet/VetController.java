@@ -15,13 +15,17 @@
  */
 package org.springframework.samples.petclinic.vet;
 
+import org.apache.logging.log4j.LogManager;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
+import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.incrementalreplication.IncrementalReplication;
 import org.springframework.samples.petclinic.shadowRead.SpecialtyShadowRead;
 import org.springframework.samples.petclinic.shadowRead.VetShadowRead;
 import org.springframework.samples.petclinic.shadowRead.VetSpecialtyShadowRead;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 
@@ -41,7 +45,7 @@ class VetController {
 
     private final VetRepository vetrepository;
     Vets vets;
-
+    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
 
     public VetController(VetRepository clinicService) {
         this.vetrepository = clinicService;
@@ -57,6 +61,9 @@ class VetController {
     @GetMapping("/vets.html")
     public String showVetList(Map<String, Object> model , Vets vets) {
 
+        timeAnalytics.endTime = System.nanoTime();
+        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
+        timeAnalytics.resetTimeAnalystics();
         if (FeatureToggles.isEnableVetPage) {
             // Here we are returning an object of type 'Vets' rather than a collection of Vet
             // objects so it is simpler for Object-Xml mapping
@@ -167,6 +174,19 @@ class VetController {
             }
         }
         return vets;
+    }
+
+    // To simulate different users using the new tab feature
+    @ModelAttribute("isEnableTabOwnerChangeRandom")
+    public boolean isEnableTabOwnerChangeRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableTabOwnerChangeRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableTabOwnerChangeRandom;
+    }
+    
+    @ModelAttribute("isEnableTabOwnerChange")
+    public boolean isEnableTabOwnerChange() {
+        return FeatureToggles.isEnableTabOwnerChange;
     }
 
 }

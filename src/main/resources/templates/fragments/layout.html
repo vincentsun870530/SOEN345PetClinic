@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="layout (template, menu)">
+<html th:fragment="layout (template, menu)" xmlns:th="http://www.w3.org/1999/xhtml">
 
   <head>
 
@@ -43,15 +43,22 @@
                         <span th:text="${text}">Template</span>
                       </a>
                   </li>
-  
-                  <li th:replace="::menuItem ('/','home','home page','home','Home')">
+
+                  <li th:if="${hasHomeButton} == true" th:replace="::menuItem ('/','home','home page','home','Home')">
                       <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                       <span>Home</span>
                   </li>
   
-                  <li th:replace="::menuItem ('/owners/find','owners','find owners','search','Find owners')">
-                      <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                      <span>Find owners</span>
+                  <li th:if="${isEnableTabOwnerChangeRandom} == true and ${isEnableTabOwnerChange} == true">
+                    <span th:replace="::menuItem ('/owners/find','owners','owners','user','Owners')"></span>
+                      <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                      <span>Owners</span>
+                  </li>
+
+                  <li th:unless="${isEnableTabOwnerChangeRandom} and ${isEnableTabOwnerChange}">
+                    <span th:replace="::menuItem ('/owners/find','owners','find owners','search','Find owners')">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    <span>Find owners</span>
                   </li>
   
                   <li th:replace="::menuItem ('/vets.html','vets','veterinarians','th-list','Veterinarians')">
@@ -62,6 +69,10 @@
                   <li th:replace="::menuItem ('/oups','error','trigger a RuntimeException to see how it is handled','warning-sign','Error')">
                       <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
                       <span>Error</span>
+                  </li>
+                  <li th:replace="::menuItem ('/featureToggle','featureToggle','featureToggle','featureToggle','Feature toggle')">
+                      <span class="glyphicon glyphicon-featureToggle" aria-hidden="true"></span>
+                      <span>Feature toggle</span>
                   </li>
   
               </ul>
@@ -78,8 +89,12 @@
         <div class="container">
           <div class="row">
             <div class="col-12 text-center">
-              <img src="../static/resources/images/spring-pivotal-logo.png" th:src="@{/resources/images/spring-pivotal-logo.png}"
-                alt="Sponsored by Pivotal"/></div>
+                    <img src="../static/resources/images/spring-pivotal-logo.png" th:src="@{/resources/images/spring-pivotal-logo.png}"
+                         alt="Sponsored by Pivotal"/></a>
+            </div>
+        </div>
+        </div>
+
           </div>
         </div>
       </div>
