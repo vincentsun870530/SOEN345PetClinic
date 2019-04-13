@@ -6,7 +6,7 @@ import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 
 public class GenerateVisitDataTest {
 
-    @Test
+    //@Test
     public void generateOwnerDataTest() {
 
         int count = 0;
