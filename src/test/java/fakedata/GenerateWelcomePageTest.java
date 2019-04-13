@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.featureToggle;
+package fakedata;
 
 import org.apache.logging.log4j.LogManager;
 import org.junit.Test;
@@ -8,12 +8,10 @@ import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import java.util.Random;
 
 
-public class welcomePageTest {
+public class GenerateWelcomePageTest {
 
     private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
 
-
-    @Test
     public void testWelcomePage() {
         int count = 1000;
         int low = 1000;
