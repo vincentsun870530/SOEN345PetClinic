@@ -1,13 +1,13 @@
-package org.springframework.samples.petclinic.owner;
+package fakedata;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.springframework.samples.petclinic.ABTest.deleteVisitBtnHelper;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 
-public class GenerateVisitDataTest {
+public class GenerateDeleteVisitDataTest {
 
-    @Test
-    public void generateOwnerDataTest() {
+    //@Test
+    public void generateDeleteVisitDataTest() {
 
         int count = 0;
         FeatureToggles.isEnableDeleteVisit = true;
