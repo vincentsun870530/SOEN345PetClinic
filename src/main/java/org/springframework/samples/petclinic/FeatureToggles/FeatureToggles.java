@@ -79,7 +79,7 @@ public class FeatureToggles extends HttpServlet {
     public static boolean deleteOwnerToggle = false;
 
     // Welcome Page Enabler (For Rollback Purpose)
-    public static boolean isEnabledLegacyWelcomePage = false;
+    //public static boolean isEnabledLegacyWelcomePage = false;
     // Welcome Page Toggle Value
     public static boolean welcomePageToggle = false;
     // Randomizer Toggle

@@ -30,9 +30,7 @@ class WelcomeController {
             WelcomeLogHelper.countUserVerTwo();
         }
 
-        RandomToggle rndToggle = new RandomToggle();
-        // Legacy Mode 75% of the time V2 25% of the timeS
-        FeatureToggles.welcomePageToggle = rndToggle.randomToggle(0.30f);
+        
         return toggleWelcome();
     }
 
@@ -43,7 +41,9 @@ class WelcomeController {
             timeAnalytics.startTime = System.nanoTime();
         }
 
-        if (FeatureToggles.isEnabledLegacyWelcomePage) {
+        if (FeatureToggles.Feature2) {
+            RandomToggle rndToggle = new RandomToggle();
+            FeatureToggles.welcomePageToggle = rndToggle.randomToggle(0.30f);
             if (FeatureToggles.welcomePageToggle == false) {
                 analytics.info("Welcome Page Version 2");
                 return "welcome-v2";
