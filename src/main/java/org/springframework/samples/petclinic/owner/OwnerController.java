@@ -15,8 +15,10 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
 import org.springframework.samples.petclinic.shadowRead.PetShadowRead;
@@ -50,6 +52,7 @@ import org.slf4j.LoggerFactory;
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowRead;
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
+
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -64,7 +67,8 @@ class OwnerController {
     private Owner owner;
     private Collection<Owner> results;
     private static Logger log = LoggerFactory.getLogger(OwnerController.class);
-
+    private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
+    
     @Autowired
     public OwnerController(OwnerRepository clinicService) {
         this.owners = clinicService;
@@ -137,6 +141,11 @@ class OwnerController {
     // dependency injection
     @GetMapping("/owners/find")
     public String initFindForm(Map<String, Object> model, Owner owner) {
+        if(FeatureToggles.Feature2){
+            timeAnalytics.endTime = System.nanoTime();
+            timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS() + " Legacy Welcome : " + FeatureToggles.welcomePageToggle);
+            timeAnalytics.resetTimeAnalystics();
+        }
 
         if (FeatureToggles.isEnableOwnerPage) {
             model.put("owner", owner);

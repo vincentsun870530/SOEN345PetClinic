@@ -85,6 +85,8 @@ public class FeatureToggles extends HttpServlet {
     // Randomizer Toggle
     public static boolean randomizer = false;
 
+    public static boolean Feature2 = false;
+
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
         return null;
@@ -149,6 +151,7 @@ public class FeatureToggles extends HttpServlet {
 
         // A/B testing toggle for owner tab
         isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
+
 
 
 

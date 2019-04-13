@@ -38,8 +38,11 @@ class WelcomeController {
 
     private String toggleWelcome() {
         //Start Time stamp to test ms spent on welcome page
-        timeAnalytics.resetTimeAnalystics();
-        timeAnalytics.startTime = System.nanoTime();
+        if(FeatureToggles.Feature2){
+            timeAnalytics.resetTimeAnalystics();
+            timeAnalytics.startTime = System.nanoTime();
+        }
+
         if (FeatureToggles.isEnabledLegacyWelcomePage) {
             if (FeatureToggles.welcomePageToggle == false) {
                 analytics.info("Welcome Page Version 2");
