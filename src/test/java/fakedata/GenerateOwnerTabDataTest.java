@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.system;
+package fakedata;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
@@ -8,7 +8,7 @@ import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 
 public class GenerateOwnerTabDataTest {
 
-    @Test
+    //@Test
     public void generateOwnerTabDataTest() {
 
         int count = 0;
