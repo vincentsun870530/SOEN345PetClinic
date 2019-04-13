@@ -89,7 +89,9 @@ class VisitController {
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
         this.visit = visit;
-       // pet.addVisit(visit);
+        if(!FeatureToggles.isEnableDeleteVisit){
+            pet.addVisit(visit);
+        }
         return visit;
     }
 
