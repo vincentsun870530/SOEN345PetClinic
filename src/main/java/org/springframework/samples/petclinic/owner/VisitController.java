@@ -89,7 +89,12 @@ class VisitController {
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
         this.visit = visit;
-       // pet.addVisit(visit);
+        // A/B testing feature
+        if(FeatureToggles.isEnableDeleteVisit){
+        //pet.addVisit(visit);
+        }else{
+            pet.addVisit(visit);
+        }
         return visit;
     }
 

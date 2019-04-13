@@ -70,7 +70,7 @@ public class FeatureToggles extends HttpServlet {
 
 
     //For enable different delete Visit button A/B testing
-    public static boolean isEnableDeleteVisit = false;
+    public static boolean isEnableDeleteVisit = true;
 
     public static boolean isEnableDeleteVisitRandom = false;
 
