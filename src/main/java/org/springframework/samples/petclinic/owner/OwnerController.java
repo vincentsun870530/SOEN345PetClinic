@@ -175,13 +175,13 @@ class OwnerController {
             setResults(owner);
             System.out.println(results.toString());
 
-            RandomToggle rndToggle = new RandomToggle();
-            FeatureToggles.isEnabledLegacyFindOwnerButton = rndToggle.randomToggle(0.50f);
+            //RandomToggle rndToggle = new RandomToggle();
+            //FeatureToggles.isEnabledLegacyFindOwnerButton = rndToggle.randomToggle(0.50f);
             if (results.isEmpty()) {
                 // no owners found
                 result.rejectValue("lastName", "notFound", "not found");
-                if(FeatureToggles.isEnabledLegacyFindOwnerButton == true) return "owners/findOwners";
-                else return "owners/findOwners-V2";
+                //if(FeatureToggles.isEnabledLegacyFindOwnerButton == true) return "owners/findOwners";
+                //else return "owners/findOwners-V2";
             } else if (results.size() == 1) {
                 // 1 owner found
                 owner = results.iterator().next();
@@ -382,13 +382,13 @@ class OwnerController {
     // then you can delete the owner to conserve the database integrity (child-parent)
     @GetMapping("/owners/{ownerId}/deleteBtnVersionOne")
     public String DeleteOwnerOne(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
-        if (FeatureToggles.deleteOwnerToggle) {
+        /**if (FeatureToggles.deleteOwnerToggle) {
             Owner owner = this.owners.findById(ownerId);
             this.owners.deleteById(owner.getId());
             model.addAttribute(owner);
             countDeleteOwnerBtnOne();
             return "owners/deleteBtnVersionOne";
-        }
+        } **/
         return "owners/findOwners";
     }
 
@@ -397,13 +397,13 @@ class OwnerController {
     // then you can delete the owner to conserve the database integrity (child-parent)
     @GetMapping("/owners/{ownerId}/deleteBtnVersionTwo")
     public String DeleteOwnerTwo(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
-        if (FeatureToggles.deleteOwnerToggle) {
+        /** if (FeatureToggles.deleteOwnerToggle) {
             Owner owner = this.owners.findById(ownerId);
             this.owners.deleteById(owner.getId());
             model.addAttribute(owner);
             countDeleteOwnerBtnTwo();
             return "owners/deleteBtnVersionTwo";
-        }
+        } **/
         return "owners/findOwners";
     }
 
