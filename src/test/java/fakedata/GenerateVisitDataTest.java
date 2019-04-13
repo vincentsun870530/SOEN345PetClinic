@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.owner;
+package fakedata;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.springframework.samples.petclinic.ABTest.deleteVisitBtnHelper;
