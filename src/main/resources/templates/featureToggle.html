@@ -355,7 +355,7 @@
                 </label>
             </td>
         </tr>
-        <tr>
+        <tr style="border-bottom: 1px solid">
             <td>Debugging system out print</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDebuggingSystemOutPrint()}">
                 <label>
@@ -375,7 +375,7 @@
             </td>
         </tr>
         <tr>
-            <td>Owner tab Change</td>
+            <td>Change the layout of top nav bar? (Disable means Rollback)</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableTabOwnerChange()}">
                 <label>
                     <select name="ownerTabChange">
@@ -393,63 +393,26 @@
                 </label>
             </td>
         </tr>
-        <tr>
-            <td>Owner tab randomly change</td>
+        <tr style="border-bottom: 1px solid;">
+            <td  style="padding-left: 30px;">Version of top nav bar</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableTabOwnerChangeRandom()}">
                 <label>
                     <select name="ownerTabChangeRandom">
-                        <option value="Enable">Enable</option>
-                        <option value="Disable">Disable</option>
+                        <option value="Enable">New version</option>
+                        <option value="Disable">Old version</option>
                     </select>
                 </label>
             </td>
             <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableTabOwnerChangeRandom()}">
                 <label>
                     <select name="ownerTabChangeRandom">
-                        <option value="Disable">Disable</option>
-                        <option value="Enable">Enable</option>
+                        <option value="Disable">Old version</option>
+                        <option value="Enable">New version</option>
                     </select>
                 </label>
             </td>
         </tr>
-        <tr>
-            <td>Display home button</td>
-            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isHasHomeButton()}">
-                <label>
-                    <select name="homeButton">
-                        <option value="Enable">Enable</option>
-                        <option value="Disable">Disable</option>
-                    </select>
-                </label>
-            </td>
-            <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isHasHomeButton()}">
-                <label>
-                    <select name="homeButton">
-                        <option value="Disable">Disable</option>
-                        <option value="Enable">Enable</option>
-                    </select>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td>New owner find button</td>
-            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnabledLegacyFindOwnerButton()}">
-                <label>
-                    <select name="legacyOwnerFind">
-                        <option value="Enable">Enable</option>
-                        <option value="Disable">Disable</option>
-                    </select>
-                </label>
-            </td>
-            <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnabledLegacyFindOwnerButton()}">
-                <label>
-                    <select name="legacyOwnerFind">
-                        <option value="Disable">Disable</option>
-                        <option value="Enable">Enable</option>
-                    </select>
-                </label>
-            </td>
-        </tr>
+        <!-- TODO -->
         <tr>
             <td>Owner delete (Rollback)</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteOwner()}">
@@ -470,7 +433,7 @@
             </td>
         </tr>
         <tr>
-            <td>Owner delete random 1</td>
+            <td>Display the Delete button in Owner info page</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteOwnerRandom1()}">
                 <label>
                     <select name="ownerDeleteRandom1">
@@ -488,7 +451,7 @@
                 </label>
             </td>
         </tr>
-        <tr>
+        <tr style="border-bottom: 1px solid">
             <td>Owner delete random 2</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteOwnerRandom2()}">
                 <label>
@@ -507,8 +470,8 @@
                 </label>
             </td>
         </tr>
-        <tr>
-            <td>Owner delete toggle</td>
+        <!--<tr>
+            <td>The function of deleting Owner</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isDeleteOwnerToggle()}">
                 <label>
                     <select name="ownerDeleteToggle">
@@ -525,9 +488,47 @@
                     </select>
                 </label>
             </td>
+        </tr> -->
+        <tr>
+            <td>Display pet visit delete button? (Disable means Rollback)</td>
+            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteVisit()}">
+                <label>
+                    <select name="visitDelete">
+                        <option value="Enable">Enable</option>
+                        <option value="Disable">Disable</option>
+                    </select>
+                </label>
+            </td>
+            <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteVisit()}">
+                <label>
+                    <select name="visitDelete">
+                        <option value="Disable">Disable</option>
+                        <option value="Enable">Enable</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr style="border-bottom: 1px solid;">
+            <td  style="padding-left: 30px;">Visit delete button style (randomize once refreshing /owners/# page)</td>
+            <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteVisitRandom()}">
+                <label>
+                    <select name="visitDeleteRandom">
+                        <option value="Enable">Text</option>
+                        <option value="Disable">Button</option>
+                    </select>
+                </label>
+            </td>
+            <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnableDeleteVisitRandom()}">
+                <label>
+                    <select name="visitDeleteRandom">
+                        <option value="Disable">Button</option>
+                        <option value="Enable">Text</option>
+                    </select>
+                </label>
+            </td>
         </tr>
         <tr></tr>
-            <td>New Welcome Page (Rollback)</td>
+            <td>Change homepage message? (Disable means Rollback)</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnabledLegacyWelcomePage()}">
                 <label>
                     <select name="newWelcomePage">
@@ -539,7 +540,6 @@
             <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isIsEnabledLegacyWelcomePage()}">
                 <label>
                     <select name="newWelcomePage">
-
                         <option value="Disable">Disable</option>
                         <option value="Enable">Enable</option>
                     </select>
@@ -547,20 +547,20 @@
             </td>
         </tr>
         <tr>
-            <td>Welcome page toggle</td>
+            <td style="padding-left: 30px">Message to display (randomize once refreshing homepage)</td>
             <td th:if="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isWelcomePageToggle()}">
                 <label>
                     <select name="welcomePageToggle">
-                        <option value="Enable">Enable</option>
-                        <option value="Disable">Disable</option>
+                        <option value="Enable">"Welcome"</option>
+                        <option value="Disable">"Sup Dawg"</option>
                     </select>
                 </label>
             </td>
             <td th:unless="${T(org.springframework.samples.petclinic.FeatureToggles.FeatureToggles).isWelcomePageToggle()}">
                 <label>
                     <select name="welcomePageToggle">
-                        <option value="Disable">Disable</option>
-                        <option value="Enable">Enable</option>
+                        <option value="Disable">"Sup Dawg"</option>
+                        <option value="Enable">"Welcome"</option>
                     </select>
                 </label>
             </td>

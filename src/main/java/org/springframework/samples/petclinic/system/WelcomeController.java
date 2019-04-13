@@ -61,7 +61,7 @@ class WelcomeController {
         FeatureToggles.isEnableTabOwnerChangeRandom = rndToggle.randomToggle(0.50f);
         return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
-    
+
     @ModelAttribute("isEnableTabOwnerChange")
     public boolean isEnableTabOwnerChange() {
         return FeatureToggles.isEnableTabOwnerChange;

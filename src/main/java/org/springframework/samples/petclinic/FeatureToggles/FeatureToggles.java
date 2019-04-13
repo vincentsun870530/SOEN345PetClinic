@@ -34,6 +34,7 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnablePetAddIR = true;
     public static boolean isEnablePetEditIR = true;
     public static boolean isEnablePetVisitIR = true;
+
     //For Date incremental
     public static boolean isEnableIncrementDate = true;
 
@@ -53,28 +54,17 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnableTabOwnerChange = true;
     public static boolean isEnableTabOwnerChangeRandom = true;
 
-    // No Home Button
-    public static boolean hasHomeButton = false;
-
-    // Remove Find Owner Button
-    public static boolean isEnabledLegacyFindOwnerButton = true;
-
+    // TODO
     // Delete Owner Enabler (For Rollback Purpose)
-
     // A/B testing toggle
     public static boolean isEnableDeleteOwner = false;
     public static boolean isEnableDeleteOwnerRandom1 = true;
     public static boolean isEnableDeleteOwnerRandom2 = true;
-
+    public static boolean deleteOwnerToggle = true;
 
     //For enable different delete Visit button A/B testing
     public static boolean isEnableDeleteVisit = true;
-
     public static boolean isEnableDeleteVisitRandom = true;
-
-
-    // Delete Owner Toggle Value
-    public static boolean deleteOwnerToggle = true;
 
     // Welcome Page Enabler (For Rollback Purpose)
     public static boolean isEnabledLegacyWelcomePage = false;
@@ -87,12 +77,6 @@ public class FeatureToggles extends HttpServlet {
         return null;
 
     }
-
-    /**
-     * public void changeToggles() {
-     * document.getI
-     * }
-     **/
 
     //reference: https://stackoverflow.com/questions/31543454/how-to-take-an-html-value-and-make-it-a-java-variable
     @RequestMapping(value = "featureToggle", method = RequestMethod.POST)
@@ -139,24 +123,22 @@ public class FeatureToggles extends HttpServlet {
         isEnableTabOwnerChange = value.equals(request.getParameter("ownerTabChange"));
         isEnableTabOwnerChangeRandom = value.equals(request.getParameter("ownerTabChangeRandom"));
 
-        // No Home Button
-        hasHomeButton = value.equals(request.getParameter("homeButton"));
-
-        // Remove Find Owner Button
-        isEnabledLegacyFindOwnerButton = value.equals(request.getParameter("newOwnerFindButton"));
-
         // Delete Owner Enabler (For Rollback Purpose)
         // A/B testing toggle
         isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
         isEnableDeleteOwnerRandom1 = value.equals(request.getParameter("ownerDeleteRandom1"));
         isEnableDeleteOwnerRandom2 = value.equals(request.getParameter("ownerDeleteRandom2"));
+
+        //For enable different delete Visit button A/B testing
+        isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
+        isEnableDeleteVisitRandom =  value.equals(request.getParameter("visitDeleteRandom"));
+
         // Delete Owner Toggle Value
         deleteOwnerToggle = value.equals(request.getParameter("ownerDeleteToggle"));
 
-        isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
-
         // Welcome Page Enabler (For Rollback Purpose)
         isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
+
         // Welcome Page Toggle Value
         welcomePageToggle = value.equals(request.getParameter("welcomePageToggle"));
 
@@ -245,14 +227,6 @@ public class FeatureToggles extends HttpServlet {
         return isEnableTabOwnerChangeRandom;
     }
 
-    public static boolean isHasHomeButton() {
-        return hasHomeButton;
-    }
-
-    public static boolean isIsEnabledLegacyFindOwnerButton() {
-        return isEnabledLegacyFindOwnerButton;
-    }
-
     public static boolean isIsEnableDeleteOwnerRandom1() {
         return isEnableDeleteOwnerRandom1;
     }
@@ -263,12 +237,7 @@ public class FeatureToggles extends HttpServlet {
 
     public static boolean isIsEnableDeleteOwner() {
         return isEnableDeleteOwner;
-
     }
-    public static boolean isISEnableDeleteVisit() {
-        return isEnableDeleteVisit;
-    }
-
 
     public static boolean isDeleteOwnerToggle() {
         return deleteOwnerToggle;
@@ -280,6 +249,14 @@ public class FeatureToggles extends HttpServlet {
 
     public static boolean isWelcomePageToggle() {
         return welcomePageToggle;
+    }
+
+    public static boolean isIsEnableDeleteVisit() {
+        return isEnableDeleteVisit;
+    }
+
+    public static boolean isIsEnableDeleteVisitRandom() {
+        return isEnableDeleteVisitRandom;
     }
 }
 
