@@ -5,10 +5,10 @@ import org.junit.Test;
 import org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 
-public class GenerateOwnerDataTest {
+public class GenerateDeleteOwnerDataTest {
 
     //@Test
-    public void generateOwnerDataTest() {
+    public void generateDeleteOwnerDataTest() {
 
         int count = 0;
         FeatureToggles.isEnableDeleteOwner = true;

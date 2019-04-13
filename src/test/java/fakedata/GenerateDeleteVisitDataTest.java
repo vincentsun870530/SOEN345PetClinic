@@ -4,10 +4,10 @@ import org.junit.Test;
 import org.springframework.samples.petclinic.ABTest.deleteVisitBtnHelper;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 
-public class GenerateVisitDataTest {
+public class GenerateDeleteVisitDataTest {
 
     //@Test
-    public void generateOwnerDataTest() {
+    public void generateDeleteVisitDataTest() {
 
         int count = 0;
         FeatureToggles.isEnableDeleteVisit = true;
