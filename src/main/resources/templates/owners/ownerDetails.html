@@ -33,7 +33,7 @@
 
 <a th:href="@{{id}/edit(id=${owner.id})}" class="btn btn-default">Edit
     Owner</a>
-<a th:if="(${isEnableDeleteOwner} == true and ${isEnableDeleteOwnerRandom1} == true and ${isEnableDeleteOwnerRandom2} == false) or (${isEnableDeleteOwner} == true and ${isEnableDeleteOwnerRandom1} == true and ${isEnableDeleteOwnerRandom2} == true)
+<a th:if="(${isEnableFeature1} == true and ${isEnableFeature1Random1} == true and ${isEnableFeature1Random2} == false) or (${isEnableFeature1} == true and ${isEnableFeature1Random1} == true and ${isEnableFeature1Random2} == true)
       " th:href="@{{id}/deleteBtnVersionOne(id=${owner.id})}" class="btn btn-default">Delete
     Owner</a>
 <a th:href="@{{id}/pets/new(id=${owner.id})}" class="btn btn-default">Add

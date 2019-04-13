@@ -29,7 +29,7 @@
         <td><span th:each="pet : ${owner.pets}" th:text="${pet.name} "/></td>
         <td>
             <!--/*@thymesVar id="owner" type="org.springframework.samples.petclinic.owner.Owner"*/-->
-            <a th:if="(${isEnableDeleteOwner} == true and ${isEnableDeleteOwnerRandom2} == true and ${isEnableDeleteOwnerRandom1} == false) or (${isEnableDeleteOwner} == true and ${isEnableDeleteOwnerRandom1} == false and ${isEnableDeleteOwnerRandom2} == false)"
+            <a th:if="(${isEnableFeature1} == true and ${isEnableFeature1Random2} == true and ${isEnableFeature1Random1} == false) or (${isEnableFeature1} == true and ${isEnableFeature1Random1} == false and ${isEnableFeature1Random2} == false)"
                th:href="@{owners/{id}/deleteBtnVersionTwo(id=${owner.getId()})}" class="btn btn-default">Delete
                 Owner</a></td>
     </tr>

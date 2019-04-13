@@ -63,9 +63,9 @@ public class FeatureToggles extends HttpServlet {
     // Delete Owner Enabler (For Rollback Purpose)
 
     // A/B testing toggle
-    public static boolean isEnableDeleteOwnerRandom1 = false;
-    public static boolean isEnableDeleteOwnerRandom2 = false;
-    public static boolean isEnableDeleteOwner = false;
+    public static boolean isEnableFeature1Random1 = false;
+    public static boolean isEnableFeature1Random2 = false;
+    public static boolean isEnableFeature1 = true;
 
 
     //For enable different delete Visit button A/B testing
@@ -145,7 +145,7 @@ public class FeatureToggles extends HttpServlet {
         //For temp debugging system.out.print
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
 
-        isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
+        isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
 
         isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
 
@@ -230,7 +230,7 @@ public class FeatureToggles extends HttpServlet {
     }
 
     public static boolean isIsEnableDeleteOwner() {
-        return isEnableDeleteOwner;
+        return isEnableFeature1;
 
     }
     public static boolean isISEnableDeleteVisit() {
