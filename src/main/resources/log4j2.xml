@@ -5,8 +5,10 @@
     <Properties>
         <Property name="csvLog1.fileName">deleteOwnerBtnLog</Property>
         <Property name="csvLog2.fileName">WelcomeFeature</Property>
-        <Property name="csvLog3.fileName">ownerTabChangeLog</Property>
-        <!--<Property name="csvLog4.fileName">welcomePageLog</Property>-->
+        <!--fake version for feature3-->
+        <Property name="csvLog3.fileName">ownerTabChangeFakeDataLog</Property>
+        <!--live version for feature3-->
+        <Property name="csvLog4.fileName">owenerTabChangeLiveDataLog</Property>
         <Property name="csvLog5.fileName">deleteVisitLog</Property>
         <!-- <Property name="csvLog3.fileName">welcomePageLog</Property>  -->
 
@@ -54,7 +56,7 @@
             <DefaultRolloverStrategy max="200"/>
         </RollingFile>
 
-       <!-- <RollingFile name="csvLog4.fileName"
+       <RollingFile name="csvLog4.fileName"
                      fileName="logs/${csvLog4.fileName}.csv"
                      filePattern="${csvLog4.filename}-%d{MM-dd-yyyy}-%i.csv">
             <CsvLogEventLayout delimiter="," header="${file-header}\n"/>
@@ -63,7 +65,7 @@
                 <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
             <DefaultRolloverStrategy max="200"/>
-        </RollingFile>-->
+        </RollingFile>
 
         <RollingFile name="csvLog5.fileName"
                      fileName="logs/${csvLog5.fileName}.csv"

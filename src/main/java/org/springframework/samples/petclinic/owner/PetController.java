@@ -234,10 +234,10 @@ class PetController {
         FeatureToggles.isEnableTabOwnerChangeRandom = rndToggle.randomToggle(0.50f);
         return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
-    
-    @ModelAttribute("isEnableTabOwnerChange")
+
+    @ModelAttribute("isEnableFeature3")
     public boolean isEnableTabOwnerChange() {
-        return FeatureToggles.isEnableTabOwnerChange;
+        return FeatureToggles.Feature3;
     }
 
 }

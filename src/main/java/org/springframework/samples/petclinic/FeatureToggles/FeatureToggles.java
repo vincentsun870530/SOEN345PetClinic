@@ -50,8 +50,7 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnableDebuggingSystemOutPrint = false;
 
     // For a/b test on the Find Owners in the navbar
-    public static boolean isEnableTabOwnerChange = false;
-    public static boolean isEnableTabOwnerChangeRandom = false;
+    //public static boolean isEnableTabOwnerChange = true;
 
 
     // No Home Button
@@ -87,6 +86,9 @@ public class FeatureToggles extends HttpServlet {
 
     // A/B test Feature2
     public static boolean Feature2 = false;
+    // A/B test Feature3
+    public static boolean Feature3 = false;
+    public static boolean isEnableTabOwnerChangeRandom = false;
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
@@ -142,24 +144,16 @@ public class FeatureToggles extends HttpServlet {
 
         //For temp debugging system.out.print
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
-        //Todo Bottom is A/B toggole
-        // A/B testing toggle
+
         isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
 
         isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
 
-        //isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
-
         // A/B testing toggle for owner tab
-        isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
-
-
-
+        //isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
 
         // redirect page
         response.sendRedirect("");
-
-        //System.out.println(isEnableOwnerPage);
 
     }
 
@@ -244,9 +238,9 @@ public class FeatureToggles extends HttpServlet {
     }
 
 
-    public static boolean isIsEnableTabOwnerChange() {
+    /*public static boolean isIsEnableTabOwnerChange() {
         return isEnableTabOwnerChange;
-    }
+    }*/
 
   /*  //public static boolean isEnabledLegacyWelcomePage() {
         return isEnabledLegacyWelcomePage;

@@ -24,13 +24,13 @@ class WelcomeController {
 
     @GetMapping("/")
     public String welcome() {
-        if(FeatureToggles.isEnableTabOwnerChange == true && FeatureToggles.isEnableTabOwnerChangeRandom == true) {
-            WelcomeLogHelper.countUserVerOne();
-        } else {
-            WelcomeLogHelper.countUserVerTwo();
+        if(FeatureToggles.Feature3) {
+            if (FeatureToggles.isEnableTabOwnerChangeRandom) {
+                WelcomeLogHelper.countUserVerOne();
+            } else {
+                WelcomeLogHelper.countUserVerTwo();
+            }
         }
-
-        
         return toggleWelcome();
     }
 
@@ -65,8 +65,8 @@ class WelcomeController {
         return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
     
-    @ModelAttribute("isEnableTabOwnerChange")
-    public boolean isEnableTabOwnerChange() {
-        return FeatureToggles.isEnableTabOwnerChange;
+    @ModelAttribute("isEnableFeature3")
+    public boolean isEnableFeature3() {
+        return FeatureToggles.Feature3;
     }
 }

@@ -44,9 +44,9 @@ class CrashController {
     }
 
     
-    @ModelAttribute("isEnableTabOwnerChange")
+    @ModelAttribute("isEnableFeature3")
     public boolean isEnableTabOwnerChange() {
-        return FeatureToggles.isEnableTabOwnerChange;
+        return FeatureToggles.Feature3;
     }
 
 }
