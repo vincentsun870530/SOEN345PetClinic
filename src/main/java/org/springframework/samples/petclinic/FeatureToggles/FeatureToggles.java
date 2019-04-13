@@ -85,6 +85,7 @@ public class FeatureToggles extends HttpServlet {
     // Randomizer Toggle
     public static boolean randomizer = false;
 
+    // A/B test Feature2
     public static boolean Feature2 = false;
 
     @GetMapping("/featureToggle")
@@ -147,7 +148,7 @@ public class FeatureToggles extends HttpServlet {
 
         isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
 
-        isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
+        //isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
 
         // A/B testing toggle for owner tab
         isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
@@ -247,8 +248,8 @@ public class FeatureToggles extends HttpServlet {
         return isEnableTabOwnerChange;
     }
 
-    public static boolean isEnabledLegacyWelcomePage() {
+  /*  //public static boolean isEnabledLegacyWelcomePage() {
         return isEnabledLegacyWelcomePage;
-    }
+    }*/
 }
 

@@ -17,10 +17,8 @@ public class GenerateWelcomePageTest {
         int low = 1000;
         int high = 2000;
 
-        FeatureToggles.isEnabledLegacyWelcomePage = true;
+        FeatureToggles.Feature2 = true;
         RandomToggle rndToggle = new RandomToggle();
-
-
         Random r = new Random();
         while(count != 0) {
             FeatureToggles.welcomePageToggle = rndToggle.randomToggle(0.30f);
