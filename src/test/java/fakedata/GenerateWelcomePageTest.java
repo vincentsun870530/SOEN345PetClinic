@@ -11,7 +11,7 @@ import java.util.Random;
 public class GenerateWelcomePageTest {
 
     private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
-
+    //@Test
     public void testWelcomePage() {
         int count = 1000;
         int low = 1000;
