@@ -7,12 +7,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(WelcomeController.class)
-
 public class WelcomeControllerTests {
 	
-	@Test
+
 	public void testWelcome() {
 		
 		WelcomeController wc = new WelcomeController();

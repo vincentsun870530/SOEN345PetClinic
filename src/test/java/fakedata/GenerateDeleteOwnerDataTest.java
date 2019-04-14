@@ -1,17 +1,17 @@
-package org.springframework.samples.petclinic.owner;
+package fakedata;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper;
 import org.springframework.samples.petclinic.FeatureToggles.FeatureToggles;
 
-public class GenerateOwnerDataTest {
+public class GenerateDeleteOwnerDataTest {
 
-    @Test
-    public void generateOwnerDataTest() {
+    //@Test
+    public void generateDeleteOwnerDataTest() {
 
         int count = 0;
-        FeatureToggles.isEnableDeleteOwner = true;
+        FeatureToggles.isEnableFeature1 = true;
 
         while (count < 1000) {
             int rnd = RandomUtils.nextInt(0, 2);

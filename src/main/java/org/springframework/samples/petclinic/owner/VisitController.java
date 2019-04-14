@@ -89,7 +89,12 @@ class VisitController {
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
         this.visit = visit;
-       // pet.addVisit(visit);
+        // A/B testing feature
+        if(FeatureToggles.isEnableFeature4){
+        //pet.addVisit(visit);
+        }else{
+            pet.addVisit(visit);
+        }
         return visit;
     }
 
@@ -169,33 +174,33 @@ class VisitController {
         }
     }
 
-    @ModelAttribute("isEnableDeleteVisit")
+
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitGreen")
     public String handleDeleteVisitGreen(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
-        if(FeatureToggles.isEnableDeleteVisit){
+        if(FeatureToggles.isEnableFeature4){
             System.out.println(visitId);
             Visit visit = this.visits.findById(visitId);
             System.out.println(visit);
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
             countDeleteVisitBtnGreen();
-            return "deleteVisitGreen";
+            return "owners/deleteVisitGreen"  ;
         }
-        return "ownerDetails";
+        return "owners/ownerDetails";
     }
-    @ModelAttribute("isEnableDeleteVisit")
+
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitBlack")
     public String handleDeleteVisitBlack(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
-        if(FeatureToggles.isEnableDeleteVisit){
+        if(FeatureToggles.isEnableFeature4){
             System.out.println(visitId);
             Visit visit = this.visits.findById(visitId);
             System.out.println(visit);
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
             countDeleteVisitBtnBlack();
-            return "deleteVisitBlack";
+            return "owners/deleteVisitBlack";
         }
-       return "ownerDetails";
+       return "owners/ownerDetails";
 
     }
 
@@ -208,9 +213,9 @@ class VisitController {
         return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
 
-    @ModelAttribute("isEnableTabOwnerChange")
+    @ModelAttribute("isEnableFeature3")
     public boolean isEnableTabOwnerChange() {
-        return FeatureToggles.isEnableTabOwnerChange;
+        return FeatureToggles.Feature3;
     }
 
 
