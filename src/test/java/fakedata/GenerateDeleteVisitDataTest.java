@@ -10,7 +10,7 @@ public class GenerateDeleteVisitDataTest {
     public void generateDeleteVisitDataTest() {
 
         int count = 0;
-        FeatureToggles.isEnableDeleteVisit = true;
+        FeatureToggles.isEnableFeature4 = true;
 
         while (count < 1000) {
             int rnd = RandomUtils.nextInt(0, 2);
