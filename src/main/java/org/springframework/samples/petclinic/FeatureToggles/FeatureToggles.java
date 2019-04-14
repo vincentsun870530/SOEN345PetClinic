@@ -75,7 +75,6 @@ public class FeatureToggles extends HttpServlet {
 
     // A/B test Feature4
     public static boolean isEnableFeature4 = false;
-    public static boolean isEnableDeleteVisit = false;
     public static boolean isEnableDeleteVisitRandom = false;
 
     @GetMapping("/featureToggle")
