@@ -48,38 +48,53 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnableShadowRead = true;
 
     //For temp debugging system.out.print
-    public static boolean isEnableDebuggingSystemOutPrint = true;
+    public static boolean isEnableDebuggingSystemOutPrint = false;
 
     // For a/b test on the Find Owners in the navbar
-    public static boolean isEnableTabOwnerChange = false;
-    public static boolean isEnableTabOwnerChangeRandom = true;
+    //public static boolean isEnableTabOwnerChange = true;
 
 
     // No Home Button
     public static boolean hasHomeButton = false;
 
-    // TODO
-    // Delete Owner Enabler (For Rollback Purpose)
-    // A/B testing toggle
-    public static boolean isEnableDeleteOwner = false;
-    public static boolean isEnableDeleteOwnerRandom1 = true;
-    public static boolean isEnableDeleteOwnerRandom2 = true;
-    public static boolean deleteOwnerToggle = true;
+    // Remove Find Owner Button
+    public static boolean isEnabledLegacyFindOwnerButton = false;
 
+
+    // Feature1
+    public static boolean isEnableFeature1Random1 = false;
+    public static boolean isEnableFeature1Random2 = false;
+    public static boolean isEnableFeature1 = false;
+
+
+    // For feature 4 general control
+    public static boolean isEnableFeature4 = false;
     //For enable different delete Visit button A/B testing
-    public static boolean isEnableDeleteVisit = false;
-    public static boolean isEnableDeleteVisitRandom = true;
+    public static boolean isEnableDeleteVisit = true;
+
+    public static boolean isEnableDeleteVisitRandom = false;
+
+
+   /* // Delete Owner Toggle Value
+    public static boolean deleteOwnerToggle = false;*/
 
     // Welcome Page Enabler (For Rollback Purpose)
-    public static boolean isEnabledLegacyWelcomePage = false;
+    //public static boolean isEnabledLegacyWelcomePage = false;
     // Welcome Page Toggle Value
-    public static boolean welcomePageToggle = true;
+    public static boolean welcomePageToggle = false;
+
+    /* // Randomizer Toggle
+    public static boolean randomizer = false;*/
+
+    // A/B test Feature2
+    public static boolean Feature2 = false;
+    // A/B test Feature3
+    public static boolean Feature3 = false;
+    public static boolean isEnableTabOwnerChangeRandom = false;
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
-
         return null;
-
     }
 
     //reference: https://stackoverflow.com/questions/31543454/how-to-take-an-html-value-and-make-it-a-java-variable
@@ -123,15 +138,7 @@ public class FeatureToggles extends HttpServlet {
         //For temp debugging system.out.print
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
 
-        // For a/b test on the Find Owners in the navbar
-        isEnableTabOwnerChange = value.equals(request.getParameter("ownerTabChange"));
-        isEnableTabOwnerChangeRandom = value.equals(request.getParameter("ownerTabChangeRandom"));
-
-        // Delete Owner Enabler (For Rollback Purpose)
-        // A/B testing toggle
-        isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
-        isEnableDeleteOwnerRandom1 = value.equals(request.getParameter("ownerDeleteRandom1"));
-        isEnableDeleteOwnerRandom2 = value.equals(request.getParameter("ownerDeleteRandom2"));
+        isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
 
         //For enable different delete Visit button A/B testing
         isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
@@ -140,11 +147,9 @@ public class FeatureToggles extends HttpServlet {
         // Delete Owner Toggle Value
         deleteOwnerToggle = value.equals(request.getParameter("ownerDeleteToggle"));
 
-        // Welcome Page Enabler (For Rollback Purpose)
-        isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
-
-        // Welcome Page Toggle Value
-        welcomePageToggle = value.equals(request.getParameter("welcomePageToggle"));
+        isEnableFeature4 = value.equals(request.getParameter("feature4"));
+        // A/B testing toggle for owner tab
+        //isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
 
         // redirect page
         response.sendRedirect("");
@@ -240,8 +245,7 @@ public class FeatureToggles extends HttpServlet {
     }
 
     public static boolean isIsEnableDeleteOwner() {
-        return isEnableDeleteOwner;
-    }
+        return isEnableFeature1;
 
     public static boolean isDeleteOwnerToggle() {
         return deleteOwnerToggle;
@@ -251,16 +255,17 @@ public class FeatureToggles extends HttpServlet {
         return isEnabledLegacyWelcomePage;
     }
 
-    public static boolean isWelcomePageToggle() {
-        return welcomePageToggle;
+    public static boolean isIsEnableFeature4(){
+        return isEnableFeature4;
     }
 
-    public static boolean isIsEnableDeleteVisit() {
-        return isEnableDeleteVisit;
-    }
 
-    public static boolean isIsEnableDeleteVisitRandom() {
-        return isEnableDeleteVisitRandom;
-    }
+    /*public static boolean isIsEnableTabOwnerChange() {
+        return isEnableTabOwnerChange;
+    }*/
+
+  /*  //public static boolean isEnabledLegacyWelcomePage() {
+        return isEnabledLegacyWelcomePage;
+    }*/
 }
 

@@ -24,23 +24,26 @@ class WelcomeController {
 
     @GetMapping("/")
     public String welcome() {
-        if(FeatureToggles.isEnableTabOwnerChange == true && FeatureToggles.isEnableTabOwnerChangeRandom == true) {
-            WelcomeLogHelper.countUserVerOne();
-        } else {
-            WelcomeLogHelper.countUserVerTwo();
+        if(FeatureToggles.Feature3) {
+            if (FeatureToggles.isEnableTabOwnerChangeRandom) {
+                WelcomeLogHelper.countUserVerOne();
+            } else {
+                WelcomeLogHelper.countUserVerTwo();
+            }
         }
-
-        RandomToggle rndToggle = new RandomToggle();
-        // Legacy Mode 75% of the time V2 25% of the timeS
-        FeatureToggles.welcomePageToggle = rndToggle.randomToggle(0.30f);
         return toggleWelcome();
     }
 
     private String toggleWelcome() {
         //Start Time stamp to test ms spent on welcome page
-        timeAnalytics.resetTimeAnalystics();
-        timeAnalytics.startTime = System.nanoTime();
-        if (FeatureToggles.isEnabledLegacyWelcomePage) {
+        if(FeatureToggles.Feature2){
+            timeAnalytics.resetTimeAnalystics();
+            timeAnalytics.startTime = System.nanoTime();
+        }
+
+        if (FeatureToggles.Feature2) {
+            RandomToggle rndToggle = new RandomToggle();
+            FeatureToggles.welcomePageToggle = rndToggle.randomToggle(0.30f);
             if (FeatureToggles.welcomePageToggle == false) {
                 analytics.info("Welcome Page Version 2");
                 return "welcome-v2";
@@ -62,8 +65,8 @@ class WelcomeController {
         return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
     
-    @ModelAttribute("isEnableTabOwnerChange")
-    public boolean isEnableTabOwnerChange() {
-        return FeatureToggles.isEnableTabOwnerChange;
+    @ModelAttribute("isEnableFeature3")
+    public boolean isEnableFeature3() {
+        return FeatureToggles.Feature3;
     }
 }

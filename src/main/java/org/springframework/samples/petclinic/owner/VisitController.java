@@ -89,7 +89,12 @@ class VisitController {
         Pet pet = this.pets.findById(petId);
         model.put("pet", pet);
         this.visit = visit;
-       // pet.addVisit(visit);
+        // A/B testing feature
+        if(FeatureToggles.isEnableDeleteVisit){
+        //pet.addVisit(visit);
+        }else{
+            pet.addVisit(visit);
+        }
         return visit;
     }
 
@@ -179,9 +184,9 @@ class VisitController {
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
             countDeleteVisitBtnGreen();
-            return "deleteVisitGreen";
+            return "owners/deleteVisitGreen"  ;
         }
-        return "ownerDetails";
+        return "owners/ownerDetails";
     }
     @ModelAttribute("isEnableDeleteVisit")
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitBlack")
@@ -193,9 +198,9 @@ class VisitController {
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
             countDeleteVisitBtnBlack();
-            return "deleteVisitBlack";
+            return "owners/deleteVisitBlack";
         }
-       return "ownerDetails";
+       return "owners/ownerDetails";
 
     }
 
@@ -208,9 +213,9 @@ class VisitController {
         return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
 
-    @ModelAttribute("isEnableTabOwnerChange")
+    @ModelAttribute("isEnableFeature3")
     public boolean isEnableTabOwnerChange() {
-        return FeatureToggles.isEnableTabOwnerChange;
+        return FeatureToggles.Feature3;
     }
 
 
