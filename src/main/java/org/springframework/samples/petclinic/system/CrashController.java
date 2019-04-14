@@ -34,17 +34,19 @@ class CrashController {
     private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
     @GetMapping("/oups")
     public String triggerException() {
-        timeAnalytics.endTime = System.nanoTime();
-        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
-        timeAnalytics.resetTimeAnalystics();
+        if(FeatureToggles.Feature2) {
+            timeAnalytics.endTime = System.nanoTime();
+            timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS() + " Legacy Welcome : " + FeatureToggles.welcomePageToggle);
+            timeAnalytics.resetTimeAnalystics();
+        }
         throw new RuntimeException("Expected: controller used to showcase what "
                 + "happens when an exception is thrown");
     }
 
     
-    @ModelAttribute("isEnableTabOwnerChange")
+    @ModelAttribute("isEnableFeature3")
     public boolean isEnableTabOwnerChange() {
-        return FeatureToggles.isEnableTabOwnerChange;
+        return FeatureToggles.Feature3;
     }
 
 }

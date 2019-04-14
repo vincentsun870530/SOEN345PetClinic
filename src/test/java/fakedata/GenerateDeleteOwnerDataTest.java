@@ -11,7 +11,7 @@ public class GenerateDeleteOwnerDataTest {
     public void generateDeleteOwnerDataTest() {
 
         int count = 0;
-        FeatureToggles.isEnableDeleteOwner = true;
+        FeatureToggles.isEnableFeature1 = true;
 
         while (count < 1000) {
             int rnd = RandomUtils.nextInt(0, 2);

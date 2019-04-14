@@ -47,49 +47,53 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnableShadowRead = true;
 
     //For temp debugging system.out.print
-    public static boolean isEnableDebuggingSystemOutPrint = true;
+    public static boolean isEnableDebuggingSystemOutPrint = false;
 
     // For a/b test on the Find Owners in the navbar
-    public static boolean isEnableTabOwnerChange = true;
-    public static boolean isEnableTabOwnerChangeRandom = true;
+    //public static boolean isEnableTabOwnerChange = true;
 
 
     // No Home Button
     public static boolean hasHomeButton = false;
 
     // Remove Find Owner Button
-    public static boolean isEnabledLegacyFindOwnerButton = true;
+    public static boolean isEnabledLegacyFindOwnerButton = false;
 
 
-    // Delete Owner Enabler (For Rollback Purpose)
-
-    // A/B testing toggle
-    public static boolean isEnableDeleteOwnerRandom1 = true;
-    public static boolean isEnableDeleteOwnerRandom2 = true;
-    public static boolean isEnableDeleteOwner = true;
+    // Feature1
+    public static boolean isEnableFeature1Random1 = false;
+    public static boolean isEnableFeature1Random2 = false;
+    public static boolean isEnableFeature1 = false;
 
 
+    // For feature 4 general control
+    public static boolean isEnableFeature4 = false;
     //For enable different delete Visit button A/B testing
     public static boolean isEnableDeleteVisit = true;
 
-    public static boolean isEnableDeleteVisitRandom = true;
+    public static boolean isEnableDeleteVisitRandom = false;
 
 
-    // Delete Owner Toggle Value
-    public static boolean deleteOwnerToggle = true;
+   /* // Delete Owner Toggle Value
+    public static boolean deleteOwnerToggle = false;*/
 
     // Welcome Page Enabler (For Rollback Purpose)
-    public static boolean isEnabledLegacyWelcomePage = false;
+    //public static boolean isEnabledLegacyWelcomePage = false;
     // Welcome Page Toggle Value
-    public static boolean welcomePageToggle = true;
-    // Randomizer Toggle
-    public static boolean randomizer = true;
+    public static boolean welcomePageToggle = false;
+
+    /* // Randomizer Toggle
+    public static boolean randomizer = false;*/
+
+    // A/B test Feature2
+    public static boolean Feature2 = false;
+    // A/B test Feature3
+    public static boolean Feature3 = false;
+    public static boolean isEnableTabOwnerChangeRandom = false;
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
-
         return null;
-
     }
 
     /**
@@ -142,20 +146,16 @@ public class FeatureToggles extends HttpServlet {
         //For temp debugging system.out.print
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
 
-        // A/B testing toggle
-        isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
+        isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
 
         isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
 
-        isEnabledLegacyWelcomePage = value.equals(request.getParameter("newWelcomePage"));
-
+        isEnableFeature4 = value.equals(request.getParameter("feature4"));
         // A/B testing toggle for owner tab
-        isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
+        //isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
 
         // redirect page
         response.sendRedirect("");
-
-        //System.out.println(isEnableOwnerPage);
 
     }
 
@@ -232,20 +232,24 @@ public class FeatureToggles extends HttpServlet {
     }
 
     public static boolean isIsEnableDeleteOwner() {
-        return isEnableDeleteOwner;
+        return isEnableFeature1;
 
     }
     public static boolean isISEnableDeleteVisit() {
         return isEnableDeleteVisit;
     }
 
+    public static boolean isIsEnableFeature4(){
+        return isEnableFeature4;
+    }
 
-    public static boolean isIsEnableTabOwnerChange() {
+
+    /*public static boolean isIsEnableTabOwnerChange() {
         return isEnableTabOwnerChange;
-    }
+    }*/
 
-    public static boolean isEnabledLegacyWelcomePage() {
+  /*  //public static boolean isEnabledLegacyWelcomePage() {
         return isEnabledLegacyWelcomePage;
-    }
+    }*/
 }
 

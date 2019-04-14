@@ -60,10 +60,11 @@ class VetController {
 
     @GetMapping("/vets.html")
     public String showVetList(Map<String, Object> model , Vets vets) {
-
-        timeAnalytics.endTime = System.nanoTime();
-        timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS());
-        timeAnalytics.resetTimeAnalystics();
+        if(FeatureToggles.Feature2) {
+            timeAnalytics.endTime = System.nanoTime();
+            timeLogAnalytics.info("Elapsed Time (ms) : " + timeAnalytics.elapsedTimeMS() + " Legacy Welcome : " + FeatureToggles.welcomePageToggle);
+            timeAnalytics.resetTimeAnalystics();
+        }
         if (FeatureToggles.isEnableVetPage) {
             // Here we are returning an object of type 'Vets' rather than a collection of Vet
             // objects so it is simpler for Object-Xml mapping
@@ -184,9 +185,9 @@ class VetController {
         return  FeatureToggles.isEnableTabOwnerChangeRandom;
     }
     
-    @ModelAttribute("isEnableTabOwnerChange")
+    @ModelAttribute("isEnableFeature3")
     public boolean isEnableTabOwnerChange() {
-        return FeatureToggles.isEnableTabOwnerChange;
+        return FeatureToggles.Feature3;
     }
 
 }
