@@ -59,36 +59,24 @@ public class FeatureToggles extends HttpServlet {
     // Remove Find Owner Button
     public static boolean isEnabledLegacyFindOwnerButton = false;
 
+    public static boolean welcomePageToggle = false;
 
-    // Feature1
+    //  A/B test Feature1
     public static boolean isEnableFeature1Random1 = false;
     public static boolean isEnableFeature1Random2 = false;
     public static boolean isEnableFeature1 = false;
 
-
-    // For feature 4 general control
-    public static boolean isEnableFeature4 = false;
-    //For enable different delete Visit button A/B testing
-
-    public static boolean isEnableDeleteVisitRandom = false;
-
-
-   /* // Delete Owner Toggle Value
-    public static boolean deleteOwnerToggle = false;*/
-
-    // Welcome Page Enabler (For Rollback Purpose)
-    //public static boolean isEnabledLegacyWelcomePage = false;
-    // Welcome Page Toggle Value
-    public static boolean welcomePageToggle = false;
-
-    /* // Randomizer Toggle
-    public static boolean randomizer = false;*/
-
     // A/B test Feature2
     public static boolean Feature2 = false;
+
     // A/B test Feature3
     public static boolean Feature3 = false;
     public static boolean isEnableTabOwnerChangeRandom = false;
+
+    // A/B test Feature4
+    public static boolean isEnableFeature4 = false;
+    public static boolean isEnableDeleteVisit = false;
+    public static boolean isEnableDeleteVisitRandom = false;
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
@@ -147,9 +135,16 @@ public class FeatureToggles extends HttpServlet {
 
         //isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
 
+        //  A/B test Feature1
         isEnableFeature1 = value.equals(request.getParameter("feature1"));
+
+        //  A/B test Feature2
         Feature2 = value.equals(request.getParameter("feature2"));
+
+        //  A/B test Feature3
         Feature3 = value.equals(request.getParameter("feature3"));
+
+        //  A/B test Feature4
         isEnableFeature4 = value.equals(request.getParameter("feature4"));
         // A/B testing toggle for owner tab
         //isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
