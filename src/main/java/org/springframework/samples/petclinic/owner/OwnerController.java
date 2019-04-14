@@ -318,6 +318,24 @@ class OwnerController {
         return mav;
     }
 
+    @ModelAttribute("isEnableFeature4")
+    public boolean isEnableFeature4(){
+        return FeatureToggles.isEnableFeature4;
+    }
+
+
+    @ModelAttribute("isEnableDeleteVisit")
+    public boolean isEnableDeleteVisit(){
+        return FeatureToggles.isEnableDeleteVisit;
+    }
+
+    @ModelAttribute("isEnableDeleteVisitRandom")
+    public boolean isEnableDeleteVisitRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteVisitRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteVisitRandom;
+    }
+
     //<----------------------- Delete Owner Feature ---------------------------->
 
     // Pass the toggle to the layout to show/hide the button Version 1
@@ -378,6 +396,7 @@ class OwnerController {
         }
         return "owners/findOwners";
     }
+
 }
 
 

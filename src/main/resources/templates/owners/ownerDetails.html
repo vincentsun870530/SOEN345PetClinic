@@ -73,7 +73,8 @@
                 <tr th:each="visit : ${pet.visits}">
                     <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
                     <td th:text="${visit?.description}"></td>
-                    <td>
+                    
+                    <td th:if="${isEnableFeature4} == true">
 
 
                         <a th:if="${isEnableDeleteVisit} == true and  ${isEnableDeleteVisitRandom} == true"
