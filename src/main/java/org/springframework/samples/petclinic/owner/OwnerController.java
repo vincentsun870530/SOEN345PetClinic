@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.samples.petclinic.FeatureToggles.RandomToggle;
 import org.springframework.samples.petclinic.FeatureToggles.timeAnalytics;
 import org.springframework.samples.petclinic.mysql.MySQLJDBCDriverConnection;
 import org.springframework.samples.petclinic.shadowRead.OwnerShadowRead;
@@ -34,10 +35,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -68,7 +66,7 @@ class OwnerController {
     private Collection<Owner> results;
     private static Logger log = LoggerFactory.getLogger(OwnerController.class);
     private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
-    
+
     @Autowired
     public OwnerController(OwnerRepository clinicService) {
         this.owners = clinicService;
@@ -316,6 +314,24 @@ class OwnerController {
 
         mav.addObject(owner);
         return mav;
+    }
+
+    @ModelAttribute("isEnableFeature4")
+    public boolean isEnableFeature4(){
+        return FeatureToggles.isEnableFeature4;
+    }
+
+
+    @ModelAttribute("isEnableDeleteVisit")
+    public boolean isEnableDeleteVisit(){
+        return FeatureToggles.isEnableDeleteVisit;
+    }
+
+    @ModelAttribute("isEnableDeleteVisitRandom")
+    public boolean isEnableDeleteVisitRandom() {
+        RandomToggle rndToggle = new RandomToggle();
+        FeatureToggles.isEnableDeleteVisitRandom = rndToggle.randomToggle(0.50f);
+        return  FeatureToggles.isEnableDeleteVisitRandom;
     }
 
 }
