@@ -174,7 +174,7 @@ class VisitController {
         }
     }
 
-    @ModelAttribute("isEnableFeature4")
+
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitGreen")
     public String handleDeleteVisitGreen(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
         if(FeatureToggles.isEnableFeature4){
@@ -188,7 +188,7 @@ class VisitController {
         }
         return "owners/ownerDetails";
     }
-    @ModelAttribute("isEnableFeature4")
+
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitBlack")
     public String handleDeleteVisitBlack(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
         if(FeatureToggles.isEnableFeature4){
