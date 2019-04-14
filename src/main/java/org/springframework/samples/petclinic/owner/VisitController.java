@@ -184,9 +184,9 @@ class VisitController {
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
             countDeleteVisitBtnGreen();
-            return "deleteVisitGreen";
+            return "owners/deleteVisitGreen"  ;
         }
-        return "ownerDetails";
+        return "owners/ownerDetails";
     }
     @ModelAttribute("isEnableDeleteVisit")
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitBlack")
@@ -198,9 +198,9 @@ class VisitController {
             this.visits.deleteById(visit.getId());
             model.addAttribute(visit);
             countDeleteVisitBtnBlack();
-            return "deleteVisitBlack";
+            return "owners/deleteVisitBlack";
         }
-       return "ownerDetails";
+       return "owners/ownerDetails";
 
     }
 
