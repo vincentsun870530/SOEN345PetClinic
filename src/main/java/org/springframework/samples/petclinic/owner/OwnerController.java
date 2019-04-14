@@ -47,6 +47,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper.countDeleteOwnerBtnOne;
+import static org.springframework.samples.petclinic.ABTest.DeleteOwnerBtnHelper.countDeleteOwnerBtnTwo;
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowRead;
 import static org.springframework.samples.petclinic.FeatureToggles.FeatureToggles.isEnableShadowWrite;
 
@@ -332,6 +334,67 @@ class OwnerController {
         RandomToggle rndToggle = new RandomToggle();
         FeatureToggles.isEnableDeleteVisitRandom = rndToggle.randomToggle(0.50f);
         return  FeatureToggles.isEnableDeleteVisitRandom;
+    }
+
+    //<----------------------- Delete Owner Feature ---------------------------->
+
+    // Pass the toggle to the layout to show/hide the button Version 1
+    @ModelAttribute("isEnableFeature1Random1")
+    public boolean isEnableFeature1Random1() {
+        if (FeatureToggles.isEnableFeature1) {
+            RandomToggle rndToggle = new RandomToggle();
+            FeatureToggles.isEnableFeature1Random1 = rndToggle.randomToggle(0.50f);
+            return  FeatureToggles.isEnableFeature1Random1;
+        }
+        return  FeatureToggles.isEnableFeature1Random1;
+    }
+
+    // Pass the toggle to the layout
+    // Pass the toggle to the layout to show/hide the button Version 2
+    @ModelAttribute("isEnableFeature1Random2")
+    public boolean isEnableFeature1Random2() {
+        if (FeatureToggles.isEnableFeature1) {
+            RandomToggle rndToggle = new RandomToggle();
+            FeatureToggles.isEnableFeature1Random2 = rndToggle.randomToggle(0.50f);
+            return  FeatureToggles.isEnableFeature1Random2;
+        }
+        return  FeatureToggles.isEnableFeature1Random2;
+    }
+
+    // Pass the toggle isDisableDeleteOwner to the layout to turn off the whole feature
+    @ModelAttribute("isEnableFeature1")
+    public boolean isEnableFeature1() {
+        return  FeatureToggles.isEnableFeature1;
+    }
+
+    // Delete owner that doesn't have pets version One
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @GetMapping("/owners/{ownerId}/deleteBtnVersionOne")
+    public String DeleteOwnerOne(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
+        if (FeatureToggles.isEnableFeature1) {
+            Owner owner = this.owners.findById(ownerId);
+            this.owners.deleteById(owner.getId());
+            model.addAttribute(owner);
+            countDeleteOwnerBtnOne();
+            return "owners/deleteBtnVersionOne";
+        }
+        return "owners/findOwners";
+    }
+
+    // Delete owner that doesn't have pets version Two
+    // if the owner has pets then the pets should be deleted first
+    // then you can delete the owner to conserve the database integrity (child-parent)
+    @GetMapping("/owners/{ownerId}/deleteBtnVersionTwo")
+    public String DeleteOwnerTwo(@PathVariable("ownerId") int ownerId, Model model) throws SQLException {
+        if (FeatureToggles.isEnableFeature1) {
+            Owner owner = this.owners.findById(ownerId);
+            this.owners.deleteById(owner.getId());
+            model.addAttribute(owner);
+            countDeleteOwnerBtnTwo();
+            return "owners/deleteBtnVersionTwo";
+        }
+        return "owners/findOwners";
     }
 
 }

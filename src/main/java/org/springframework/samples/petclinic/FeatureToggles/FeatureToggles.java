@@ -60,12 +60,10 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnabledLegacyFindOwnerButton = false;
 
 
-    // Delete Owner Enabler (For Rollback Purpose)
-
-    // A/B testing toggle
-    public static boolean isEnableDeleteOwnerRandom1 = false;
-    public static boolean isEnableDeleteOwnerRandom2 = false;
-    public static boolean isEnableDeleteOwner = false;
+    // Feature1
+    public static boolean isEnableFeature1Random1 = false;
+    public static boolean isEnableFeature1Random2 = false;
+    public static boolean isEnableFeature1 = false;
 
 
     // For feature 4 general control
@@ -76,15 +74,16 @@ public class FeatureToggles extends HttpServlet {
     public static boolean isEnableDeleteVisitRandom = false;
 
 
-    // Delete Owner Toggle Value
-    public static boolean deleteOwnerToggle = false;
+   /* // Delete Owner Toggle Value
+    public static boolean deleteOwnerToggle = false;*/
 
     // Welcome Page Enabler (For Rollback Purpose)
     //public static boolean isEnabledLegacyWelcomePage = false;
     // Welcome Page Toggle Value
     public static boolean welcomePageToggle = false;
-    // Randomizer Toggle
-    public static boolean randomizer = false;
+
+    /* // Randomizer Toggle
+    public static boolean randomizer = false;*/
 
     // A/B test Feature2
     public static boolean Feature2 = false;
@@ -147,7 +146,7 @@ public class FeatureToggles extends HttpServlet {
         //For temp debugging system.out.print
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
 
-        isEnableDeleteOwner = value.equals(request.getParameter("ownerDelete"));
+        isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
 
         isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
 
@@ -233,7 +232,7 @@ public class FeatureToggles extends HttpServlet {
     }
 
     public static boolean isIsEnableDeleteOwner() {
-        return isEnableDeleteOwner;
+        return isEnableFeature1;
 
     }
     public static boolean isISEnableDeleteVisit() {
