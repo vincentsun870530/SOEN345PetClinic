@@ -68,7 +68,7 @@ class OwnerController {
     private Collection<Owner> results;
     private static Logger log = LoggerFactory.getLogger(OwnerController.class);
     private static org.apache.logging.log4j.Logger timeLogAnalytics = LogManager.getLogger("WelcomeFeature");
-    
+
     @Autowired
     public OwnerController(OwnerRepository clinicService) {
         this.owners = clinicService;
