@@ -69,7 +69,6 @@ public class FeatureToggles extends HttpServlet {
     // For feature 4 general control
     public static boolean isEnableFeature4 = false;
     //For enable different delete Visit button A/B testing
-    public static boolean isEnableDeleteVisit = true;
 
     public static boolean isEnableDeleteVisitRandom = false;
 
@@ -147,8 +146,6 @@ public class FeatureToggles extends HttpServlet {
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
 
         //isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
-
-        isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
 
         isEnableFeature1 = value.equals(request.getParameter("feature1"));
         Feature2 = value.equals(request.getParameter("feature2"));
@@ -231,10 +228,6 @@ public class FeatureToggles extends HttpServlet {
 
     public static boolean isIsEnableDebuggingSystemOutPrint() {
         return isEnableDebuggingSystemOutPrint;
-    }
-
-    public static boolean isISEnableDeleteVisit() {
-        return isEnableDeleteVisit;
     }
 
     public static boolean isIsEnableFeature4(){

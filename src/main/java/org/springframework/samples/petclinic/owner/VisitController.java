@@ -90,7 +90,7 @@ class VisitController {
         model.put("pet", pet);
         this.visit = visit;
         // A/B testing feature
-        if(FeatureToggles.isEnableDeleteVisit){
+        if(FeatureToggles.isEnableFeature4){
         //pet.addVisit(visit);
         }else{
             pet.addVisit(visit);
@@ -174,10 +174,10 @@ class VisitController {
         }
     }
 
-    @ModelAttribute("isEnableDeleteVisit")
+    @ModelAttribute("isEnableFeature4")
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitGreen")
     public String handleDeleteVisitGreen(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
-        if(FeatureToggles.isEnableDeleteVisit){
+        if(FeatureToggles.isEnableFeature4){
             System.out.println(visitId);
             Visit visit = this.visits.findById(visitId);
             System.out.println(visit);
@@ -188,10 +188,10 @@ class VisitController {
         }
         return "owners/ownerDetails";
     }
-    @ModelAttribute("isEnableDeleteVisit")
+    @ModelAttribute("isEnableFeature4")
     @GetMapping("/owners/{ownerId}/pets/{petId}/visit/{visitId}/deleteVisitBlack")
     public String handleDeleteVisitBlack(@PathVariable("visitId") int visitId,@PathVariable("petId") int petId,@PathVariable("ownerId") int ownerId, Model model) throws SQLException  {
-        if(FeatureToggles.isEnableDeleteVisit){
+        if(FeatureToggles.isEnableFeature4){
             System.out.println(visitId);
             Visit visit = this.visits.findById(visitId);
             System.out.println(visit);

@@ -324,10 +324,6 @@ class OwnerController {
     }
 
 
-    @ModelAttribute("isEnableDeleteVisit")
-    public boolean isEnableDeleteVisit(){
-        return FeatureToggles.isEnableDeleteVisit;
-    }
 
     @ModelAttribute("isEnableDeleteVisitRandom")
     public boolean isEnableDeleteVisitRandom() {

@@ -77,11 +77,11 @@
                     <td th:if="${isEnableFeature4} == true">
 
 
-                        <a th:if="${isEnableDeleteVisit} == true and  ${isEnableDeleteVisitRandom} == true"
+                        <a th:if="${isEnableDeleteVisitRandom} == true"
                            th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisitGreen(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}">Delete
                             Visit</a>
 
-                        <a th:if="${isEnableDeleteVisit} == true and  ${isEnableDeleteVisitRandom} == false"
+                        <a th:if="${isEnableDeleteVisitRandom} == false"
                            th:href="@{{ownerId}/pets/{petId}/visit/{id}/deleteVisitBlack(ownerId=${owner.id},petId=${pet.id},id=${visit.id})}"
                            class="btn btn-default">Delete
                             Visit</a>
