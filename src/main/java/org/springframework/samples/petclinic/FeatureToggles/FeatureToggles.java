@@ -68,6 +68,7 @@ public class FeatureToggles extends HttpServlet {
 
     // A/B test Feature2
     public static boolean Feature2 = false;
+
     // A/B test Feature3
     public static boolean Feature3 = false;
     public static boolean isEnableTabOwnerChangeRandom = false;
@@ -75,8 +76,6 @@ public class FeatureToggles extends HttpServlet {
     // A/B test Feature4
     public static boolean isEnableFeature4 = false;
     public static boolean isEnableDeleteVisitRandom = false;
-
-
 
     @GetMapping("/featureToggle")
     public String initFeatureToggleTable() {
@@ -133,15 +132,24 @@ public class FeatureToggles extends HttpServlet {
         //For temp debugging system.out.print
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
 
-        isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
+        //isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
 
+        //  A/B test Feature1
+        isEnableFeature1 = value.equals(request.getParameter("feature1"));
+
+        //  A/B test Feature2
+        Feature2 = value.equals(request.getParameter("feature2"));
+
+        //  A/B test Feature3
+        Feature3 = value.equals(request.getParameter("feature3"));
+
+        //  A/B test Feature4
         isEnableFeature4 = value.equals(request.getParameter("feature4"));
         // A/B testing toggle for owner tab
         //isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
 
         // redirect page
         response.sendRedirect("");
-
     }
 
     public static boolean isIsEnableOwnerPage() {
@@ -216,16 +224,21 @@ public class FeatureToggles extends HttpServlet {
         return isEnableDebuggingSystemOutPrint;
     }
 
-    public static boolean isIsEnableDeleteOwner() {
-        return isEnableFeature1;
-
-    }
-
-
     public static boolean isIsEnableFeature4(){
         return isEnableFeature4;
     }
 
+    public static boolean isIsEnableFeature1() {
+        return isEnableFeature1;
+    }
+
+    public static boolean isFeature2() {
+        return Feature2;
+    }
+
+    public static boolean isFeature3() {
+        return Feature3;
+    }
 
     /*public static boolean isIsEnableTabOwnerChange() {
         return isEnableTabOwnerChange;
