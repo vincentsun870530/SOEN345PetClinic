@@ -146,17 +146,19 @@ public class FeatureToggles extends HttpServlet {
         //For temp debugging system.out.print
         isEnableDebuggingSystemOutPrint = value.equals(request.getParameter("debuggingSystemOutPrint"));
 
-        isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
+        //isEnableFeature1 = value.equals(request.getParameter("ownerDelete"));
 
         isEnableDeleteVisit =  value.equals(request.getParameter("visitDelete"));
 
+        isEnableFeature1 = value.equals(request.getParameter("feature1"));
+        Feature2 = value.equals(request.getParameter("feature2"));
+        Feature3 = value.equals(request.getParameter("feature3"));
         isEnableFeature4 = value.equals(request.getParameter("feature4"));
         // A/B testing toggle for owner tab
         //isEnableTabOwnerChange = value.equals(request.getParameter("ownerTab"));
 
         // redirect page
         response.sendRedirect("");
-
     }
 
     public static boolean isIsEnableOwnerPage() {
@@ -231,10 +233,6 @@ public class FeatureToggles extends HttpServlet {
         return isEnableDebuggingSystemOutPrint;
     }
 
-    public static boolean isIsEnableDeleteOwner() {
-        return isEnableFeature1;
-
-    }
     public static boolean isISEnableDeleteVisit() {
         return isEnableDeleteVisit;
     }
@@ -243,6 +241,17 @@ public class FeatureToggles extends HttpServlet {
         return isEnableFeature4;
     }
 
+    public static boolean isIsEnableFeature1() {
+        return isEnableFeature1;
+    }
+
+    public static boolean isFeature2() {
+        return Feature2;
+    }
+
+    public static boolean isFeature3() {
+        return Feature3;
+    }
 
     /*public static boolean isIsEnableTabOwnerChange() {
         return isEnableTabOwnerChange;
