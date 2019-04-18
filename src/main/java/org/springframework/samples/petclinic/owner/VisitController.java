@@ -170,6 +170,12 @@ class VisitController {
                 }
 
             }
+            else {
+                FeatureToggles.isEnableIncrementDate = false;
+                IncrementalReplication.addToCreateIRList("visits," + visit.getPetId() + "," + visit.getDate().toString() + "," + visit.getDescription());
+                IncrementalReplication.incrementalReplication();
+                FeatureToggles.isEnableIncrementDate = true;
+            }
             return "redirect:/owners/{ownerId}";
         }
     }

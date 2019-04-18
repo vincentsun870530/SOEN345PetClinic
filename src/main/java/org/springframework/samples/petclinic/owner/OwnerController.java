@@ -128,6 +128,12 @@ class OwnerController {
                     FeatureToggles.isEnableIncrementDate = true;
                 }
             }
+            else {
+                FeatureToggles.isEnableIncrementDate = false;
+                IncrementalReplication.addToCreateIRList("owners," + owner.getFirstName() + "," + owner.getLastName() + "," + owner.getAddress() + "," + owner.getCity() + "," + owner.getTelephone());
+                IncrementalReplication.incrementalReplication();
+                FeatureToggles.isEnableIncrementDate = true;
+            }
 
             return "redirect:/owners/" + owner.getId();
         }

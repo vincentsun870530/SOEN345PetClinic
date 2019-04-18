@@ -137,6 +137,13 @@ class PetController {
                         FeatureToggles.isEnableIncrementDate = true;
                     }
                 }
+
+            else{
+                FeatureToggles.isEnableIncrementDate = false;
+                IncrementalReplication.addToCreateIRList("pets," + pet.getName()+ "," + pet.getBirthDate().toString()+ "," + pet.getType().getId()+ "," + owner.getId());
+                IncrementalReplication.incrementalReplication();
+                FeatureToggles.isEnableIncrementDate = true;
+            }
         }
             return "redirect:/owners/{ownerId}";
         }

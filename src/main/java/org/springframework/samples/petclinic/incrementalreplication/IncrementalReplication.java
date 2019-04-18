@@ -27,6 +27,8 @@ public class IncrementalReplication {
      *  If ArrayList of String: put whole object in one string, separate by commas
      */
     private static ArrayList<String> createArray; 
+
+    private static ArrayList<String> createIRArray; 
     
     public static void addToUpdateList(String data) {
         if(updateArray == null) {
@@ -42,6 +44,14 @@ public class IncrementalReplication {
         }
         createArray.add(data);
         System.out.println("Data saved to create list");
+    }
+
+    public static void addToCreateIRList(String data) {
+        if(createIRArray == null) {
+            createIRArray = new ArrayList<String>();
+        }
+        createIRArray.add(data);
+        System.out.println("Data saved to create Incremental Replication list");
     }
 
     public static void incrementalReplication() {
@@ -82,6 +92,23 @@ public class IncrementalReplication {
                 } else {
                     System.out.println("Error in incrementalReplication(): ID(" + primaryKey + ") not found in table(" + tableName + ")");
                 }
+            }
+        }
+
+
+        // Insert new data using incremental replication only
+        data = null;
+        splittedData = null;
+        if(createIRArray != null) {
+            for(int index=0; index<createIRArray.size(); index++) {
+                data = createIRArray.get(index);
+                splittedData = data.split(",");
+                String tableName = splittedData[0];
+                int id = SQLiteIncrementalReplicationHelper.getInstance().insertData(splittedData);
+                 if(id != 0) {	 
+                    IncrementalReplicationChecker.isConsistency(id, tableName);
+                } else {
+                    System.out.println("Error in incrementalReplication(): ID(" + id + ") not found in table(" + tableName + ")");}
             }
         }
     }
